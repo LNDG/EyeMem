@@ -1,3 +1,5 @@
+# Repo Containing the preprocessing steps of the EyeMem study. 
+
 E_preproc_detrend_filter_excecute Executable
 
 1. Prerequisites for Deployment 
