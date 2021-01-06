@@ -4,9 +4,7 @@
 
 ## Requirements
 
-E_preproc_detrend_filter_excecute Executable
-
-1. Prerequisites for Deployment 
+#### E_preproc_detrend_filter_excecute Executable
 
 Verify that version 9.3 (R2017b) of the MATLAB Runtime is installed.   
 
@@ -27,10 +25,10 @@ Package and Distribute in the MATLAB Compiler documentation
 in the MathWorks Documentation Center.    
 
 
-2. Files to Deploy and Package
 
-Files to Package for Standalone 
-================================
+
+## Files to Package for Standalone 
+
 -E_preproc_detrend_filter_excecute 
 -run_E_preproc_detrend_filter_excecute.sh (shell script for temporarily setting 
                                            environment variables and executing the 
@@ -60,7 +58,7 @@ Files to Package for Standalone
     Deployment Tool.
 -This readme file 
 
-3. Definitions
+## Definitions
 
 For information on deployment terminology, go to
 http://www.mathworks.com/help and select MATLAB Compiler >
@@ -68,7 +66,7 @@ Getting Started > About Application Deployment >
 Deployment Product Terms in the MathWorks Documentation
 Center.
 
-4. Appendix 
+## Appendix 
 
 A. Linux systems:
 In the following directions, replace MR by the directory where MATLAB or the MATLAB 
