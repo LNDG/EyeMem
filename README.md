@@ -1,4 +1,4 @@
-# Repo Containing the preprocessing steps of the EyeMem study. 
+# fMRI Data Preprocessing of the EyeMem study. 
 
 E_preproc_detrend_filter_excecute Executable
 
