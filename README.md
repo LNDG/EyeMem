@@ -1,5 +1,9 @@
 # fMRI Data Preprocessing of the EyeMem study
 
+> Find the complete Documentation in the wiki.
+
+## Requirements
+
 E_preproc_detrend_filter_excecute Executable
 
 1. Prerequisites for Deployment 
