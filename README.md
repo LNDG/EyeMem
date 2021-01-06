@@ -1,6 +1,6 @@
 # fMRI Data Preprocessing of the EyeMem study
 
-> Find the complete Documentation in the wiki.
+> Check out the wiki for the extensive documentation.
 
 ## Requirements
 
