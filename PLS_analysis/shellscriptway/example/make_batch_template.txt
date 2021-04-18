@@ -1,0 +1,143 @@
+%------------------------------------------------------------------------
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  General Section Start  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+prefix mean_dummyID	% prefix for session file and datamat file
+brain_region	0	% threshold or file name for brain region
+across_run	1	% 1 for merge data across all run, 0 for within each run
+single_subj	0	% 1 for single subject analysis, 0 for normal analysis
+single_ref_scan	0	% 1 for single reference scan, 0 for normal reference scan
+single_ref_onset  0	% single reference scan onset
+single_ref_number  1	% single reference scan number
+normalize	0	% normalize volume mean (keey 0 unless necessary)
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  General Section End  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------------------------------
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  Condition Section Start  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+cond_name	fractals	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	landscapes	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 2
+num_ref_scan	1	% number of reference scan for condition 2
+
+cond_name	naturals1	% condition 3 name
+ref_scan_onset	0	% reference scan onset for condition 3
+num_ref_scan	1	% number of reference scan for condition 3
+
+cond_name	streets1	% condition 4 name
+ref_scan_onset	0	% reference scan onset for condition 5
+num_ref_scan	1	% number of reference scan for condition 5
+
+cond_name	streets2	% condition 5 name
+ref_scan_onset	0	% reference scan onset for condition 6
+num_ref_scan	1	% number of reference scan for condition 6
+
+
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  Condition Section End  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------
+
+	%%%%%%%%%%%%%%%%%%%%%%%
+	%  Run Section Start  %
+	%%%%%%%%%%%%%%%%%%%%%%%
+
+data_files      dummyDirectory1    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		%  for cond 1
+block_length	1 			% for cond 1
+
+block_onsets	-1 		%  for cond 2
+block_length	1 			% for cond 2
+
+block_onsets	-1 		%  for cond 3
+block_length	1 			% for cond 3
+
+block_onsets	-1 		%  for cond 4
+block_length	1 			% for cond 4
+
+block_onsets	-1 		%  for cond 5
+block_length	1 			% for cond 5
+
+data_files      dummyDirectory2    % /home/mpib/LNDG/EyeMem/data/mri/task/variability/B_data/dummy_ID/landscapes/SDNIFTI/dummy_ID_sd_landscapes_sd.nii    % cond 2 data pattern (must use wildcard)
+block_onsets	-1 		%  for cond 1
+block_length	1 			% for cond 1
+
+block_onsets	0		%  for cond 2
+block_length	1 			% for cond 2
+
+block_onsets	-1 		%  for cond 3
+block_length	1 			% for cond 3
+
+block_onsets	-1 		%  for cond 4
+block_length	1 			% for cond 4
+
+block_onsets	-1 		%  for cond 5
+block_length	1 			% for cond 5
+
+data_files      dummyDirectory3    % /home/mpib/LNDG/EyeMem/data/mri/task/variability/B_data/dummy_ID/naturals/SDNIFTI/dummy_ID_sd_naturals_sd.nii    % cond 3 data pattern (must use wildcard)
+block_onsets	-1 		%  for cond 1
+block_length	1 			% for cond 1
+
+block_onsets	-1 		%  for cond 2
+block_length	1 			% for cond 2
+
+block_onsets	0			%  for cond 3
+block_length	1 			% for cond 3
+
+block_onsets	-1 		%  for cond 4
+block_length	1 			% for cond 4
+
+block_onsets	-1 		%  for cond 5
+block_length	1 			% for cond 5
+
+data_files      dummyDirectory4    % /home/mpib/LNDG/EyeMem/data/mri/task/variability/B_data/dummy_ID/streets1/SDNIFTI/dummy_ID_sd_streets1_sd.nii    % cond 4 data pattern (must use wildcard)
+block_onsets	-1 		%  for cond 1
+block_length	1 			% for cond 1
+
+block_onsets	-1 		%  for cond 2
+block_length	1 			% for cond 2
+
+block_onsets	-1 		%  for cond 3
+block_length	1 			% for cond 3
+
+block_onsets	0			%  for cond 4
+block_length	1			% for cond 4
+
+block_onsets	-1 		%  for cond 5
+block_length	1 			% for cond 5
+
+data_files      dummyDirectory5    % /home/mpib/LNDG/EyeMem/data/mri/task/variability/B_data/dummy_ID/streets2/SDNIFTI/dummy_ID_sd_streets2_sd.nii    % cond 5 data pattern (must use wildcard)
+block_onsets	-1 		%  for cond 1
+block_length	1 			% for cond 1
+
+block_onsets	-1 		%  for cond 2
+block_length	1 			% for cond 2
+
+block_onsets	-1 		%  for cond 3
+block_length	1 			% for cond 3
+
+block_onsets	-1 		%  for cond 4
+block_length	1 			% for cond 4
+
+block_onsets	0			%  for cond 5
+block_length	1 			% for cond 5
+
+	%%%%%%%%%%%%%%%%%%%%%
+	%  Run Section End  %
+	%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------

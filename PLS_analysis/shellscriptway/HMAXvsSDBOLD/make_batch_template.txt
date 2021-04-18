@@ -1,0 +1,285 @@
+%------------------------------------------------------------------------
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  General Section Start  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+prefix mean_dummyID	% prefix for session file and datamat file
+brain_region	0	% threshold or file name for brain region
+across_run	1	% 1 for merge data across all run, 0 for within each run
+single_subj	0	% 1 for single subject analysis, 0 for normal analysis
+single_ref_scan	0	% 1 for single reference scan, 0 for normal reference scan
+single_ref_onset  0	% single reference scan onset
+single_ref_number  1	% single reference scan number
+normalize	0	% normalize volume mean (keey 0 unless necessary)
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  General Section End  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%------------------------------------------------------------------------
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  Condition Section Start  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+cond_name	hmax1	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax2	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax3	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax4	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax5	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax6	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax7	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax8	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+
+cond_name	hmax9	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax10	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax11	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax12	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax13	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax14	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax15	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax16	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax17	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax18	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax19	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax20	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax21	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax22	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax23	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax24	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+
+cond_name	hmax25	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax26	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax27	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax28	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax29	% condition 1 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+cond_name	hmax30	% condition 2 name
+ref_scan_onset	0	% reference scan onset for condition 1
+num_ref_scan	1	% number of reference scan for condition 1
+
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+	%  Condition Section End  %
+	%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------
+
+	%%%%%%%%%%%%%%%%%%%%%%%
+	%  Run Section Start  %
+	%%%%%%%%%%%%%%%%%%%%%%%
+
+data_files      dummyDirectory1    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		%  for cond 1
+block_length	1 			% for cond 1
+
+data_files      dummyDirectory2    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		%  for cond 2
+block_length	1 			% for cond 2
+
+data_files      dummyDirectory3    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory4    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory5    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory6    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory7    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory8    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory9    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory10    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory11    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory12    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory13    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory14    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory15    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory16    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory17    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory18    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory19    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory20    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory21    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory22    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory23    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory24    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory25    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory26    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory27    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory28    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory29    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+data_files      dummyDirectory30    % cond 1 data pattern (must use wildcard)
+block_onsets	0 		
+block_length	1 		
+
+
+
+	%%%%%%%%%%%%%%%%%%%%%
+	%  Run Section End  %
+	%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------
