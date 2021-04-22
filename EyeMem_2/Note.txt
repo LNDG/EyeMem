@@ -1,0 +1,14 @@
+The following subjects/runs produced errors, which I couldn't resolve: 
+
+[('sub-11083', 'run-04'),
+ ('sub-21072', 'run-06'),
+ ('sub-21104', 'run-04'),
+ ('sub-21104', 'run-05'),
+ ('sub-21104', 'run-06'),
+ ('sub-22041', 'run-05'),
+ ('sub-22043', 'run-01'),
+ ('sub-22043', 'run-02'),
+ ('sub-22043', 'run-03'),
+ ('sub-22043', 'run-04'),
+ ('sub-22043', 'run-05'),
+ ('sub-22043', 'run-06')]
