@@ -2,14 +2,14 @@ function [behav] = EM_analysebehavioral
 %Read in behavior text files, compute d', RT, etc.
 
 % load('participantinfo.mat') % 
-load ../participantsinfo/participantinfo.mat
+load ../participantsinfo/participantinfo_2.mat
 
 category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %1-5
 
 exp_phases = {'study' 'test'};
 ntrials_per_run = [30 60];
 
-SUBJ= [9:101]; % TODO specify further?
+SUBJ= [1:95]; % TODO specify further?
 
 behav=[];
 % for iphase = 1:2
@@ -30,9 +30,9 @@ behav=[];
 %   behav.(exp_phases{iphase}).RT_fas = nan(length(SUBJ), 6); % SUBJ, categories
 %   behav.(exp_phases{iphase}).RT_crs = nan(length(SUBJ), 6); % SUBJ, categories
 % end
-
+basepath = '/Users/terlau'
 if ismac
-  PREIN = '../../../../behav';
+  PREIN = fullfile(basepath, 'behav_raw');
   PREOUT = 'preproc/behavior';
 else
 %   basepath = '/home/mpib';

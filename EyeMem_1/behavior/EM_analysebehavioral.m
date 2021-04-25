@@ -2,7 +2,7 @@ function [behav] = EM_analysebehavioral
 %Read in behavior text files, compute d', RT, etc.
 
 % load('participantinfo.mat') % 
-load /Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat
+load ../participantinfo/participantinfo.mat
 
 category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %1-5
 
@@ -30,10 +30,10 @@ behav=[];
 %   behav.(exp_phases{iphase}).RT_fas = nan(length(SUBJ), 6); % SUBJ, categories
 %   behav.(exp_phases{iphase}).RT_crs = nan(length(SUBJ), 6); % SUBJ, categories
 % end
-
+basepath = '/Users/terlau'
 if ismac
-  PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/raw';
-  PREOUT = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior';
+  PREIN = fullfile(basepath, 'behavior_raw');
+  PREOUT = 'preproc/behavior';
 else
 %   basepath = '/home/mpib';
 end
