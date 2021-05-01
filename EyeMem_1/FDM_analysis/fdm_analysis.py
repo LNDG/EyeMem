@@ -17,10 +17,11 @@ import os
 import re
 import cv2
 from scipy.stats.stats import pearsonr
+from matplotlib.colors import LogNorm
 import pickle
 
-path = "../eye_data/"
-pic_path = "../stimuli_640x480/"
+path = "/Users/terlau/eye_data/"
+pic_path = "/Users/terlau/stimuli_640x480/"
 shown_imgages = np.loadtxt('#_of_pics.dat',delimiter=',')
 #img_33 = mpimg.imread(pic_path)
 
@@ -154,14 +155,15 @@ cat = {
 "streets2" : 5
 }
 
-#data_image = data.groupby(['Category', 'pic_#'])#, as_index=False)
+data_image = data.groupby(['Category', 'pic_#'])#, as_index=False)
 #print("Data Grouped per image:", data_image.head())
-data_sub = data.groupby('Subjects')
-print("Data Grouped per subject:", data_sub.head())
+#data_sub = data.groupby('Subjects')
+#print("Data Grouped per subject:", data_sub.head())
 
-# 3x3 renders a 2x2, so gatta use 4x4
+# 3x3 renders a 2x2, so gotta use 4x4
 x_edges = np.linspace(192, 832, num=4) # 455+1 since shape of hist otherwise 454*340
 y_edges = np.linspace(144, 624, num=4) #342
+
 
 n = 0
 corr_values = []
@@ -171,60 +173,65 @@ pearson_mean = []
 rho_mean = []
 
 
-for name, group in data_sub:
+for name, group in data_image:
     n += 1
     # group is per subject, so 150 rows, 8 columns
 
     print("Type", group.head(), group, type(group))
     #print("Current Image", group['Category'], group['pic_#']) --> 150*same category, 150*pic numbers (these are obviously different then)
-    """
+
     x_coord_img = group["x"].mean()
     y_coord_img = group["y"].mean()
     blinks = group['blinks'].mean()
     sacc = group['sacc'].mean()
 
-    print("Coords averaged per image:", x_coord_img.shape, y_coord_img.shape)
-    print("Blink and saccades averaged per image:", blinks.shape, sacc.shape)
+    #print("Coords averaged per image:", x_coord_img.shape, y_coord_img.shape)
+    #print("Blink and saccades averaged per image:", blinks.shape, sacc.shape)
 
-    print(sacc)
+    #print(sacc)
 
     sacc_bi = (sacc > 0.5).astype(int)
     blinks_bi = (blinks > 0.5).astype(int)
-    print("Unique values blinks:", np.unique(blinks_bi))
-    print("Unique values saccades:", np.unique(sacc_bi))
+    #print("Unique values blinks:", np.unique(blinks_bi))
+    #print("Unique values saccades:", np.unique(sacc_bi))
 
     mask = (sacc_bi == 0) & (blinks_bi == 0)
     print("Mask:", mask, np.unique(mask))
     x_coord_img_t = x_coord_img[mask]
     y_coord_img_t = y_coord_img[mask]
 
-    marker_size=7
-    plt.scatter(x_coord_img, y_coord_img,  marker_size, alpha=0.8, label='viewing')
-    plt.scatter(x_coord_img_t, y_coord_img_t, marker_size, alpha= 0.5,label='masked viewing')
-    plt.legend()
-    plt.show()
+    #marker_size=7
+    #plt.scatter(x_coord_img, y_coord_img,  marker_size, alpha=0.8, label='viewing')
+    #plt.scatter(x_coord_img_t, y_coord_img_t, marker_size, alpha= 0.5,label='masked viewing')
+    #plt.legend()
+    #plt.show()
+    x_edg = np.linspace(192, 832, num=455)
+    y_edg = np.linspace(144, 624, num=342)
+    h_all_bins, xedg, yedg = np.histogram2d(x_coord_img_t, y_coord_img_t,  bins=[x_edg, y_edg])
+    h_all = h_all_bins.T
+    #H_flipped = np.flipud(H)
+    H_smoothed = gaussian_filter(h_all, sigma=10)
 
 
-
-    hist, xedges, yedges = np.histogram2d(x_coord_img, y_coord_img,  bins=[x_edges, y_edges])
+    hist, xedges, yedges = np.histogram2d(x_coord_img_t, y_coord_img_t,  bins=[x_edges, y_edges])
     #print("Hist", type(hist), hist.shape, hist)
     H = hist.T
     #H_flipped = np.flipud(H)
     #print("Histogram flipped:", H)
-    H_smoothed_5 = gaussian_filter(H, sigma=5)
-    H_smoothed_10 = gaussian_filter(H, sigma=10)
+    #H_smoothed_5 = gaussian_filter(H, sigma=5)
+    #H_smoothed_10 = gaussian_filter(H, sigma=10)
 
     #get image that was shown for the averaged viewing behavior
     img_path, pic_cat = get_img_path(name)
     print(img_path)
     #save them
     #img_5 = Image.fromarray(H_smoothed_5)
-    img_5=Image.fromarray((H_smoothed_5 * 255).astype('uint8'), mode='L')
+    #img_5=Image.fromarray((H_smoothed_5 * 255).astype('uint8'), mode='L')
     #img_5.save("FDMs/" + str(pic_cat) + '_' + str(name[1]) + 'sigma_5' + '.png')
 
     #fdm_5= np.save("FDMs/" + str(pic_cat) + '_' + str(name[1]) + 'sigma_5', H_smoothed_5)    # .npy extension is added if not given
 
-    img_10=Image.fromarray((H_smoothed_10 * 255).astype('uint8'), mode='L')
+    #img_10=Image.fromarray((H_smoothed_10 * 255).astype('uint8'), mode='L')
     #img_10.save("FDMs/" + str(pic_cat) + '_' + str(name[1]) + 'sigma_10' + '.png')
 
     #fdm_10= np.save("FDMs/" + str(pic_cat) + '_' + str(name[1]) + 'sigma_10', H_smoothed_10)
@@ -234,14 +241,60 @@ for name, group in data_sub:
     sub_list = [x for x in deep_gaze if cat in x]
     #print(str(int(name[1])))
     deep_gaze_current_file = [x for x in sub_list if "_"+str(int(name[1]))+"." in x]
-    #print(deep_gaze_current_file[0], img_path)
+    print(deep_gaze_current_file[0], img_path)
     deep_gaze_path = os.path.join(path, deep_gaze_current_file[0])
     img = mpimg.imread(img_path)
-    deep_gaze_II = mpimg.imread(deep_gaze_path)
+    #deep_gaze_II = mpimg.imread(deep_gaze_path)
+    deep_gaze_II = np.load(deep_gaze_path)
     #flip deep gaze array
     #deep_gaze_II = D.T
     #print("Deep Gaze", type(deep_gaze_II), deep_gaze_II.shape, deep_gaze_II)
+    res = cv2.resize(deep_gaze_II, dsize=(3, 3), interpolation=cv2.INTER_AREA) # interpolation=cv2.INTER_AREA recommended for downsampling cv2.INTER_CUBIC
+    #print("Rescaled using opencv resize, based on interpolation", res.shape, res)
+    res_deep = resize(deep_gaze_II, (3, 3))
+    #print("Rescaled using scikit-image resize", res_deep.shape, res_deep) #this might be the right one!
+    #for displaying images I need to use nan, for correlation delete!
+    res_deep[1,1] = np.nan
+    #res[1,1] = np.nan
+    #print(res_deep)
+    #H_smoothed[1,1] = np.nan
+    H[1,1] = np.nan
+    #print("Histogram not smoothed", H)
+    deep_8 = np.delete(res_deep, 4, None)
+    print("Deep Gaze", deep_8, len(deep_8), type(deep_8))
+    fdm = np.delete(H, 4, None)
+    print("FDM", fdm, len(fdm), type(fdm))
 
+    fig, ax = plt.subplots(2,2)
+    ax[0][0].imshow(img, interpolation='nearest', extent=[xedg[0], xedg[-1],yedg[0],yedg[-1]]) #interpolation='gaussian'
+    a0 = ax[0][0].imshow(H_smoothed, interpolation='nearest', origin = 'lower', extent=[xedg[0], xedg[-1],yedg[0],yedg[-1]], alpha=0.7) #cmap=plt.cm.RdBu
+    ax[0][0].axis('off')
+    divider1 = make_axes_locatable(ax[0][0])
+    cax1 = divider1.append_axes("right", size="3%", pad=0.05)
+    cbar1 = fig.colorbar(a0, ax=ax[0][0], cax = cax1)
+
+    ax[0][1].imshow(img, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]]) #interpolation='gaussian'
+    a1 = ax[0][1].imshow(H, interpolation='nearest', origin = 'lower', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]], alpha=0.7) #cmap=plt.cm.RdBu
+    ax[0][1].axis('off')
+    divider2 = make_axes_locatable(ax[0][1])
+    cax2 = divider2.append_axes("right", size="3%", pad=0.05)
+    cbar2 = fig.colorbar(a1, ax=ax[0][1], cax = cax2)
+
+    ax[1][0].imshow(img, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]]) #interpolation='gaussian'
+    a2 = ax[1][0].imshow(deep_gaze_II, interpolation='nearest', origin = 'lower', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]], alpha=0.7) #cmap=plt.cm.RdBu
+    ax[1][0].axis('off')
+    divider3 = make_axes_locatable(ax[1][0])
+    cax3 = divider3.append_axes("right", size="3%", pad=0.05)
+    cbar3 = fig.colorbar(a2, ax=ax[1][0], cax = cax3)
+
+    ax[1][1].imshow(img, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]]) #interpolation='gaussian'
+    a3 = ax[1][1].imshow(res_deep, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]], alpha=0.7) #cmap=plt.cm.RdBu
+    ax[1][1].axis('off')
+    divider4 = make_axes_locatable(ax[1][1])
+    cax4 = divider4.append_axes("right", size="3%", pad=0.05)
+    cbar4 = fig.colorbar(a3, ax=ax[1][1], cax = cax4)
+    plt.show()
+    """
     fig, axes = plt.subplots(nrows=2, ncols=3)
     axes[0][0].imshow(img, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]]) #interpolation='gaussian'
     axes[0][0].imshow(H_smoothed_5, interpolation='nearest', origin = 'lower', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]], alpha=0.7, vmin=0, vmax=1) #cmap=plt.cm.RdBu
@@ -300,7 +353,7 @@ for name, group in data_sub:
 
     plt.show()
     """
-
+    """
     appended_data = []
     #this loop is only needed if I want values for single subject per image or for single image per subject
     for index, sub_data in group.iterrows():
@@ -343,21 +396,20 @@ for name, group in data_sub:
         print("Picture",sub_data['pic_#'])
         print("Category",sub_data['Category'])
 
-
+        x_edg = np.linspace(192, 832, num=455)
+        y_edg = np.linspace(144, 624, num=342)
+        h_all_bins, xedg, yedg = np.histogram2d(x_coord_sub_m, y_coord_sub_m,  bins=[x_edg, y_edg])
+        h_all = h_all_bins.T
+        #H_flipped = np.flipud(H)
+        H_smoothed = gaussian_filter(h_all, sigma=10)
 
         #print("X coordinate per subject per image", x_coord_sub)
         hist, xedges, yedges = np.histogram2d(x_coord_sub_m, y_coord_sub_m,  bins=[x_edges, y_edges])
         print("Hist", type(hist), hist.shape)
         print(hist)
         #print(hist.unique())
-
         H = hist.T
         print("Histogram flipped:", H)
-
-        #H_flipped = np.flipud(H)
-        H_smoothed = gaussian_filter(H, sigma=5)
-
-
 
         #get image that was shown for the averaged viewing behavior
         pic = sub_data['pic_#']
@@ -384,8 +436,8 @@ for name, group in data_sub:
         deep_gaze_II = np.load(deep_gaze_path) #allow_pickle=True)
         print("DeepGaze", deep_gaze_II, deep_gaze_II.shape)
 
-        print("Check Nans", np.isnan(H_smoothed).any(), np.isnan(deep_gaze_II).any()) #--> no Nans
-        print("Check if STD is None or 0", H_smoothed.std(), deep_gaze_II.std())
+        #print("Check Nans", np.isnan(H_smoothed).any(), np.isnan(deep_gaze_II).any()) #--> no Nans
+        #print("Check if STD is None or 0", H_smoothed.std(), deep_gaze_II.std())
 
         #deep_gaze_II = deep_gaze_II.T
         #reshape function doesn't work
@@ -395,16 +447,16 @@ for name, group in data_sub:
         res_deep = resize(deep_gaze_II, (3, 3))
         print("Rescaled using scikit-image resize", res_deep.shape, res_deep) #this might be the right one!
         #for displaying images I need to use nan, for correlation delete!
-        #res_deep[1,1] = np.nan
+        res_deep[1,1] = np.nan
         #res[1,1] = np.nan
         #print(res_deep)
         #H_smoothed[1,1] = np.nan
-        #H[1,1] = np.nan
+        H[1,1] = np.nan
         #print("Histogram not smoothed", H)
         deep_8 = np.delete(res_deep, 4, None)
-        print("Deep Gaze", deep_8, len(deep_8))
+        print("Deep Gaze", deep_8, len(deep_8), type(deep_8))
         fdm = np.delete(H, 4, None)
-        print("FDM", fdm, len(fdm))
+        print("FDM", fdm, len(fdm), type(fdm))
 
 
         #fdm = H_smoothed.flatten()
@@ -417,17 +469,17 @@ for name, group in data_sub:
         print("Correlation Spearman", rho)
         print("P-Value Spearman", pval)
 
-        """
+
         fig, ax = plt.subplots(2,2)
-        ax[0][0].imshow(img, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]]) #interpolation='gaussian'
-        a0 = ax[0][0].imshow(H, interpolation='nearest', origin = 'lower', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]], alpha=0.7) #cmap=plt.cm.RdBu
+        ax[0][0].imshow(img, interpolation='nearest', extent=[xedg[0], xedg[-1],yedg[0],yedg[-1]]) #interpolation='gaussian'
+        a0 = ax[0][0].imshow(H_smoothed, interpolation='nearest', origin = 'lower', extent=[xedg[0], xedg[-1],yedg[0],yedg[-1]], alpha=0.7) #cmap=plt.cm.RdBu
         ax[0][0].axis('off')
         divider1 = make_axes_locatable(ax[0][0])
         cax1 = divider1.append_axes("right", size="3%", pad=0.05)
         cbar1 = fig.colorbar(a0, ax=ax[0][0], cax = cax1)
 
         ax[0][1].imshow(img, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]]) #interpolation='gaussian'
-        a1 = ax[0][1].imshow(H_smoothed, interpolation='nearest', origin = 'lower', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]], alpha=0.7) #cmap=plt.cm.RdBu
+        a1 = ax[0][1].imshow(H, interpolation='nearest', origin = 'lower', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]], alpha=0.7) #cmap=plt.cm.RdBu
         ax[0][1].axis('off')
         divider2 = make_axes_locatable(ax[0][1])
         cax2 = divider2.append_axes("right", size="3%", pad=0.05)
@@ -448,7 +500,7 @@ for name, group in data_sub:
         cbar4 = fig.colorbar(a3, ax=ax[1][1], cax = cax4)
         plt.show()
 
-        """
+
 
 
 
@@ -464,35 +516,36 @@ for name, group in data_sub:
         #dataset_no_null = dataset[(dataset[['FDM','Deep_gaze']] != 0).all(axis=1)]
         #print(dataset_no_null.describe(), dataset_no_null_2.describe())
         #print(dataset_no_null.describe())
-        appended_data.append(dataset)
-        corr_values.append(corr_val)
-        rho_values.append(rho)
+        #appended_data.append(dataset)
+        #corr_values.append(corr_val)
+        #rho_values.append(rho)
+
 
 
     #gives me dataframe over all images for one subject
-    df_final = pd.concat(appended_data) #ignore_index = True
-    print(df_final)
-    print(len(df_final['pic'].unique()),df_final['cat'].unique())
+    #df_final = pd.concat(appended_data) #ignore_index = True
+    #print(df_final)
+    #print(len(df_final['pic'].unique()),df_final['cat'].unique())
     #gives me list of corr values for all images within one subject
-    print("Corr_val mean within subject {}".format(name), np.mean(corr_values))
-    print("Rho value mean within subject {}".format(name), np.mean(rho_values))
+    #print("Corr_val mean within subject {}".format(name), np.mean(corr_values))
+    #print("Rho value mean within subject {}".format(name), np.mean(rho_values))
 
-    pearson_mean.append(np.mean(corr_values))
-    rho_mean.append(np.mean(rho_values))
-    dataframes_sub.append(df_final)
-print(len(dataframes_sub))
-print(len(pearson_mean), len(rho_mean))
-print(pearson_mean)
-print(rho_mean)
+    #pearson_mean.append(np.mean(corr_values))
+    #rho_mean.append(np.mean(rho_values))
+    #dataframes_sub.append(df_final)
+#print(len(dataframes_sub))
+#print(len(pearson_mean), len(rho_mean))
+#print(pearson_mean)
+#print(rho_mean)
 
-with open("rho_mean_vals.txt", "wb") as fp:
-    pickle.dump(rho_mean, fp)
-with open("pearson_mean_vals.txt", "wb") as fp:
-    pickle.dump(pearson_mean, fp)
+#with open("rho_mean_vals.txt", "wb") as fp:
+#    pickle.dump(rho_mean, fp)
+#with open("pearson_mean_vals.txt", "wb") as fp:
+#    pickle.dump(pearson_mean, fp)
 
-all_sub_all_img = pd.concat(dataframes_sub)
-print(all_sub_all_img) # save this
-all_sub_all_img.to_pickle('FDMs_all_sub')
+#all_sub_all_img = pd.concat(dataframes_sub)
+#print(all_sub_all_img) # save this
+#all_sub_all_img.to_pickle('FDMs_all_sub')
 
         #dataset.hist(alpha=0.5, color='red')
         #dataset_no_null.hist(alpha=0.5,color='blue')
@@ -547,7 +600,7 @@ all_sub_all_img.to_pickle('FDMs_all_sub')
         #plt.close()
         #corr_val = generate_correlation_map(H_smoothed, deep_gaze_II)
         #print("Correlation value of img {} {} for sub {}".format(c,pic, name), corr_val )
-
+"""
 """
 fig, axes = plt.subplots(nrows=2, ncols=2)
 axes[0][0].imshow(img, interpolation='nearest', extent=[xedges[0], xedges[-1],yedges[0],yedges[-1]]) #interpolation='gaussian'

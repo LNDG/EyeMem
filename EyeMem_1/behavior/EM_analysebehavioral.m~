@@ -177,8 +177,8 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       else
         ageind = 1;
       end
-      ddm_dat{iphase} = [ddm_dat{iphase};  subID  icat double(target_present) resp(itrial,:) ac rt(itrial,:) ageind];
-      singletrial{iphase} = [singletrial{iphase}; icat double(target_present) resp(itrial,:) ac rt(itrial,:) picno];
+      ddm_dat{iphase} = [ddm_dat{iphase}; subID  icat target_present resp(itrial,:) ac rt(itrial,:) ageind];
+      singletrial{iphase} = [singletrial{iphase}; icat target_present resp(itrial,:) ac rt(itrial,:) picno];
       
       if itrial == ntrials_per_run(iphase) % calculate things per run
         
@@ -248,7 +248,7 @@ for iphase = 1:2 % study, test
   
   ddm_dat{iphase} = ddm_dat{iphase}(~isnan(ddm_dat{iphase}(:,5)),:);
   % save ddm_dat to csv:             % For HDDM: Put subjid, category, stim, ac, rt
-  csv_file = sprintf('/Users/terlau/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
+  csv_file = sprintf('/Users/kloosterman/Dropbox/PROJECTS/EyeMem/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
   fid = fopen(csv_file, 'w');
   fprintf(fid, 'subj_idx,category,stim,response,accuracy,rt,age\n');
   dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
