@@ -7,7 +7,7 @@ if ismac
   backend = 'local';
   %   backend = 'qsublocal';
   compile = 'no';
-  load('participantinfo.mat')
+  load('participantinfo_2.mat')
 else
   basepath = '/mnt/beegfs/home/LNDG/EyeMem/data/'; %'/home/mpib/LNDG/EyeMem/data/'; %yesno or 2afc
   backend = 'slurm';
@@ -30,7 +30,7 @@ mkdir(fullfile(PREOUT, 'OA'))
 
 overwrite = 1;
 
-SUBJ= [9:101]; % TODO specify further?
+SUBJ= [1:95]; % TODO specify further?
 
 %make cells for each subject, to analyze in parallel
 cfg = [];
@@ -39,7 +39,8 @@ cfg.PREOUT = PREOUT;
 cfglist = {};
 
 for isub = 1:length(SUBJ)
-  
+  disp(SUBJ(isub))
+  % p can either be 1 or 2 for eyemem 2 data
   edflist = dir(fullfile(PREIN, sprintf('S%dp1*.edf', SUBJ(isub))));
   if isempty(edflist)
     fprintf('S%dp1*.edf not found\n', SUBJ(isub))

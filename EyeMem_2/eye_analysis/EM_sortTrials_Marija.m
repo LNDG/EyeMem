@@ -255,12 +255,12 @@ trl(:,12) = trl(:,1)/1000 - scanstartsmp/1000 + 3 - 12; % -3 for prestim, 12 s r
 
 % load Hmax
 if ismac
-  load(fullfile('/Users/kloosterman/gridmaster2012/LNDG/EyeMem/study_information/D_paradigm/stimuli_640x480/hmax', ['hmax_' runinfo.category]))
+  load(fullfile('/Users/terlau/hmax', ['hmax_' runinfo.category]))
 else
-  load(fullfile('/home/mpib/LNDG/EyeMem/study_information/D_paradigm/stimuli_640x480/hmax', ['hmax_' runinfo.category]))
+  load(fullfile('/mnt/beegfs/home/LNDG/EyeMem/study_information/D_paradigm/stimuli_640x480/hmax', ['hmax_' runinfo.category]))
 end
 hmaxout.c2median = cell2mat(hmaxout.c2median);
-
+ 
 [test,ind] = sort(trl(:,6)); % image1 was shown in trial 19
 % [trl(ind,6) hmaxout.picno]
 if abortedrun == 0

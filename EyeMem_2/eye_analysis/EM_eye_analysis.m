@@ -202,7 +202,7 @@ runinfo.runno = str2num(temp{7}(4));
 runinfo.category = temp{6};
 % get subject info from file
 if ismac
-  load('participantinfo.mat') % /Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat
+  load('participantinfo_2.mat') % /Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat
 else
   load('/mnt/beegfs/home/LNDG/EyeMem/analysis_scripts/participantinfo/participantinfo.mat') % 
 end

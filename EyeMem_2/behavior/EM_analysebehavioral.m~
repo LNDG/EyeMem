@@ -2,14 +2,16 @@ function [behav] = EM_analysebehavioral
 %Read in behavior text files, compute d', RT, etc.
 
 % load('participantinfo.mat') % 
-load ../participantinfo/participantinfo.mat
+load ../participantinfo/participantinfo_2.mat
+
+participants.group = categorical(participants.group);
 
 category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %1-5
 
 exp_phases = {'study' 'test'};
 ntrials_per_run = [30 60];
 
-SUBJ= [9:101]; % TODO specify further?
+SUBJ= [1:95]; % TODO specify further?
 
 behav=[];
 % for iphase = 1:2
@@ -32,8 +34,8 @@ behav=[];
 % end
 basepath = '/Users/terlau'
 if ismac
-  PREIN = '/Volumes/LNDG/Projects/EyeMem/eyemem/raw/data_raw/behavior_raw';
-  PREOUT = 'preproc/behavior';
+  PREIN = fullfile(basepath, 'behav_raw');
+  PREOUT = fullfile(basepath, 'preproc/behavior_2');
 else
 %   basepath = '/home/mpib';
 end
@@ -42,11 +44,11 @@ cd(PREIN)
 dirinfo = dir();
 dirinfo(~[dirinfo.isdir]) = [];%remove non-directories
 disp(dirinfo)
-dirall = dirinfo(11:98)
+dirall = dirinfo(3:74)
 disp(dirall)
 
 ddm_dat{1} = []; ddm_dat{2} = [];
-for isub = 1:length(dirall) %for isub = 1:length(SUBJ) 
+for isub = 1:length(dirall)
   
   studied_pics = []; % to keep track of pics seen during study (the same for all subjects)
   for icat = 1:5
@@ -55,7 +57,6 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
   n_omissions = 0;
   
   singletrial{1} = []; singletrial{2} = [];
-  
   
   subdir = dirall(isub).name
   subfiles = dir(fullfile(subdir, '*.txt'))
@@ -71,11 +72,11 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
     txtfile = fullfile(PREIN, subdir, subfiles(indexes).name)
     %txtfile = fullfile(PREIN, sprintf('S%d_%s_log.txt', SUBJ(isub), exp_phases{iphase} ));
     disp(txtfile)
+    
+    %txtfile = fullfile(PREIN, sprintf('S%d_%s_log.txt', SUBJ(isub), exp_phases{iphase} ));
     %     txtfile = dir(sprintf('*%s*.txt', exp_phases{iphase})); % PREIN, subj_list(isub).name,
     
     fid = fopen(txtfile, 'rt');
-    %[fid, message] = fopen(txtfile);
-    %if fid < 0; disp(message); end
     if fid == -1;
       fprintf('not found:   %s\n', txtfile)
       continue
@@ -141,6 +142,7 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       if contains(view_file, 'image') % for landscapes and streets2 format is imageXXX
         view_file = view_file(6:end);
       end
+      %temp = tokenize(view_file, '.');
       temp = strsplit(view_file,'.'); %tokenize(view_file, '.');
       picno = str2double(temp{1});
       
@@ -169,16 +171,19 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       icat = find(strcmp(category_labels, category));
       
       % For HDDM: Put subjid, category, stim, ac, rt agegroup
-      % SUBJ(isub) = 9 to 101
       subid = strsplit(subfiles(indexes).name, '_')
       subID = subid{1}
-      if Participants.group(isub+8) == 'young'
+      %converting char 'S #' to a double, so just the #
+      subID(subID < '0' | subID > '9') = []
+      sID = sscanf(subID, '%d')
+      if participants.group(isub) == 'young' %not sID as we're iterating starting at 1
+      %if Participants.group(SUBJ(isub)) == 'young'
         ageind = 0;
       else
         ageind = 1;
       end
-      ddm_dat{iphase} = [ddm_dat{iphase}; subID  icat target_present resp(itrial,:) ac rt(itrial,:) ageind];
-      singletrial{iphase} = [singletrial{iphase}; icat target_present resp(itrial,:) ac rt(itrial,:) picno];
+      ddm_dat{iphase} = [ddm_dat{iphase}; subdir  icat double(target_present) resp(itrial,:) ac rt(itrial,:) ageind];
+      singletrial{iphase} = [singletrial{iphase}; icat double(target_present) resp(itrial,:) ac rt(itrial,:) picno];
       
       if itrial == ntrials_per_run(iphase) % calculate things per run
         
@@ -248,7 +253,8 @@ for iphase = 1:2 % study, test
   
   ddm_dat{iphase} = ddm_dat{iphase}(~isnan(ddm_dat{iphase}(:,5)),:);
   % save ddm_dat to csv:             % For HDDM: Put subjid, category, stim, ac, rt
-  csv_file = sprintf('/Users/kloosterman/Dropbox/PROJECTS/EyeMem/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
+  % alternatively use writetable function instead of sprintf
+  csv_file = sprintf('/Users/terlau/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
   fid = fopen(csv_file, 'w');
   fprintf(fid, 'subj_idx,category,stim,response,accuracy,rt,age\n');
   dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');

@@ -8,11 +8,9 @@ else
   basepath = '/mnt/beegfs/home/LNDG/EyeMem/'; %'/home/mpib/LNDG/EyeMem/'; % to avoid ft path problems
 end
 
-end
-
 %addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 %addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
+addpath(fullfile(basepath, 'tools', 'fieldtrip')) % cloned on 13 09 19
 %addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
 %addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %

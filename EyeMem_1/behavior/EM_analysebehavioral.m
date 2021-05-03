@@ -33,7 +33,7 @@ behav=[];
 basepath = '/Users/terlau'
 if ismac
   PREIN = '/Volumes/LNDG/Projects/EyeMem/eyemem/raw/data_raw/behavior_raw';
-  PREOUT = 'preproc/behavior';
+  PREOUT = fullfile(basepath, 'preproc/behavior');
 else
 %   basepath = '/home/mpib';
 end
@@ -55,7 +55,6 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
   n_omissions = 0;
   
   singletrial{1} = []; singletrial{2} = [];
-  
   
   subdir = dirall(isub).name
   subfiles = dir(fullfile(subdir, '*.txt'))
@@ -172,12 +171,15 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       % SUBJ(isub) = 9 to 101
       subid = strsplit(subfiles(indexes).name, '_')
       subID = subid{1}
-      if Participants.group(isub+8) == 'young'
+      %converting char 'S #' to a double, so just the #
+      subID(subID < '0' | subID > '9') = []
+      sID = sscanf(subID, '%d')
+      if Participants.group(sID) == 'young' 
         ageind = 0;
       else
         ageind = 1;
       end
-      ddm_dat{iphase} = [ddm_dat{iphase};  subID  icat double(target_present) resp(itrial,:) ac rt(itrial,:) ageind];
+      ddm_dat{iphase} = [ddm_dat{iphase};  sID  icat double(target_present) resp(itrial,:) ac rt(itrial,:) ageind];
       singletrial{iphase} = [singletrial{iphase}; icat double(target_present) resp(itrial,:) ac rt(itrial,:) picno];
       
       if itrial == ntrials_per_run(iphase) % calculate things per run

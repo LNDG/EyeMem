@@ -2,7 +2,9 @@ function [behav] = EM_analysebehavioral
 %Read in behavior text files, compute d', RT, etc.
 
 % load('participantinfo.mat') % 
-load ../participantsinfo/participantinfo_2.mat
+load ../participantinfo/participantinfo_2.mat
+
+participants.group = categorical(participants.group);
 
 category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %1-5
 
@@ -33,15 +35,20 @@ behav=[];
 basepath = '/Users/terlau'
 if ismac
   PREIN = fullfile(basepath, 'behav_raw');
-  PREOUT = 'preproc/behavior';
+  PREOUT = fullfile(basepath, 'preproc/behavior_2');
 else
 %   basepath = '/home/mpib';
 end
 % PREOUT = fullfile(basepath, 'LNDG/EyeMem/plots' );
 cd(PREIN)
+dirinfo = dir();
+dirinfo(~[dirinfo.isdir]) = [];%remove non-directories
+disp(dirinfo)
+dirall = dirinfo(3:74)
+disp(dirall)
 
 ddm_dat{1} = []; ddm_dat{2} = [];
-for isub = 1:length(SUBJ)
+for isub = 1:length(dirall)
   
   studied_pics = []; % to keep track of pics seen during study (the same for all subjects)
   for icat = 1:5
@@ -50,6 +57,10 @@ for isub = 1:length(SUBJ)
   n_omissions = 0;
   
   singletrial{1} = []; singletrial{2} = [];
+  
+  subdir = dirall(isub).name
+  subfiles = dir(fullfile(subdir, '*.txt'))
+  
   for iphase = 1:2 % study, test
     
     %     if isempty(subject_batch(isub).SUBJ)
@@ -57,8 +68,12 @@ for isub = 1:length(SUBJ)
     %       continue
     %     end
     
-    txtfile = fullfile(PREIN, sprintf('S%d_%s_log.txt', SUBJ(isub), exp_phases{iphase} ));
+    indexes = reshape(contains({subfiles.name}, exp_phases{iphase}), size(subfiles))
+    txtfile = fullfile(PREIN, subdir, subfiles(indexes).name)
+    %txtfile = fullfile(PREIN, sprintf('S%d_%s_log.txt', SUBJ(isub), exp_phases{iphase} ));
     disp(txtfile)
+    
+    %txtfile = fullfile(PREIN, sprintf('S%d_%s_log.txt', SUBJ(isub), exp_phases{iphase} ));
     %     txtfile = dir(sprintf('*%s*.txt', exp_phases{iphase})); % PREIN, subj_list(isub).name,
     
     fid = fopen(txtfile, 'rt');
@@ -127,7 +142,8 @@ for isub = 1:length(SUBJ)
       if contains(view_file, 'image') % for landscapes and streets2 format is imageXXX
         view_file = view_file(6:end);
       end
-      temp = tokenize(view_file, '.');
+      %temp = tokenize(view_file, '.');
+      temp = strsplit(view_file,'.'); %tokenize(view_file, '.');
       picno = str2double(temp{1});
       
       if target_present
@@ -155,13 +171,21 @@ for isub = 1:length(SUBJ)
       icat = find(strcmp(category_labels, category));
       
       % For HDDM: Put subjid, category, stim, ac, rt agegroup
-      if Participants.group(SUBJ(isub)) == 'young'
+      subid = strsplit(subfiles(indexes).name, '_')
+      subID = subid{1}
+      %converting char 'S #' to a double, so just the #
+      subID(subID < '0' | subID > '9') = []
+      sID = sscanf(subID, '%d')
+      sdir = sscanf(subdir, '%d')
+      if participants.group(isub) == 'young' %not sID as we're iterating starting at 1
+      %if Participants.group(SUBJ(isub)) == 'young'
         ageind = 0;
       else
         ageind = 1;
       end
-      ddm_dat{iphase} = [ddm_dat{iphase}; isub-1  icat target_present resp(itrial,:) ac rt(itrial,:) ageind];
-      singletrial{iphase} = [singletrial{iphase}; icat target_present resp(itrial,:) ac rt(itrial,:) picno];
+      format long g
+      ddm_dat{iphase} = [ddm_dat{iphase}; sdir  icat double(target_present) resp(itrial,:) ac rt(itrial,:) ageind];
+      singletrial{iphase} = [singletrial{iphase}; icat double(target_present) resp(itrial,:) ac rt(itrial,:) picno];
       
       if itrial == ntrials_per_run(iphase) % calculate things per run
         
@@ -230,8 +254,9 @@ for iphase = 1:2 % study, test
 %   behav.(exp_phases{iphase}).RT_crs(:,6) = nanmean(behav.(exp_phases{iphase}).RT_crs(:,1:5) ,2);
   
   ddm_dat{iphase} = ddm_dat{iphase}(~isnan(ddm_dat{iphase}(:,5)),:);
-  % save ddm_dat to csv:             % For HDDM: Put subjid, category, stim, ac, rt
-  csv_file = sprintf('/Users/kloosterman/Dropbox/PROJECTS/EyeMem/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
+  % save ddm_dat to csv: % For HDDM: Put subjid, category, stim, ac, rt
+  % alternatively use writetable function instead of sprintf
+  csv_file = sprintf('/Users/terlau/HDDM_2/EyeMem_hddm_%s.csv', exp_phases{iphase});
   fid = fopen(csv_file, 'w');
   fprintf(fid, 'subj_idx,category,stim,response,accuracy,rt,age\n');
   dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
@@ -261,7 +286,7 @@ end
 %   end
 % end
 
-behav.participants = Participants;
+behav.participants = participants;
 % behav.agegroup = transpose(strcmp({SUBJ.agegroup}, 'old' ) + 1); % young is 1, old is 2
 % dropped_subj = cellfun(@isempty, {SUBJ.agegroup});
 % behav.agegroup(find(dropped_subj)) = nan;
