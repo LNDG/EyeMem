@@ -110,7 +110,7 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       if rt(itrial,:) < 0 % subj 60 has 1 negative rt
         rt(itrial,:) = NaN;
       end
-      %               leftbutton = 'z'; % Yellow left
+      %         leftbutton = 'z'; % Yellow left
       %         rightbutton = 'g'; % Green right
       if strcmp(resptmp, 'z') | strcmp(resptmp, 'LeftGUI')
         resp(itrial,1) = 1;
@@ -223,6 +223,7 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
         
       end
     end
+    behav.(exp_phases{iphase})(subNo).group = string(Participants.group(sID))
     behav.(exp_phases{iphase})(subNo).singletrial = singletrial{iphase};
     behav.(exp_phases{iphase})(subNo).singletrialleg = 'condition target_present response accuracy RT picno';
     fclose(fid);
@@ -250,10 +251,10 @@ for iphase = 1:2 % study, test
   
   ddm_dat{iphase} = ddm_dat{iphase}(~isnan(ddm_dat{iphase}(:,5)),:);
   % save ddm_dat to csv:             % For HDDM: Put subjid, category, stim, ac, rt
-  csv_file = sprintf('/Users/terlau/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
-  fid = fopen(csv_file, 'w');
-  fprintf(fid, 'subj_idx,category,stim,response,accuracy,rt,age\n');
-  dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
+  %csv_file = sprintf('/Users/terlau/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
+  %fid = fopen(csv_file, 'w');
+  %fprintf(fid, 'subj_idx,category,stim,response,accuracy,rt,age\n');
+  %dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
 end
 
 % % TODO Fit EZ DDM and get drift rate, boundary sep and non dec time
@@ -281,7 +282,7 @@ end
 % end
 
 behav.participants = Participants;
-% behav.agegroup = transpose(strcmp({SUBJ.agegroup}, 'old' ) + 1); % young is 1, old is 2
+%behav.agegroup = transpose(strcmp({SUBJ.agegroup}, 'old' ) + 1); % young is 1, old is 2
 % dropped_subj = cellfun(@isempty, {SUBJ.agegroup});
 % behav.agegroup(find(dropped_subj)) = nan;
 % todo save behav
