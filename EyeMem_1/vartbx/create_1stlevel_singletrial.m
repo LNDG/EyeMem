@@ -8,7 +8,7 @@ function create_1stlevel_singletrial()
 % SubjectID_BIDS = {'sub-09','sub-11','sub-12','sub-13','sub-14','sub-15','sub-16','sub-17','sub-18','sub-19','sub-20','sub-21','sub-22','sub-23','sub-24','sub-25','sub-26','sub-27','sub-28','sub-29','sub-30','sub-31','sub-32','sub-33','sub-34','sub-35','sub-36','sub-37','sub-38','sub-39','sub-40','sub-41','sub-42','sub-43','sub-44','sub-45','sub-46','sub-47','sub-48','sub-49','sub-50','sub-51','sub-52','sub-53','sub-54','sub-55','sub-56','sub-57','sub-58','sub-59','sub-61','sub-62','sub-64','sub-65','sub-66','sub-67','sub-68','sub-69','sub-70','sub-71','sub-72','sub-73','sub-74','sub-75','sub-76','sub-77','sub-78','sub-79','sub-80','sub-81','sub-82','sub-83','sub-84','sub-85','sub-86','sub-87','sub-88','sub-89','sub-90','sub-91','sub-92','sub-93','sub-94','sub-95','sub-96','sub-97','sub-98','sub-99','sub-100','sub-101'};
 
 if ismac
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem';
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem';
 else
   basepath = '/home/mpib/kloosterman/projectdata/eyemem';
 end
@@ -17,6 +17,8 @@ PREIN_eye = fullfile(basepath, 'preproc', 'eye');
 
 analysis_name = '5TRspertrial';
 PREOUT = fullfile(basepath, 'variability', analysis_name); % keep track of output folder here
+% analysis_name = 'GLM_TRwise';
+% PREOUT = fullfile(basepath, analysis_name); % keep track of output folder here
 jobdir = fullfile(PREOUT, 'jobs');
 mkdir(jobdir)
 
@@ -49,31 +51,45 @@ for iage=1:2
         sprintf('%s_task-eyemem_allruns_bold_feat_detrended_highpassed_denoised_MNI_demeaned.nii,%d', cursubjlist(isub).name, ivol));
     end
     
-    % get HMAX per pic to sort trials
     load(fullfile(PREIN_eye, ageleg{iage}, ['eye_' cursubjlist(isub).name '.mat'])); % load eye struct data in ft format
     
     % update triggers so they match the concatenated data
     nvolsperrun = 462;  % 2310/462 = 5;
     onsetshift = (data.trialinfo(:,12)-1) .* nvolsperrun;  % runno-1 * 462 = shifts due to concatenation
-    onsets = data.trialinfo(:,9) + onsetshift;
+    piconsets = data.trialinfo(:,9) + onsetshift;
+    
+%     % fsl txt files test
+%     ev = table([piconsets zeros(size(piconsets))+5 ones(size(piconsets)) ])
+%     writetable(ev, '~/Desktop/evstim.txt', 'Delimiter', ' ')
+    
     
     % make onsets for each TR in trial
-    onsets = repmat(onsets, 1,5);
+    onsets = repmat(piconsets, 1,5);
     onsets = onsets + [0 1 2 3 4]; % dimord: trials TR
 
     %% Specify conditions single trial
     removeonsets_near_run_end = true;  % remove onsets within 20 s from run end, due to modelling issues
 
     onsets = sort(onsets(:)); % order in time and put together
-    matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).name = 'alltrials';
     if removeonsets_near_run_end
       onsets = onsets(onsets < nvols-20);
     end
+    matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).name = 'alltrials';
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).onset = onsets;
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).duration = ones(length(onsets),1); % [5; 5; 5];
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).tmod = 0;
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).pmod = struct('name', {}, 'param', {}, 'poly', {});
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).orth = 1;
+    
+%     % add patch task as "condition"
+%     patchonsets = piconsets + 6.5; % patch comes 6.5 s after pic
+%     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).name = 'nuisance_patch';
+%     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).onset = patchonsets;
+%     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).duration = ones(length(patchonsets),1) + 2; % leave on for X s
+%     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).tmod = 0;
+%     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).pmod = struct('name', {}, 'param', {}, 'poly', {});
+%     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).orth = 1;
+
     
 %     % this treats each trial as a single condition
 %     for itrial = 1:size(onsets, 1)

@@ -1,16 +1,17 @@
 function EM_pls_SDbold_vs_HMAX_setup()
 % PLS-preprocess data and collect all subj on the cluster, cast them to local machine
+close all
 
 fun2run = @EM_pls_SDbold_vs_HMAX;
 
 if ismac
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';
   compile = 'no';
 else
-  basepath = '/mnt/beegfs/home/kloosterman/projectdata/eyemem/'; 
+  basepath = '/home/mpib/kloosterman/projectdata/eyemem/'; 
   backend = 'slurm';
 %   backend = 'torque';
   %   backend = 'local';
@@ -25,14 +26,16 @@ removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
 PLStype = 'taskPLS'; % behavPLSvsdprime or taskPLS
-% binsubtract = [5 1]; % which bins to subtract: % [5 1] is bin5-bin1
+
+binsubtract = [5 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 % binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
-binsubtract = 'linearfit';
+% binsubtract = 'linearfit';
 
 load participantinfo.mat % TODO make this reliable
 
 PREIN = fullfile(basepath, 'variability', 'ftsource');
 % PREINeye = fullfile(basepath, 'preproc', 'eye');
+HMAXfolder = fullfile(basepath, 'D_paradigm', 'stimuli_640x480', 'hmax');
 
 overwrite = 1;
     
@@ -69,17 +72,22 @@ for isub = 1:length(subjlist)
     
     agefolder = Participants(Participants.participant_id == subj, :);     % give different outfolder for OA and YA
     
-    PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder , binsubtractfolder,char(agefolder.group)); % 'SDbold_vs_HMAX'
+    PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder , binsubtractfolder, 'gazespecific', char(agefolder.group)); % 'SDbold_vs_HMAX'
     mkdir(PREOUT)
     mkdir(fullfile( PREOUT, 'source' ))
     cfg.PREOUT = PREOUT;
 
+    eyefolder = char(agefolder.group);
+    eyefolder = [upper(eyefolder(1)) 'A']; % I mean agefolder OA vs YA
+    cfg.eyefile = fullfile(basepath, 'preproc', 'eye', eyefolder, ['eye_' subj '.mat']);
+    
     cfg.sourcefile = fullfile(PREIN, subjlist(isub).name);
 
     cfg.outfile_source = fullfile(PREOUT, 'source', subjlist(isub).name); % binned source data to source folder
     
     cfg.outfile_sesdat = fullfile(PREOUT, [subj '_BfMRIsessiondata.mat']); % PLS _BfMRIsessiondata
     
+    cfg.HMAXfolder = HMAXfolder;
     if ~exist(cfg.outfile_sesdat, 'file') || overwrite
       cfglist{end+1} = cfg;
     end
@@ -90,7 +98,7 @@ for isub = 1:length(subjlist)
   end
 end
 % cfglist = cfglist(2)
-% cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
+cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 

@@ -2,7 +2,7 @@
 % run from runMIBmeg_analysis
 
 if ismac
-  basepath = '/Volumes/LNDG/Projects/EyeMem/Laura/data'; %yesno or 2afc %path for where the data is
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem';
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';
@@ -60,7 +60,7 @@ for isub = 1:length(SUBJ)
 end
 
 % cfglist = cfglist(2)
-% cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
+cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 

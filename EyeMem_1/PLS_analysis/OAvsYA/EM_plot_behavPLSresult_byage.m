@@ -1,17 +1,24 @@
-function EM_regressage(result)
-% account for age group while correlating e.g. SDbold vs dprime
-% 1 load in data from all subjects
-% 2 load in dprime data
-% 3 partialcorr controlling for age group
-% save residual SDbold and residual dprime for use in subsequent PLS
+function EM_plot_behavPLSresult_byage(resultfile)
+% plot brain map and scatter plot
 
 path = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
-if nargin == 0
-  load(fullfile(path, 'corrSDbold_vsdprime_ALLsubj_BfMRIresult.mat'))
-end
+% if nargin == 1
+%   load(resultfile)
+% else
+  pls = load(fullfile(path, 'corrSDbold_vsdprimeALLsubj_Pearson_BfMRIresult.mat'))
+  sesdat = load('sub-09_BfMRIsessiondata.mat')
+% end
+sourcelist = dir(fullfile(path, 'source', 'source*.mat'));
+load(fullfile(path, 'source', sourcelist(1).name))
+
 PREOUT = '/Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/plots';
 SAV = 0;
+
+%% plot brain maps
+EM_plot_PLSbrainmap(pls, sesdat, source)
+
 %%
+result = pls.result;
 r=[];
 r(1) = corr(result.usc(1:43,1), result.stacked_behavdata(1:43), 'type', 'Spearman');
 r(2) = corr(result.usc(44:end,1), result.stacked_behavdata(44:end), 'type', 'Spearman');

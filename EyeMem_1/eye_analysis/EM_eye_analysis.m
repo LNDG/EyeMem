@@ -52,7 +52,7 @@ for irun = 1:length(edflist)
 %     data.fsample = 1000; % 3 runs affected
   end
   
-  disp('interpolate blinks')
+  disp('interpolate blinks, add blinks, saccades and fixations as chans')
   hdr = ft_read_header(filename_eye); %, 'headerformat', 'eyelink_asc');
   data = interpolate_blinks(hdr, data); % TODO add microsaccades? getting channel 5 and 6
   
@@ -122,14 +122,14 @@ data = ft_appenddata(cfg, alldata{:});
 clear alldata
 % behav = ft_findcfg(data.cfg, 'runinfo') % for behavior etc
 
-% change format of data to allow for exporting it to Python later
-% should give us a 3dim array for trial 
-cfg=[]
-cfg.keeptrials = 'yes'
-timelock = ft_timelockanalysis(cfg, data)
-trial = timelock.trial
-trial_info = timelock.trialinfo
-
+% % change format of data to allow for exporting it to Python later
+% % should give us a 3dim array for trial 
+% cfg=[]
+% cfg.keeptrials = 'yes'
+% timelock = ft_timelockanalysis(cfg, data)
+% trial = timelock.trial
+% trial_info = timelock.trialinfo
+% 
 %save('trial.mat', 'trial')
 %save('trial_info.mat', 'trial_info')
 

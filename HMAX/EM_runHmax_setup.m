@@ -2,19 +2,21 @@ function EM_runHmax_setup()
 % run on the cluster
 
 if ismac  
-  basepath = '/Users/kloosterman/gridmaster2012/LNDG/EyeMem/study_information/D_paradigm/';
+%   basepath = '/Users/kloosterman/gridmaster2012/LNDG/EyeMem/study_information/D_paradigm/';
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/D_paradigm';
   
   backend = 'local';
   compile = 'no';
 else
-  basepath = '/home/mpib/LNDG/EyeMem/study_information/D_paradigm/';
+%   basepath = '/home/mpib/LNDG/EyeMem/study_information/D_paradigm/';
+  basepath = '/home/mpib/kloosterman/projectdata/eyemem/D_paradigm';
   %     backend = 'slurm';
-  backend = 'torque';
+  backend = 'slurm';
   %     backend = 'local';
   compile = 'no';
 end
 timreq = 1000; %in minutes per run
-memreq = 20000; % in MB
+memreq = 4000; % in MB
 
 PREIN = fullfile(basepath, 'stimuli_640x480');
 PREOUT = fullfile(basepath, 'stimuli_640x480');
@@ -23,7 +25,7 @@ mkdir(PREOUT)
 overwrite = 1;
 
 cd(basepath)
-load scanner_stimuli.mat
+load(fullfile(basepath, 'scanner_stimuli.mat'))
 scanner_stimuli
 
 %make cells for each subject, to analyze in parallel
@@ -44,7 +46,7 @@ cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 fprintf('Running EM_runHmax for %d cfgs\n', length(cfglist))
 
 if strcmp(backend, 'slurm')
-  options = '-D. -c2'; % --gres=gpu:1
+  options = '-D. -c4'; % --gres=gpu:1
 else
   options =  '-l nodes=1:ppn=3'; % torque %-q testing or gpu
 end
@@ -64,5 +66,5 @@ if strcmp(backend, 'local')
   return
 end
 
-qsubcellfun(fun2run, cfglist, 'memreq', memreq, 'timreq', timreq*60, 'stack', 1, ...
+qsubcellfun(fun2run, cfglist, 'memreq', memreq*1e6, 'timreq', timreq*60, 'stack', 1, ...
   'StopOnError', false, 'backend', backend, 'options', options);

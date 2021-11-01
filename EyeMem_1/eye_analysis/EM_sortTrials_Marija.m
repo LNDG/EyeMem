@@ -251,7 +251,10 @@ end
 % get fMRI scanning Start time
 scanstartind = cellfun(@(x) ~isempty(strfind(x, 'fMRI scanning Start time')), {event.value});
 scanstartsmp = event(scanstartind).sample;
-trl(:,12) = trl(:,1)/1000 - scanstartsmp/1000 + 3 - 12; % -3 for prestim, 12 s removed from fMRI data
+
+trl(:,12) = trl(:,1)/1000 - scanstartsmp/1000 + 3 - 12 + 5; 
+% -3 for begtrl (see above), 12 s (TRs) removed from fMRI data BUT 'fMRI scanning Start time' only sent after 5 s
+% see EMcheckfMRItimings()
 
 % load Hmax
 if ismac
@@ -302,3 +305,5 @@ for itrial = 1:size(trl,1)
   % TODO add col running nr
 %   trl(itrial,18) = find(behav_test(:,6) == trl(itrial,6));
 end
+
+

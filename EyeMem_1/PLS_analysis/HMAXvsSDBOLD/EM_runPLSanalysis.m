@@ -1,10 +1,11 @@
 function EM_runPLSanalysis(analysisname)
 % make model specification txt file and run the PLS analysis
-load /Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
+load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-   analysisname = 'corrSDbold_vsdprime';
-%    analysisname = 'SDbold_OAvsYA_task'
+%   analysisname = 'corrSDbold_vsdprime';
+  %    analysisname = 'SDbold_OAvsYA_task'
+  analysisname = 'SDbold_vs_HMAX';
 end
 switch analysisname
   case 'SDbold_OAvsYA_task'
@@ -51,8 +52,8 @@ switch analysisname
     batch_plsgui(txtfilename)
     
   case 'corrSDbold_vsdprime'
-    corrtype = 'Pearson'; %Spearman Pearson
-    agegroup = 'YA'; % ALLsubj OA YA
+    corrtype = 'Spearman'; %Spearman Pearson
+    agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
       %       {'study' 'criterion'};
@@ -65,8 +66,11 @@ switch analysisname
 %       {'test' 'p_repeatbalanced'};
       };
 
+%     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+%     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
-    PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
+%     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/YA/PLS';
+    PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/OA/PLS';
         
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -92,7 +96,7 @@ switch analysisname
     behavior_data = {};
     behavior_name = {};
     
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
     % for iage = 1:2
     %   cd(fullfile(PREIN, agegroups{iage}))
     cd(fullfile(PREIN))
@@ -136,11 +140,12 @@ switch analysisname
     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
 %     PREIN = fullfile(basepath, 'variability', 'ftsource', 'SDbold_vs_HMAX', 'old', '5bins');
 %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/linearfit/young'
-    PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/linearfit/old'
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/linearfit/old'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/bin5-bin1/gazespecific'
         
     disp 'Generate model txt file'
-    txtfilename = 'Model_SDbold_vs_HMAX_BfMRIanalysis.txt';
-    resultfilename = 'Model_SDbold_vs_HMAX_BfMRIresult.mat';
+    txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
+    resultfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIresult.mat';
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
@@ -155,18 +160,18 @@ switch analysisname
     behavior_name = {};
     
     agegroups = {'young' 'old'};
-    % for iage = 1:2
-    %   cd(fullfile(PREIN, agegroups{iage}))
-    cd(fullfile(PREIN))
-    subjlist = dir('*_BfMRIsessiondata.mat');
-    id_list = {};
-    for isub=1:length(subjlist)
-      tmp = tokenize(subjlist(isub).name, '_');
-      id_list{end+1} = tmp{1};
+    id_list = cell(2,1);
+    for iage = 1:2
+      cd(fullfile(PREIN, agegroups{iage}))
+%       cd(fullfile(PREIN))
+      subjlist = dir('*_BfMRIsessiondata.mat');
+      for isub=1:length(subjlist)
+        tmp = tokenize(subjlist(isub).name, '_');
+        id_list{iage}{end+1} = tmp{1};
+      end
     end
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
-    % end
     
     %%
 %   case 'behavPLSvsdprime' % load behav for dprime

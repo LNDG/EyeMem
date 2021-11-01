@@ -2,7 +2,7 @@ function EM_mri_to_ftsource_setup()
 % run from runMIBmeg_analysis
 
 if ismac
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';

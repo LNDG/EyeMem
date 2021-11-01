@@ -25,14 +25,14 @@ saveFolder = cfg.saveFolder;
 piclist = cfg.piclist;
 condition = cfg.condition;
 
-%% If no arguments are provided, these are the default variables.
-if isempty(pictures_path) && isempty(saveFolder)
-%   saveFolder = './output/';
-  %   load('exampleImages.mat');
-  pictures_path = '/Volumes/LNDG/Projects/EyeMem/eyemem/study_information/D_paradigm/fMRI_exp_final/stimuli_640x480/fractals';
-%   saveFolder = fullfile(pictures_path, 'hmax')
-  saveFolder = fullfile(pictures_path);
-end
+% %% If no arguments are provided, these are the default variables.
+% if isempty(pictures_path) && isempty(saveFolder)
+% %   saveFolder = './output/';
+%   %   load('exampleImages.mat');
+%   pictures_path = '/Volumes/LNDG/Projects/EyeMem/eyemem/study_information/D_paradigm/fMRI_exp_final/stimuli_640x480/fractals';
+% %   saveFolder = fullfile(pictures_path, 'hmax')
+%   saveFolder = fullfile(pictures_path);
+% end
 
 %% Preprocess the images.
 % Creates a cell array with each cell containing a grayscaled
@@ -61,10 +61,10 @@ for ipic = 1:npics
   picdat{ipic} = double(rgb2gray(imread(piclist{ipic})));
   if strfind(piclist{ipic}, 'image')
     [~,a] = fileparts(piclist{ipic}(6:end));
-%     piclist{ipic} = piclist{ipic}(6:end);
+    %     piclist{ipic} = piclist{ipic}(6:end);
   else
     [~,a] = fileparts(piclist{ipic});
-  end  
+  end
   picno(ipic,1) = str2num(a);
 end
 
@@ -92,19 +92,33 @@ fprintf('calculating unit responses\n');
 hmaxout =[];
 hmaxout.c1median = nan(npics, 8);
 % hmaxout.c1median = nan(npics, 8);
+hmaxout.picdat = NaN([size(picdat{1}) length(picdat)]);
 for ipic = 1:npics % cf https://doi.org/10.1101/249029
-
-%   [c2,c1,bestBands,bestLocations,s2,s1] = extractC2forCell...
-%     (filters,filterSizes,c1Space,c1Scale,c1OL,patches,   picdat(ipic),  nPatchSizes,patchSizes(1:3,:));
+  
+  %   [c2,c1,bestBands,bestLocations,s2,s1] = extractC2forCell...
+  %     (filters,filterSizes,c1Space,c1Scale,c1OL,patches,   picdat(ipic),  nPatchSizes,patchSizes(1:3,:));
   [c2,c1] = extractC2forCell...
     (filters,filterSizes,c1Space,c1Scale,c1OL,patches,   picdat(ipic),  nPatchSizes,patchSizes(1:3,:));
-
+  
   c1_ori4 = cellfun(@(x) x(:,:,4), c1{1}, 'uni', 0); % take ori 4
+  makeplot=0;
+  if makeplot
+    imshow(piclist{ipic})
+    figure;
+    for i=1:length(c1_ori4)
+      subplot(2,4,i)
+      imagesc(c1_ori4{i})
+      colorbar
+    end
+  end
+  hmaxout.c1(:,:,ipic) = c1_ori4{8};
   hmaxout.c1median(ipic,:) = cell2mat(cellfun(@(x) median(x(:)), c1_ori4, 'uni', 0)); % take median
   hmaxout.c2median(ipic,:)  = cellfun(@median, c2, 'uni', 0); % take median
-%   hmaxout.picname = piclist(ipic).name;
-  clear c2 c1 
+  %   hmaxout.picname = piclist(ipic).name;
+  hmaxout.picdat(:,:,ipic) = picdat{ipic};
+  clear c2 c1
 end
+hmaxout.c1dimord = 'xpos_ypos_ipic';
 hmaxout.picname = piclist;
 hmaxout.picno = picno;
 
