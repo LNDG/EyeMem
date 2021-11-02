@@ -7,7 +7,8 @@ else
   basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
 end
 
-addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
+addpath(genpath(fullfile(basepath, 'MATLAB', 'EyeMem', 'EyeMem_1')));
+% addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
