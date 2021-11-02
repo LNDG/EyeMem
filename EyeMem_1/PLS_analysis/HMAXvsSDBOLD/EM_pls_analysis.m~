@@ -1,0 +1,148 @@
+function EM_pls_analysis()
+% PLS-preprocess data and collect all subj on the cluster, cast them to local machine
+if ismac
+  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+  %     backend = 'parfor';
+  backend = 'local';
+  %   backend = 'qsublocal';
+  compile = 'no';
+else
+  basepath = '/home/mpib/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+  backend = 'slurm';
+  %     backend = 'torque';
+  %   backend = 'local';
+  compile = 'no';
+end
+timreq = 60; %in minutes per run
+memreq = 5000; % in MB
+
+PREIN = fullfile(basepath, 'variability', 'ftsource');
+% PREINeye = fullfile(basepath, 'preproc', 'eye');
+PREOUT = fullfile(basepath, 'variability', 'ftsource', 'SDbold_vs_HMAX');
+mkdir(PREOUT)
+
+fun2run = @EM_pls_SDbold_vs_HMAX;
+
+overwrite = 1;
+
+cd(PREIN);
+subjlist = dir('*.mat');
+
+% SUBJ= [9, 11:59, 61:69, 71,72, 74:101]; % TODO specify further?
+
+%make cells for each subject, to analyze in parallel
+cfg = [];
+cfg.PREIN = PREIN;
+cfg.PREOUT = PREOUT;
+cfglist = {};
+
+for isub = 1:length(subjlist)
+  %  TODO load eyefile?
+%   cfg.subjno = SUBJ(isub);
+  cfg.mrifile = fullfile(PREIN, subjlist(isub).name);
+  cfg.outfile = fullfile(PREOUT, ['pls_' cfg.mrifile]);
+  if ~exist(cfg.outfile, 'file') || overwrite
+    cfglist{end+1} = cfg;
+  end
+end
+
+% cfglist = cfglist(2)
+% cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
+
+fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
+
+if strcmp(backend, 'slurm')
+  options = '-D. -c1'; % --gres=gpu:1
+else
+  options =  '-l nodes=1:ppn=2'; % torque %-q testing or gpu
+end
+
+setenv('TORQUEHOME', 'yes')
+mkdir('~/qsub'); cd('~/qsub');
+
+if strcmp(backend, 'local')
+  [source] = cellfun(fun2run, cfglist);
+else
+  [source] = qsubcellfun(fun2run, cfglist, 'memreq', memreq*1e6, 'timreq', timreq*60, 'stack', 1, ...
+    'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options);
+end
+
+save source 
+
+%% collect all subjects locally, run pls
+
+disp 'Match the inside bool aka common coordinates'
+inside_allsubj = [allsource.inside];
+common_voxels = all(inside_allsubj,2);
+[allsource.inside] = deal(common_voxels);  % cast this to all subj source, note that pow field is not updated
+
+% append subjects
+cfg=[];
+cfg.parameter = 'pow';
+cfg.keepindividual = 'yes';
+allsource = num2cell(allsource);
+source = ft_sourcegrandaverage(cfg, allsource{:});  % num2cell(allsource)
+
+disp 'save all subjects source'
+fileout = fullfile(PREOUT, 'source_HMAXbinned')
+save(fileout, 'source', '-v7.3')
+
+if ismac
+  tmp = source;
+  tmp.powdimord = 'pos';
+  %       vol=300;
+  %   tmp.anatomy = tmp.anatomy(:,:,:,vol);
+  tmp.pow = nanmean(tmp.pow,3);
+  tmp.pow = transpose(nanmean(tmp.pow,1));
+  cfg=[];
+  cfg.method = 'ortho'; % slice ortho glassbrain vertex
+  cfg.funparameter = 'pow';
+  cfg.funcolorlim = 'zeromax';% [-300 300];
+  ft_sourceplot(cfg, tmp)
+end
+
+disp 'run PLS analysis'
+
+% % powsize = size(freq.powspctrm); % assume dim 1 is subj TODO check
+% nsub = 88;
+% 
+% % datamat_lst = {reshape(freq.powspctrm, nsub, [])};
+% plsdat = source.pow(:,source.inside,:);
+% % plsdat = reshape(plsdat, )
+% 
+% datamat_lst = {};
+% cfg.design = cfg.design(:);
+% 
+% num_subj_lst = nsub;
+% num_cond = 1;
+% option = [];
+% option.method = cfg.method; % [1] | 2 | 3 | 4 | 5 | 6 TODO make strings
+% % option.is_struct = [0] | 1
+% % option.num_split = 100 %( single non-negative integer )
+% option.num_boot = 100; %500 % ( single non-negative integer )
+% option.num_boot = 0; %500 % ( single non-negative integer )
+% % option.clim = ( [95] single number between 0 and 100 )
+% % option.bscan = ( subset of  1:num_cond )
+% % option.stacked_designdata = ( 2-D numerical matrix )
+% 
+% option.stacked_behavdata = cfg.design; %( 2-D numerical matrix )
+% option.stacked_behavdata = repmat(option.stacked_behavdata, num_cond, 1); %( 2-D numerical matrix )
+% 
+% % option.meancentering_type = [0] | 1 | 2 | 3
+% %           option.cormode = 0; % [0] | 2 | 4 | 6
+% % option.boot_type = ['strat'] | 'nonstrat'
+% 
+% %
+% permutewhat = 'singularweights'; % singularvals singularweights
+% switch permutewhat
+%   case 'singularvals' % ori, needs option.num_perm = 500
+%     option.num_perm = 500; %( single non-negative integer )
+% %     option.num_split = 500; %( single non-negative integer )
+%     result = pls_analysis(datamat_lst, num_subj_lst, num_cond, option);
+ 
+
+
+
+
+
+
