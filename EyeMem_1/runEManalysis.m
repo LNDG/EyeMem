@@ -2,12 +2,12 @@ restoredefaultpath
 if ismac
   %   basepath = '/Users/kloosterman/gridmaster2012/kloosterman/';
   basepath = '/Users/kloosterman/Dropbox/tardis_code/';
+  addpath(genpath('/Users/kloosterman/Documents/GitHub/EyeMem/EyeMem_1'));
 else
 %     basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
   basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
 end
 
-addpath(genpath(fullfile(basepath, 'MATLAB', 'EyeMem', 'EyeMem_1')));
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
