@@ -38,7 +38,7 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 % EM_runHmax_setup()
 
 %% eye pupil and gaze analysis
-EM_eye_analysis_setup()
+% EM_eye_analysis_setup()
 
 %% fMRI ANALYSIS:
 %% set up vartbx for single-TR GLM (LEast squares, single)
@@ -54,7 +54,7 @@ EM_eye_analysis_setup()
 % EM_mri_to_ftsource_setup()
 
 %% set up PLS analysis for HMAX vs SDBOLD fieldtrip source way
-% EM_pls_SDbold_vs_HMAX_setup()
+EM_pls_SDbold_vs_HMAX_setup()
 
 %%  set up PLS analysis  SDbold YA vs OA 
 % EM_pls_OAvsYA_setup()
