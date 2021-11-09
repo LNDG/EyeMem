@@ -34,19 +34,22 @@ behav=[];
 % end
 basepath = '/Users/terlau'
 if ismac
-  PREIN = fullfile(basepath, 'behav_raw');
+  %PREIN = fullfile(basepath, 'behav_raw');
+  PREIN_behav = '/Volumes/LNDG/Projects/EyeMem/eyemem2/raw/study/behav'
+  %PREIN_eye = '/Volumes/LNDG/Projects/EyeMem/eyemem2/raw/study/eye'
   PREOUT = fullfile(basepath, 'preproc/behavior_2');
 else
 %   basepath = '/home/mpib';
 end
 % PREOUT = fullfile(basepath, 'LNDG/EyeMem/plots' );
-cd(PREIN)
+cd(PREIN_behav)
+%cd(PREIN_eye)
 dirinfo = dir();
 dirinfo(~[dirinfo.isdir]) = [];%remove non-directories
 disp(dirinfo)
 dirall = dirinfo(3:74)
 disp(dirall)
-
+%setdiff(A,B) returns the data in A that is not in B, with no repetitions. 
 ddm_dat{1} = []; ddm_dat{2} = [];
 for isub = 1:length(dirall)
   

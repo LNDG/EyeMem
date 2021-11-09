@@ -2,7 +2,7 @@ function [behav] = EM_analysebehavioral
 %Read in behavior text files, compute d', RT, etc.
 
 % load('participantinfo.mat') % 
-load ../participantinfo/participantinfo.mat
+load /Users/terlau/Downloads/participantinfo.mat
 
 category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %1-5
 
@@ -58,6 +58,8 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
   
   subdir = dirall(isub).name
   subfiles = dir(fullfile(subdir, '*.txt'))
+  CELL =  { 'EYEMEM040' 'EYEMEM045' 'EYEMEM048' 'EYEMEM056'}
+
   
   for iphase = 1:2 % study, test
     
@@ -65,16 +67,32 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
     %       fprintf('SUBJ %d dropped\n', isub)
     %       continue
     %     end
-    
     indexes = reshape(contains({subfiles.name}, exp_phases{iphase}), size(subfiles))
-    txtfile = fullfile(PREIN, subdir, subfiles(indexes).name)
-    %txtfile = fullfile(PREIN, sprintf('S%d_%s_log.txt', SUBJ(isub), exp_phases{iphase} ));
-    disp(txtfile)
-    %     txtfile = dir(sprintf('*%s*.txt', exp_phases{iphase})); % PREIN, subj_list(isub).name,
     
+    if any(strcmp(CELL,subdir))
+        continue
+    %if subdir == 'EYEMEM056'
+     %   txtfile = '/Volumes/LNDG/Projects/EyeMem/eyemem/raw/data_raw/S56_study_log';
+        
+        %fNames = fieldnames(subfiles(indexes));
+        %study_logs = {subfiles(indexes).(fNames{1})}
+        %study_log = study_logs(1)
+        %sub_study_file = string(study_log) 
+       % disp(sub_study_file)
+    
+       
+        %txtfile = fullfile(PREIN, subdir, sub_study_file) %subfiles(indexes).name)
+        %txtfile = fullfile(PREIN, sprintf('S%d_%s_log.txt', SUBJ(isub), exp_phases{iphase} ));
+        %disp(txtfile)
+    else
+        txtfile = fullfile(PREIN, subdir, subfiles(indexes).name)
+    end
+        %     txtfile = dir(sprintf('*%s*.txt', exp_phases{iphase})); % PREIN, subj_list(isub).name,
+
     fid = fopen(txtfile, 'rt');
-    %[fid, message] = fopen(txtfile);
-    %if fid < 0; disp(message); end
+%[fid, message] = fopen(txtfile);
+%if fid < 0; disp(message); end
+
     if fid == -1;
       fprintf('not found:   %s\n', txtfile)
       continue
@@ -91,10 +109,10 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
     while ~feof(fid)
       %             i = i + 1;
       %             ft_progress(i/n_lines);
-      
+
       tline = fgetl(fid);
       strtok = strsplit(tline, ' ');
-      
+
 %       subNo = str2double(strtok{1});%                             fprintf(datafilepointer,'%i %i %s %i %i %s %s %s %s %i %i\n', ...
       hand  = str2double(strtok{2});
       phaselabel  = strtok{3};
@@ -106,7 +124,7 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       test_file = strtok{9}; % nan for test phase
       ac = str2double(strtok{10});
       rt(itrial,:) = str2double(strtok{11}) / 1000; % convert to s
-      
+
       if rt(itrial,:) < 0 % subj 60 has 1 negative rt
         rt(itrial,:) = NaN;
       end
@@ -126,23 +144,23 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       if isnan(resp)
         n_omissions = n_omissions + 1;
       end
-      
+
       ac_accum = ac_accum + ac;
-      
+
       if iphase == 1 % remember which pics were shown during study
         studied_pics.(category) = [studied_pics.(category); {view_file}];
         target_present = strcmp(view_file, test_file); % target present?
       else
         target_present = ismember(view_file, studied_pics.(category)); % find out if view_file was shown during study
       end
-      
+
       % get stim pic nr from view_file string
       if contains(view_file, 'image') % for landscapes and streets2 format is imageXXX
         view_file = view_file(6:end);
       end
       temp = strsplit(view_file,'.'); %tokenize(view_file, '.');
       picno = str2double(temp{1});
-      
+
       if target_present
         n_present = n_present + 1;
         if ac == 1 % correct, meaning it was a Yes
@@ -164,12 +182,16 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
           rt_fas = [rt_fas; rt(itrial,:)];
         end
       end
-      
+
       icat = find(strcmp(category_labels, category));
-      
+
       % For HDDM: Put subjid, category, stim, ac, rt agegroup
       % SUBJ(isub) = 9 to 101
-      subid = strsplit(subfiles(indexes).name, '_')
+      if any(strcmp(CELL,subdir))
+          subid = strsplit( sub_study_file, '_')
+      else
+          subid = strsplit(subfiles(indexes).name, '_')
+      end
       subID = subid{1}
       %converting char 'S #' to a double, so just the #
       subID(subID < '0' | subID > '9') = []
@@ -181,58 +203,59 @@ for isub = 1:length(dirall) %for isub = 1:length(SUBJ)
       end
       ddm_dat{iphase} = [ddm_dat{iphase};  sID  icat double(target_present) resp(itrial,:) ac rt(itrial,:) ageind];
       singletrial{iphase} = [singletrial{iphase}; icat double(target_present) resp(itrial,:) ac rt(itrial,:) picno];
-      
+
       if itrial == ntrials_per_run(iphase) % calculate things per run
-        
+
         if n_omissions < 4 % only allow runs with < 10 % missed responses
 %           behav.(exp_phases{iphase}).propcorrect(subNo, icat) = ac_accum/itrial; % TODO omit first trial(s)
           behav.(exp_phases{iphase})(subNo).propcorrect(icat) = ac_accum/itrial; % TODO omit first trial(s)
-          
+
           Hitrate = hits/n_present;
           if Hitrate == 1; Hitrate = 0.95; end
           if Hitrate == 0; continue; end % wrong response pressed or st
-          
+
           FArate = fas/n_absent;
           if FArate == 0; FArate = 0.05; end
-          
+
           behav.(exp_phases{iphase})(subNo).dprime(icat) = norminv(Hitrate) - norminv(FArate); % TODO omit first trial(s)
           behav.(exp_phases{iphase})(subNo).criterion(icat) = -0.5 * (norminv(Hitrate) + norminv(FArate)); % TODO omit first trial(s)
-          
+
           behav.(exp_phases{iphase})(subNo).RT(icat) = nanmean(rt);
           behav.(exp_phases{iphase})(subNo).RTsd(icat) = nanstd(rt);
           behav.(exp_phases{iphase})(subNo).RTsd2(icat) = nanstd(rt) / nanmean(rt);
-          
+
           behav.(exp_phases{iphase})(subNo).RT_hits(icat) = nanmean(rt_hits);
           behav.(exp_phases{iphase})(subNo).RT_misses(icat) = nanmean(rt_misses);
           behav.(exp_phases{iphase})(subNo).RT_fas(icat) = nanmean(rt_fas);
           behav.(exp_phases{iphase})(subNo).RT_crs(icat) = nanmean(rt_crs);
-          
+
 %           p_repeatbalanced(irun,1) = sum(diff(button) == 0 & button(2:end,:) == 1) / (sum(button(2:end)==1));
 %           p_repeatbalanced(irun,2) = sum(diff(button) == 0 & button(2:end,:) == 2) / (sum(button(2:end)==2));
           behav.(exp_phases{iphase})(subNo).p_repeatbalanced(icat,1) = sum(diff(resp) == 0 & resp(2:end,:) == 1) / (sum(resp(2:end)==1));
           behav.(exp_phases{iphase})(subNo).p_repeatbalanced(icat,2) = sum(diff(resp) == 0 & resp(2:end,:) == 2) / (sum(resp(2:end)==2));
-          
-          
+
+
         end
-        
+
         behav.(exp_phases{iphase})(subNo).omissions(icat) = n_omissions;
-        
+
         ac_accum = 0; rt = [];
         hits=0; misses=0; fas=0; crs=0;
         n_absent = 0; n_present = 0;     n_omissions = 0;
-        
+
       end
     end
     behav.(exp_phases{iphase})(subNo).group = string(Participants.group(sID))
+    behav.(exp_phases{iphase})(subNo).subject = Participants.participant_id(sID)
     behav.(exp_phases{iphase})(subNo).singletrial = singletrial{iphase};
     behav.(exp_phases{iphase})(subNo).singletrialleg = 'condition target_present response accuracy RT picno';
     fclose(fid);
     disp 'compute history bias'
-    
+
 
   end
-end
-
+ end
+  
 for iphase = 1:2 % study, test
 %   behav.(exp_phases{iphase}).propcorrect(:,6) = nanmean(behav.(exp_phases{iphase}).propcorrect(:,1:5) ,2);
 %   behav.(exp_phases{iphase}).dprime(:,6) = nanmean(behav.(exp_phases{iphase}).dprime(:,1:5) ,2);
