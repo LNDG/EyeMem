@@ -141,7 +141,8 @@ switch analysisname
 %     PREIN = fullfile(basepath, 'variability', 'ftsource', 'SDbold_vs_HMAX', 'old', '5bins');
 %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/linearfit/young'
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/linearfit/old'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/bin5-bin1/gazespecific'
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/bin5-bin1/gazespecific'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_10bins/bin5-bin1/gazespecific'
         
     disp 'Generate model txt file'
     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
@@ -159,9 +160,10 @@ switch analysisname
     behavior_data = {};
     behavior_name = {};
     
-    agegroups = {'young' 'old'};
-    id_list = cell(2,1);
-    for iage = 1:2
+%     agegroups = {'young' 'old'};
+    agegroups = {'young'};
+    id_list = cell(length(agegroups),1);
+    for iage = 1:length(agegroups)
       cd(fullfile(PREIN, agegroups{iage}))
 %       cd(fullfile(PREIN))
       subjlist = dir('*_BfMRIsessiondata.mat');
