@@ -238,7 +238,7 @@ switch PLStype
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];
-tmp.unequal_subj = 0;
+tmp.unequal_subj = 0;cond_selection
 
 % session_info struct, for bookkeeping I believe:
 %       a = load([workdir '/charisaPLS/' subj '_BfMRIsession.mat']);%this      %loads a particular session file.

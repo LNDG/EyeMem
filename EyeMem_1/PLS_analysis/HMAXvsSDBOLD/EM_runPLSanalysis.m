@@ -144,7 +144,8 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/bin5-bin1/gazespecific'
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_10bins/bin5-bin1/gazespecific'
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_3bins/bin5-bin1/gazespecific'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_3bins/bin5-bin1/gazespecific'
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_3bins/bin5-bin1/gazespecific'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_5bins/bin5-bin1/gazespecific'
         
     disp 'Generate model txt file'
     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
@@ -158,7 +159,7 @@ switch analysisname
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
-    selected_cond = num2str(ones(1,3)); disp 'TODO get ncond somewhere'
+    selected_cond = num2str(ones(1,5)); disp 'TODO get ncond somewhere'
     behavior_data = {};
     behavior_name = {};
     
