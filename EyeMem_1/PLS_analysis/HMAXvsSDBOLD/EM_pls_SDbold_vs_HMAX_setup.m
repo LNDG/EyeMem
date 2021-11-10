@@ -53,7 +53,7 @@ cfg.nbins = nbins;
 cfg.removeoutliers = removeoutliers;
 cfg.Z_thresh = Z_thresh;
 cfg.do_kstest = do_kstest;
-cfg.BOLDvar_measure = 'iqr'; % iqr, nanstd
+cfg.BOLDvar_measure = 'nanstd'; % iqr, nanstd
 
 cfglist = {};
 

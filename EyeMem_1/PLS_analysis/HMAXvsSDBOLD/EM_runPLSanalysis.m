@@ -151,13 +151,13 @@ switch analysisname
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
-    num_perm = '1000';
+    num_perm = '100';
     num_split = '0';
-    num_boot = '1000';
+    num_boot = '100';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
-    selected_cond = num2str(ones(1,5)); disp 'TODO get ncond somewhere'
+    selected_cond = num2str(ones(1,3)); disp 'TODO get ncond somewhere'
     behavior_data = {};
     behavior_name = {};
     
