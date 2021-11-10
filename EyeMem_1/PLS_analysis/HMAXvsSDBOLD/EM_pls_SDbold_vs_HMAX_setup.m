@@ -21,7 +21,7 @@ timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
 % analysis settings
-nbins = 3; % no of bins used for Hmax binning
+nbins = 5; % no of bins used for Hmax binning
 removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
