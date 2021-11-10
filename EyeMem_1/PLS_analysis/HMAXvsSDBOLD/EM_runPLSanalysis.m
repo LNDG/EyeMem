@@ -173,6 +173,7 @@ switch analysisname
         id_list{iage}{end+1} = tmp{1};
       end
     end
+    cd(PREIN)
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
     
