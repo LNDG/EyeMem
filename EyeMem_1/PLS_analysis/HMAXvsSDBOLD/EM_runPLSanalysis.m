@@ -3,9 +3,9 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-%   analysisname = 'corrSDbold_vsdprime';
+  analysisname = 'corrSDbold_vsdprime';
   %    analysisname = 'SDbold_OAvsYA_task'
-  analysisname = 'SDbold_vs_HMAX';
+%   analysisname = 'SDbold_vs_HMAX';
 end
 switch analysisname
   case 'SDbold_OAvsYA_task'
@@ -59,19 +59,21 @@ switch analysisname
       %       {'study' 'criterion'};
       %       {'study' 'RT'};
       %       {'study' 'RTsd'};
-      {'test' 'dprime'};
-%       {'test' 'RT'}
-%       {'test' 'criterion'};
-%       {'test' 'RTsd'}
-%       {'test' 'p_repeatbalanced'};
+%       {'test' 'dprime'};
+      %       {'test' 'RT'}
+      %       {'test' 'criterion'};
+      %       {'test' 'RTsd'}
+      %       {'test' 'p_repeatbalanced'};
+      {'eyemem1_params_biasmodel' 'v'};
       };
-
-%     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
-%     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
-    basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
-%     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/YA/PLS';
-    PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/OA/PLS';
-        
+    
+    %     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+    %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
+    basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
+    %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/YA/PLS';
+    %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/VOIsel/OA/PLS';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/old'
+    
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
     %     resultfilename = 'corrSDbold_vsRT_OA_BfMRIresult.mat';
@@ -100,7 +102,7 @@ switch analysisname
     % for iage = 1:2
     %   cd(fullfile(PREIN, agegroups{iage}))
     cd(fullfile(PREIN))
-    subjlist = dir('*_BfMRIsessiondata.mat');
+    subjlist = dir('sub*_BfMRIsessiondata.mat');
     id_list = cell(1,1);         behavior_data_keep = {}; behavior_name_keep = {};
 
     for ibehav = 1:size(behavnames,1)
@@ -118,8 +120,10 @@ switch analysisname
         end
         if behav.participants{subjind, 'group'} == agegroup || strcmp(agegroup, 'ALLsubj')
           behavoi = behav.(behavnames{ibehav}{1});
-          behav_val = nanmean(behavoi(subjind).(behavnames{ibehav}{2}));
-          %         behav_val
+%           behav_val = nanmean(behavoi(subjind).(behavnames{ibehav}{2}));
+%           % this is for dprime, averaged over runs...
+          behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
+
           %         if behav_val < 0.25 % dprime lower than that is fishy
           %           fprintf('behav_val < 0.25, skipping subject\n')
           %           continue
