@@ -33,7 +33,7 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 % addpath(genpath('/Volumes/LNDG/Programs_Tools_Scripts/data_processing_repo/PLS_repo/PLS_toolbox_modifications/LNDG2018_OnlyTXT/Pls'))
 
 %% behavioral analysis (txt files)
-% % behav = EM_analysebehavioral()
+% % behavior = EM_analysebehavioral()
 
 %% run Hmax on stim pics, also save original pic and full HMAX maps
 % EM_runHmax_setup()

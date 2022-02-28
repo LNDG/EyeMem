@@ -235,6 +235,21 @@ switch PLStype
     load(behavfile); % behav comes out
     subjind = behav.participants.participant_id == subj;
     tmp.behavdata = mean(behav.test(subjind).dprime);
+  case 'behavPLSvsDDM'
+    if isnumeric(binsubtract)
+      tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
+    else
+      dat = transpose(source.pow(tmp.st_coords, :));
+      for i = 1:length(dat)
+        fit = polyfit( transpose(1:nbins), dat(:,i), 1 );
+        tmp.st_datamat(1,i) = fit(1);
+      end
+    end
+    tmp.session_info.datamat_prefix = 'SDboldHMAX_vs_DDM'; %[subj '_' pattern];%stores common      %datamat prefix
+    tmp.behavname = {'drift'};%no behav names or data just yet, but set up the %field anyway...
+    load(behavfile); % behav comes out
+    subjind = behav.participants.participant_id == subj;
+    tmp.behavdata = mean(behav.eyemem1_params_biasmodel.v(subjind));
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];

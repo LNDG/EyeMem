@@ -1,8 +1,8 @@
 function [behav] = EM_analysebehavioral
-%Read in behavior text files, compute d', RT, etc.
+%Read in behav text files, compute d', RT, etc.
 
-% load('participantinfo.mat') % 
-load /Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat
+% load('participantinfo.mat') %
+load('/Users/kloosterman/Documents/GitHub/EyeMem/EyeMem_1/participantinfo/participantinfo.mat', 'Participants')
 
 category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %1-5
 
@@ -20,11 +20,11 @@ behav=[];
 %   behav.(exp_phases{iphase}).RTsd = nan(length(SUBJ), 6); % SUBJ, categories
 %   behav.(exp_phases{iphase}).RTsd2 = nan(length(SUBJ), 6); % SUBJ, categories
 %   behav.(exp_phases{iphase}).omissions = nan(length(SUBJ), 6); % SUBJ, categories
-%   
+%
 % %   behav.(exp_phases{iphase}).driftrate = nan(length(SUBJ), 6); % SUBJ, categories
 % %   behav.(exp_phases{iphase}).boundsep = nan(length(SUBJ), 6); % SUBJ, categories
 % %   behav.(exp_phases{iphase}).nondectime = nan(length(SUBJ), 6); % SUBJ, categories
-%   
+%
 %   behav.(exp_phases{iphase}).RT_hits = nan(length(SUBJ), 6); % SUBJ, categories
 %   behav.(exp_phases{iphase}).RT_misses = nan(length(SUBJ), 6); % SUBJ, categories
 %   behav.(exp_phases{iphase}).RT_fas = nan(length(SUBJ), 6); % SUBJ, categories
@@ -32,10 +32,10 @@ behav=[];
 % end
 
 if ismac
-  PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/raw';
-  PREOUT = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior';
+  PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/raw';
+  PREOUT = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior';
 else
-%   basepath = '/home/mpib';
+  %   basepath = '/home/mpib';
 end
 % PREOUT = fullfile(basepath, 'LNDG/EyeMem/plots' );
 cd(PREIN)
@@ -69,7 +69,7 @@ for isub = 1:length(SUBJ)
     tline = fgetl(fid);
     strtok = strsplit(tline, ' ');
     subNo = str2double(strtok{1});%                             fprintf(datafilepointer,'%i %i %s %i %i %s %s %s %s %i %i\n', ...
-
+    
     ac_accum = 0; resp=[]; rt = []; rts_correct{isub} = [];
     rt_hits = [];  rt_misses = []; rt_crs = []; rt_fas = [];
     hits=0; misses=0; fas=0; crs=0;
@@ -82,7 +82,7 @@ for isub = 1:length(SUBJ)
       tline = fgetl(fid);
       strtok = strsplit(tline, ' ');
       
-%       subNo = str2double(strtok{1});%                             fprintf(datafilepointer,'%i %i %s %i %i %s %s %s %s %i %i\n', ...
+      %       subNo = str2double(strtok{1});%                             fprintf(datafilepointer,'%i %i %s %i %i %s %s %s %s %i %i\n', ...
       hand  = str2double(strtok{2});
       phaselabel  = strtok{3};
       irun = str2double(strtok{4});
@@ -166,7 +166,7 @@ for isub = 1:length(SUBJ)
       if itrial == ntrials_per_run(iphase) % calculate things per run
         
         if n_omissions < 4 % only allow runs with < 10 % missed responses
-%           behav.(exp_phases{iphase}).propcorrect(subNo, icat) = ac_accum/itrial; % TODO omit first trial(s)
+          %           behav.(exp_phases{iphase}).propcorrect(subNo, icat) = ac_accum/itrial; % TODO omit first trial(s)
           behav.(exp_phases{iphase})(subNo).propcorrect(icat) = ac_accum/itrial; % TODO omit first trial(s)
           
           Hitrate = hits/n_present;
@@ -188,8 +188,8 @@ for isub = 1:length(SUBJ)
           behav.(exp_phases{iphase})(subNo).RT_fas(icat) = nanmean(rt_fas);
           behav.(exp_phases{iphase})(subNo).RT_crs(icat) = nanmean(rt_crs);
           
-%           p_repeatbalanced(irun,1) = sum(diff(button) == 0 & button(2:end,:) == 1) / (sum(button(2:end)==1));
-%           p_repeatbalanced(irun,2) = sum(diff(button) == 0 & button(2:end,:) == 2) / (sum(button(2:end)==2));
+          %           p_repeatbalanced(irun,1) = sum(diff(button) == 0 & button(2:end,:) == 1) / (sum(button(2:end)==1));
+          %           p_repeatbalanced(irun,2) = sum(diff(button) == 0 & button(2:end,:) == 2) / (sum(button(2:end)==2));
           behav.(exp_phases{iphase})(subNo).p_repeatbalanced(icat,1) = sum(diff(resp) == 0 & resp(2:end,:) == 1) / (sum(resp(2:end)==1));
           behav.(exp_phases{iphase})(subNo).p_repeatbalanced(icat,2) = sum(diff(resp) == 0 & resp(2:end,:) == 2) / (sum(resp(2:end)==2));
           
@@ -207,27 +207,25 @@ for isub = 1:length(SUBJ)
     behav.(exp_phases{iphase})(subNo).singletrial = singletrial{iphase};
     behav.(exp_phases{iphase})(subNo).singletrialleg = 'condition target_present response accuracy RT picno';
     fclose(fid);
-    disp 'compute history bias'
     
-
   end
 end
 
 for iphase = 1:2 % study, test
-%   behav.(exp_phases{iphase}).propcorrect(:,6) = nanmean(behav.(exp_phases{iphase}).propcorrect(:,1:5) ,2);
-%   behav.(exp_phases{iphase}).dprime(:,6) = nanmean(behav.(exp_phases{iphase}).dprime(:,1:5) ,2);
-%   behav.(exp_phases{iphase}).criterion(:,6) = nanmean(behav.(exp_phases{iphase}).criterion(:,1:5) ,2);
-%   
-%   behav.(exp_phases{iphase}).RT(:,6) = nanmean(behav.(exp_phases{iphase}).RT(:,1:5) ,2);
-%   behav.(exp_phases{iphase}).RTsd(:,6) = nanmean(behav.(exp_phases{iphase}).RTsd(:,1:5) ,2);
-%   behav.(exp_phases{iphase}).RTsd2(:,6) = nanmean(behav.(exp_phases{iphase}).RTsd2(:,1:5) ,2);
-%   
-%   behav.(exp_phases{iphase}).omissions(:,6) = nansum(behav.(exp_phases{iphase}).omissions(:,1:5),2);
-%   
-%   behav.(exp_phases{iphase}).RT_hits(:,6) = nanmean(behav.(exp_phases{iphase}).RT_hits(:,1:5) ,2);
-%   behav.(exp_phases{iphase}).RT_misses(:,6) = nanmean(behav.(exp_phases{iphase}).RT_misses(:,1:5) ,2);
-%   behav.(exp_phases{iphase}).RT_fas(:,6) = nanmean(behav.(exp_phases{iphase}).RT_fas(:,1:5) ,2);
-%   behav.(exp_phases{iphase}).RT_crs(:,6) = nanmean(behav.(exp_phases{iphase}).RT_crs(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).propcorrect(:,6) = nanmean(behav.(exp_phases{iphase}).propcorrect(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).dprime(:,6) = nanmean(behav.(exp_phases{iphase}).dprime(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).criterion(:,6) = nanmean(behav.(exp_phases{iphase}).criterion(:,1:5) ,2);
+  %
+  %   behav.(exp_phases{iphase}).RT(:,6) = nanmean(behav.(exp_phases{iphase}).RT(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).RTsd(:,6) = nanmean(behav.(exp_phases{iphase}).RTsd(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).RTsd2(:,6) = nanmean(behav.(exp_phases{iphase}).RTsd2(:,1:5) ,2);
+  %
+  %   behav.(exp_phases{iphase}).omissions(:,6) = nansum(behav.(exp_phases{iphase}).omissions(:,1:5),2);
+  %
+  %   behav.(exp_phases{iphase}).RT_hits(:,6) = nanmean(behav.(exp_phases{iphase}).RT_hits(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).RT_misses(:,6) = nanmean(behav.(exp_phases{iphase}).RT_misses(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).RT_fas(:,6) = nanmean(behav.(exp_phases{iphase}).RT_fas(:,1:5) ,2);
+  %   behav.(exp_phases{iphase}).RT_crs(:,6) = nanmean(behav.(exp_phases{iphase}).RT_crs(:,1:5) ,2);
   
   ddm_dat{iphase} = ddm_dat{iphase}(~isnan(ddm_dat{iphase}(:,5)),:);
   % save ddm_dat to csv:             % For HDDM: Put subjid, category, stim, ac, rt
@@ -237,36 +235,43 @@ for iphase = 1:2 % study, test
   dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
 end
 
-% % TODO Fit EZ DDM and get drift rate, boundary sep and non dec time
-% for isub = 1:length(SUBJ)
-%   for iphase = 1:2 % study, test
-% %     if isempty(SUBJ(isub).SUBJ)
-% %       fprintf('SUBJ %d dropped\n', isub)
-% %       continue
-% %     end
-%     fprintf('%s EZ DDM fitting . . .\n', SUBJ(isub))
-%     
-%     propCorrect = behav.(exp_phases{iphase}).propcorrect(isub,6);
-%     if propCorrect == 0 || propCorrect == 0.5 || propCorrect == 1
-%       warning('Propcorrect is off')
-%     end
-%     unix_string = sprintf('R CMD BATCH --no-timing --no-save --no-restore ''--args Pc=%g VRT=%g MRT=%g'' /Users/kloosterman/Dropbox/PROJECTS/EyeMem/DDM_EZ/runvaTer.R /Users/kloosterman/Dropbox/PROJECTS/EyeMem/DDM_EZ/runvaTer.out', ...
-%       propCorrect, var(rts_correct{isub}), mean(rts_correct{isub}) );
-%     test = unix(unix_string);
-%     ddmpars = load('/Users/kloosterman/Dropbox/PROJECTS/EyeMem/DDM_EZ/DDMfit.txt');
-%     behav.(exp_phases{iphase}).driftrate(isub,6) = ddmpars(1);
-%     behav.(exp_phases{iphase}).boundsep(isub,6) = ddmpars(2);
-%     behav.(exp_phases{iphase}).nondectime(isub,6) = ddmpars(3);
-%     
-%   end
-% end
 
+%% Add DDM data
+
+disp 'load ddm fits'
+model_names = {'eyemem1_params_biasmodel_YA' 'eyemem1_params_biasmodel_OA' }; % chi_accuracy_basic_runs
+pars = {'a' 't' 'v' 'z' 'dc'};
+ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/';
+for imodel = 1:length(model_names)
+  model_name = model_names{imodel};
+  ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
+  
+  behav.(model_name) = [];
+  behav.(model_name).dimord = 'subj';
+  
+  for ipar = 1:length(pars)
+    ddmstr = sprintf('%s_subj.',  pars{ipar});
+    line_inds = contains(ddmfit.Var1, ddmstr);
+    % get subjID from Var1 strings, to use as index
+    subj = ddmfit.Var1(line_inds);
+    subj = cellfun(@(x) tokenize(x, '.'), subj, 'UniformOutput', false);
+    subj = vertcat(subj{:});
+    subj = cellfun(@str2double, subj(:,2));
+    
+    temp = NaN(101,1);
+    temp(subj,1) = ddmfit.mean(line_inds);
+    behav.(model_name).(pars{ipar}) = temp;
+    behav.eyemem1_params_biasmodel.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+%     behav.eyemem1_params_biasmodel.(pars{ipar})(behav.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
+  end
+  
+  if ~any(line_inds); warning('No data found'); continue;  end
+end
+
+disp 'TODO remove zeros from eyemem1_params_biasmodel!'
 behav.participants = Participants;
-% behav.agegroup = transpose(strcmp({SUBJ.agegroup}, 'old' ) + 1); % young is 1, old is 2
-% dropped_subj = cellfun(@isempty, {SUBJ.agegroup});
-% behav.agegroup(find(dropped_subj)) = nan;
-% todo save behav
 
+%%
 disp('Saving')
 disp(fullfile(PREOUT, 'Eyemem_behavior.mat'))
 save(fullfile(PREOUT, 'Eyemem_behavior.mat'), 'behav')
