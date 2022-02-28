@@ -17,7 +17,6 @@ else
   %   backend = 'local';
   compile = 'no';
 end
-backend = 'local';
 
 timreq = 10; %in minutes per run
 memreq = 2000; % in MB

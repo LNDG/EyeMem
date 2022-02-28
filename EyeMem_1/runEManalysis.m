@@ -6,7 +6,7 @@ if ismac
 else
 %     basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
   basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
-  addpath(genpath('/mnt/beegfs/home/kloosterman/MATLAB/EyeMem/EyeMem_1'));  
+  addpath(genpath('/mnt/beegfs/home/kloosterman/GitHub/EyeMem/EyeMem_1'));  
 end
 
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
