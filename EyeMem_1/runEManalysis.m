@@ -13,8 +13,8 @@ end
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
-addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
-% addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
+% addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
+addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
 % only when running Spearman corr behavior PLS
 
 addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'mmse'))) %

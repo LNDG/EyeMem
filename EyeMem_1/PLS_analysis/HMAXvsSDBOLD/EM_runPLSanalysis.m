@@ -35,19 +35,6 @@ switch analysisname
     
     agegroups = {'young' 'old'};
        
-    cd(fullfile(PREIN))
-    subjlist = dir('*_BfMRIsessiondata.mat');
-    id_list = cell(1,2);
-    for isub=1:length(subjlist)
-      tmp = tokenize(subjlist(isub).name, '_');
-      subjind = behav.participants.participant_id == tmp{1};
-      if behav.participants{subjind, 'group'} == 'old'
-        age = 1;
-      else
-        age = 2;
-      end
-      id_list{age}{end+1} = tmp{1};
-    end
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
     
@@ -72,7 +59,7 @@ switch analysisname
     basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
     %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/YA/PLS';
     %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/VOIsel/OA/PLS';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/old'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific'
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -98,43 +85,38 @@ switch analysisname
     behavior_data = {};
     behavior_name = {};
     
-%     agegroups = {'young' 'old'};
-    % for iage = 1:2
-    %   cd(fullfile(PREIN, agegroups{iage}))
-    cd(fullfile(PREIN))
-    subjlist = dir('sub*_BfMRIsessiondata.mat');
-    id_list = cell(1,1);         behavior_data_keep = {}; behavior_name_keep = {};
-
-    for ibehav = 1:size(behavnames,1)
-      behavior_name = {[behavnames{ibehav}{:}]};
-      behavior_name_keep = [behavior_name_keep [behavnames{ibehav}{:}]];
-      behavior_data = {};
-      
+    %%% both groups code
+    
+    agegroups = {'young' 'old'};
+    ibehav = 1
+    behavior_name = {[behavnames{ibehav}{:}]};
+    behavior_data =  cell(length(agegroups),1);
+    
+    id_list = cell(length(agegroups),1);
+    for iage = 1:length(agegroups)
+      cd(fullfile(PREIN, agegroups{iage}))
+%       cd(fullfile(PREIN))
+      subjlist = dir('*_BfMRIsessiondata.mat');
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
+        id_list{iage}{end+1} = tmp{1};
+        
         subjind = behav.participants.participant_id == tmp{1};
-        if strcmp(agegroup, 'YA'); 
-          agegroup = 'young'; 
-        elseif strcmp(agegroup, 'OA'); 
-          agegroup = 'old'; 
+        behavoi = behav.(behavnames{ibehav}{1});
+        %           behav_val = nanmean(behavoi(subjind).(behavnames{ibehav}{2}));
+        %           % this is for dprime, averaged over runs...
+        behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
+        behavior_data{iage}{end+1} = num2str(behav_val); %
+        if behav_val == 0
+          disp(behav.participants.participant_id(subjind))
         end
-        if behav.participants{subjind, 'group'} == agegroup || strcmp(agegroup, 'ALLsubj')
-          behavoi = behav.(behavnames{ibehav}{1});
-%           behav_val = nanmean(behavoi(subjind).(behavnames{ibehav}{2}));
-%           % this is for dprime, averaged over runs...
-          behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
 
-          %         if behav_val < 0.25 % dprime lower than that is fishy
-          %           fprintf('behav_val < 0.25, skipping subject\n')
-          %           continue
-          %         end
-          id_list{1}{end+1} = tmp{1};
-          behavior_data{end+1,1} = num2str(behav_val); %
-          behavior_data_keep{end+1,ibehav} = num2str(behav_val);
-          
-        end
       end
     end
+    cd(PREIN)
+
+    
+    
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
     % end

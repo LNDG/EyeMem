@@ -161,10 +161,22 @@ fprintf(fid,'\n');
 label = {'behavior_data'};
 label_rep = repmat(label,size(behavior_data,1),1);
 combo = horzcat(label_rep,behavior_data)';%bring data together
-s_rep = [repmat('%s ',1,size(combo,1)),'\n'];
-%now write whole behavioral data cell array in single fprintf command and
-%the on to rest of lines to write...
-fprintf(fid,s_rep,combo{:});%%%%%
+% s_rep = [repmat('%s ',1,size(combo,1)),'\n'];
+% %now write whole behavioral data cell array in single fprintf command and
+% %the on to rest of lines to write...
+% fprintf(fid,s_rep,combo{:});%%%%%
+
+for igroup = 1:length(id_list)
+  %Append file suffix to ID list so don't have to include in id list
+  %itself...
+  id_list_append = {};
+  for i = 1:length(id_list{igroup})
+    %     id_list_append{i} = [id_list{igroup}{i},'_BfMRIsessiondata.mat'];
+    fprintf(fid,'behavior_data %s\n', combo{2,igroup}{i});
+  end
+end
+fprintf(fid,'\n\n');
+
 fprintf(fid,'\n');
 fprintf(fid,'%% ... following above pattern for more groups\n');
 fprintf(fid,'\n');
