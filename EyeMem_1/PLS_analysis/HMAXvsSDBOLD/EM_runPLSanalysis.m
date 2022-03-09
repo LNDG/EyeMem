@@ -51,11 +51,11 @@ switch analysisname
       %       {'test' 'criterion'};
       %       {'test' 'RTsd'}
       %       {'test' 'p_repeatbalanced'};
-      {'eyemem1_params_biasmodel' 'v'};
-      {'eyemem1_params_biasmodel' 'a'};
-      {'eyemem1_params_biasmodel' 't'};
-      {'eyemem1_params_biasmodel' 'dc'};
-      {'eyemem1_params_biasmodel' 'z'};
+      {'params_HDDMbias_YAOA' 'v'};
+      {'params_HDDMbias_YAOA' 'a'};
+      {'params_HDDMbias_YAOA' 't'};
+      {'params_HDDMbias_YAOA' 'dc'};
+      {'params_HDDMbias_YAOA' 'z'};
 %       {'eyemem1_params_biasmodel_Niels' 'v'};
       };
     
@@ -71,7 +71,6 @@ switch analysisname
     %     resultfilename = 'corrSDbold_vsRT_OA_BfMRIresult.mat';
     outname = analysisname;
     txtfilename = sprintf('%s%s_%s_BfMRIanalysis.txt', outname, agegroup, corrtype);
-    resultfilename = sprintf('%s%s_%s_BfMRIresult.mat', outname, agegroup, corrtype);    
     pls_option = '3';    
     mean_type = '2';
     if strcmp(corrtype, 'Pearson' )
@@ -92,6 +91,8 @@ switch analysisname
     %%% both groups code
     
     agegroups = {'young' 'old'};
+    resultfilename = sprintf('%s%s_%s_BfMRIresult.mat', outname, [agegroups{:}], corrtype);
+
 %     agegroups = {'young'};
 %     agegroups = {'old'};
     behavior_data =  cell(length(agegroups),1);
@@ -104,17 +105,17 @@ switch analysisname
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
         
-        subjind = behav.participants.participant_id == tmp{1};
+        subjind = behavior.participants.participant_id == tmp{1};
         behav_valkeep = [];
         behavior_name = [];
         for ibehav = 1:length(behavnames)
           behavior_name = [behavior_name '  ' behavnames{ibehav}{:}];
-          behavoi = behav.(behavnames{ibehav}{1});
+          behavoi = behavior.(behavnames{ibehav}{1});
           behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
           if behav_val == 0
             disp(agegroups{iage})
             warning('zero found!, dropping subject')
-            disp(behav.participants.participant_id(subjind))
+            disp(behavior.participants.participant_id(subjind))
             continue
           end
           behav_valkeep = [behav_valkeep behav_val];
@@ -129,7 +130,6 @@ switch analysisname
     
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
-    % end
     
   case 'SDbold_vs_HMAX'
     warning 'PLS_rank does not work with task PLS'
@@ -176,7 +176,7 @@ switch analysisname
     batch_plsgui(txtfilename)
     
     %%
-%   case 'behavPLSvsdprime' % load behav for dprime
+%   case 'behavPLSvsdprime' % load behavior for dprime
 %     corrtype = 'Pearson';
 %     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
 %     %     PREIN = fullfile(basepath, 'variability', 'ftsource', 'behavPLSvsdprime', 'iqr_5bins', 'bin5-bin1', 'young');
@@ -184,7 +184,7 @@ switch analysisname
 %     agegroups = {'young' 'old'};
 %     
 %     disp 'Generate model txt file'
-%     pls_option = '3'; % behav PLS    
+%     pls_option = '3'; % behavior PLS    
 %     mean_type = '0';
 %     if strcmp(corrtype, 'Pearson' )
 %       cormode = '0'; % Pearson
@@ -231,19 +231,19 @@ switch analysisname
 %           for isub=1:length(subjlist)
 %             tmp = tokenize(subjlist(isub).name, '_');
 %             id_list{end+1} = tmp{1};
-%             subjind = behav.participants.participant_id == tmp{1};
-%             %       behavior_data{end+1,1} = num2str(mean(behav.test(subjind).dprime));
-%             %         behavior_data{end+1,1} = num2str(mean(behav.test(subjind).dprime));
-%             %         getfield(behav.(behavnames{ibehav}{1}), behavnames{ibehav}{2});
+%             subjind = behavior.participants.participant_id == tmp{1};
+%             %       behavior_data{end+1,1} = num2str(mean(behavior.test(subjind).dprime));
+%             %         behavior_data{end+1,1} = num2str(mean(behavior.test(subjind).dprime));
+%             %         getfield(behavior.(behavnames{ibehav}{1}), behavnames{ibehav}{2});
 %             
-%             behavoi = behav.(behavnames{ibehav}{1});
+%             behavoi = behavior.(behavnames{ibehav}{1});
 %             behavior_data{isub,1} = num2str(mean(behavoi(subjind).(behavnames{ibehav}{2}))); %
 %             behavior_data_keep{isub,ibehav} = num2str(mean(behavoi(subjind).(behavnames{ibehav}{2}))); %
 %           end
 %           %           PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,{behavior_name})
 %           %           batch_plsgui(txtfilename)
 %         end
-%         disp 'model with all behav at once'
+%         disp 'model with all behavior at once'
 %         txtfilename = sprintf('Model_behavPLSvs_%s_%s_BfMRIanalysis.mat', [behavior_name_keep{:}], corrtype) ; %  'Model_behavPLSvsdprime_BfMRIanalysis.txt';
 %         resultfilename = sprintf('Model_behavPLSvs_%s_%s_BfMRIresult.mat',[behavior_name_keep{:}], corrtype) ;
 %         PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,...

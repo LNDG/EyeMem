@@ -1,4 +1,4 @@
-function EM_plotbehavioral(behav)
+function EM_plotbehavioral(behavior)
 
 age_groups = {'young' 'old'};
 exp_phases = {'study'; 'test'};
@@ -19,17 +19,17 @@ iplot=0;
 
 for idep = 1:length(depvars)
   for iage = 1:2
-    %         subj_inds = behav.agegroup == iage;
-    subj_inds = behav.participants.group == age_groups{iage}
+    %         subj_inds = behavior.agegroup == iage;
+    subj_inds = behavior.participants.group == age_groups{iage}
     for iphase = 1:2 % study, test
       
-      %             subj_dat{iphase, iage} = behav.(exp_phases{iphase}).(depvars{idep})(subj_inds,6);
-      subj_dat{iphase, iage} = cellfun(@mean, {behav.(exp_phases{iphase})(subj_inds).(depvars{idep})})
+      %             subj_dat{iphase, iage} = behavior.(exp_phases{iphase}).(depvars{idep})(subj_inds,6);
+      subj_dat{iphase, iage} = cellfun(@mean, {behavior.(exp_phases{iphase})(subj_inds).(depvars{idep})})
       dat(iphase, iage) = nanmean(subj_dat{iphase, iage});
-      %             dat_sem(iphase, iage) = nanstd(behav.(exp_phases{iphase}).(depvars{idep})(subj_inds,6)) / sqrt(length(find(subj_inds)));
+      %             dat_sem(iphase, iage) = nanstd(behavior.(exp_phases{iphase}).(depvars{idep})(subj_inds,6)) / sqrt(length(find(subj_inds)));
       dat_sem(iphase, iage) = nanstd(subj_dat{iphase, iage}) / sqrt(length(find(subj_inds)));
       length(find(subj_inds))
-      %                     dat_sem(iphase, iage) = nanstd(behav.(exp_phases{iphase}).(depvars{idep})(subj_inds,6));
+      %                     dat_sem(iphase, iage) = nanstd(behavior.(exp_phases{iphase}).(depvars{idep})(subj_inds,6));
       
     end
   end

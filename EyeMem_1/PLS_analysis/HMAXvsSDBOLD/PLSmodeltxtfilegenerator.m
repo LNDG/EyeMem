@@ -192,7 +192,7 @@ fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
 fprintf(fid,'\n');
 fprintf(fid,'%%  Numbers of Behavior Name should match the Behavior Data above\n');
 fprintf(fid,'\n');
-fprintf(fid,'%s ','behavior_name	',behavior_name{:});
+fprintf(fid,'%s ','behavior_name	',behavior_name);
 fprintf(fid,'\n');
 fprintf(fid,'\n');
 fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
