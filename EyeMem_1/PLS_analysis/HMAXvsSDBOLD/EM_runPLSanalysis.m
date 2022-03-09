@@ -52,6 +52,11 @@ switch analysisname
       %       {'test' 'RTsd'}
       %       {'test' 'p_repeatbalanced'};
       {'eyemem1_params_biasmodel' 'v'};
+      {'eyemem1_params_biasmodel' 'a'};
+      {'eyemem1_params_biasmodel' 't'};
+      {'eyemem1_params_biasmodel' 'dc'};
+      {'eyemem1_params_biasmodel' 'z'};
+%       {'eyemem1_params_biasmodel_Niels' 'v'};
       };
     
     %     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
@@ -83,13 +88,12 @@ switch analysisname
     save_data = '0';
     selected_cond = []; %num2str(ones(1,5)); disp 'TODO get ncond somewhere'
     behavior_data = {};
-    behavior_name = {};
     
     %%% both groups code
     
     agegroups = {'young' 'old'};
-    ibehav = 1
-    behavior_name = {[behavnames{ibehav}{:}]};
+%     agegroups = {'young'};
+%     agegroups = {'old'};
     behavior_data =  cell(length(agegroups),1);
     
     id_list = cell(length(agegroups),1);
@@ -99,23 +103,29 @@ switch analysisname
       subjlist = dir('*_BfMRIsessiondata.mat');
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
-        id_list{iage}{end+1} = tmp{1};
         
         subjind = behav.participants.participant_id == tmp{1};
-        behavoi = behav.(behavnames{ibehav}{1});
-        %           behav_val = nanmean(behavoi(subjind).(behavnames{ibehav}{2}));
-        %           % this is for dprime, averaged over runs...
-        behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
-        behavior_data{iage}{end+1} = num2str(behav_val); %
-        if behav_val == 0
-          disp(behav.participants.participant_id(subjind))
+        behav_valkeep = [];
+        behavior_name = [];
+        for ibehav = 1:length(behavnames)
+          behavior_name = [behavior_name '  ' behavnames{ibehav}{:}];
+          behavoi = behav.(behavnames{ibehav}{1});
+          behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
+          if behav_val == 0
+            disp(agegroups{iage})
+            warning('zero found!, dropping subject')
+            disp(behav.participants.participant_id(subjind))
+            continue
+          end
+          behav_valkeep = [behav_valkeep behav_val];
         end
-
+        
+        behavior_data{iage}{end+1} = num2str(behav_valkeep); %
+        id_list{iage}{end+1} = tmp{1};
+        
       end
     end
     cd(PREIN)
-
-    
     
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)

@@ -83,14 +83,14 @@ for isub = 1:length(SUBJ)
       strtok = strsplit(tline, ' ');
       
       %       subNo = str2double(strtok{1});%                             fprintf(datafilepointer,'%i %i %s %i %i %s %s %s %s %i %i\n', ...
-      hand  = str2double(strtok{2});
+      hand  =       str2double(strtok{2});
       phaselabel  = strtok{3};
-      irun = str2double(strtok{4});
-      itrial = str2double(strtok{5});
-      resptmp = strtok{6};
-      category = strtok{7};
-      view_file = strtok{8};
-      test_file = strtok{9}; % nan for test phase
+      irun =        str2double(strtok{4});
+      itrial =      str2double(strtok{5});
+      resptmp =     strtok{6};
+      category =    strtok{7};
+      view_file =   strtok{8};
+      test_file =   strtok{9}; % nan for test phase
       ac = str2double(strtok{10});
       rt(itrial,:) = str2double(strtok{11}) / 1000; % convert to s
       
@@ -99,12 +99,22 @@ for isub = 1:length(SUBJ)
       end
       %               leftbutton = 'z'; % Yellow left
       %         rightbutton = 'g'; % Green right
-      if strcmp(resptmp, 'z') | strcmp(resptmp, 'LeftGUI')
-        resp(itrial,1) = 1;
-      elseif strcmp(resptmp, 'g') | strcmp(resptmp, 'RightGUI')
-        resp(itrial,1) = 2;
-      else
-        resp(itrial,1) = NaN;
+      if hand == 1
+        if strcmp(resptmp, 'z') | strcmp(resptmp, 'LeftGUI')
+          resp(itrial,1) = 2; % 1 = old, 2 = new
+        elseif strcmp(resptmp, 'g') | strcmp(resptmp, 'RightGUI')
+          resp(itrial,1) = 1;
+        else
+          resp(itrial,1) = NaN;
+        end
+      elseif hand == 2
+        if strcmp(resptmp, 'z') | strcmp(resptmp, 'LeftGUI')
+          resp(itrial,1) = 1;
+        elseif strcmp(resptmp, 'g') | strcmp(resptmp, 'RightGUI')
+          resp(itrial,1) = 2;
+        else
+          resp(itrial,1) = NaN;
+        end
       end
       %             if iphase == 2 % counted from stim offset, only affects
       %             nondec time
@@ -160,7 +170,8 @@ for isub = 1:length(SUBJ)
       else
         ageind = 1;
       end
-      ddm_dat{iphase} = [ddm_dat{iphase}; isub-1  icat target_present resp(itrial,:) ac rt(itrial,:) ageind];
+      %       ddm_dat{iphase} = [ddm_dat{iphase}; isub-1  icat target_present resp(itrial,:) ac rt(itrial,:) ageind];
+      ddm_dat{iphase} = [ddm_dat{iphase}; subNo icat target_present resp(itrial,:) ac rt(itrial,:) ageind];
       singletrial{iphase} = [singletrial{iphase}; icat target_present resp(itrial,:) ac rt(itrial,:) picno];
       
       if itrial == ntrials_per_run(iphase) % calculate things per run
@@ -192,7 +203,6 @@ for isub = 1:length(SUBJ)
           %           p_repeatbalanced(irun,2) = sum(diff(button) == 0 & button(2:end,:) == 2) / (sum(button(2:end)==2));
           behav.(exp_phases{iphase})(subNo).p_repeatbalanced(icat,1) = sum(diff(resp) == 0 & resp(2:end,:) == 1) / (sum(resp(2:end)==1));
           behav.(exp_phases{iphase})(subNo).p_repeatbalanced(icat,2) = sum(diff(resp) == 0 & resp(2:end,:) == 2) / (sum(resp(2:end)==2));
-          
           
         end
         
@@ -236,12 +246,47 @@ for iphase = 1:2 % study, test
 end
 
 
-%% Add DDM data
+% %% Add DDM data Laura (7 subjects missing)
+% 
+% disp 'load ddm fits'
+% model_names = {'eyemem1_params_biasmodel_YA' 'eyemem1_params_biasmodel_OA' }; % chi_accuracy_basic_runs
+% pars = {'a' 't' 'v' 'z' 'dc'};
+% ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Laura';
+% for imodel = 1:length(model_names)
+%   model_name = model_names{imodel};
+%   ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
+%   
+%   behav.(model_name) = [];
+%   behav.(model_name).dimord = 'subj';
+%   
+%   for ipar = 1:length(pars)
+%     ddmstr = sprintf('%s_subj.',  pars{ipar});
+%     line_inds = contains(ddmfit.Var1, ddmstr);
+%     % get subjID from Var1 strings, to use as index
+%     subj = ddmfit.Var1(line_inds);
+%     subj = cellfun(@(x) tokenize(x, '.'), subj, 'UniformOutput', false);
+%     subj = vertcat(subj{:});
+%     subj = cellfun(@str2double, subj(:,2));
+%     
+%     temp = NaN(101,1);
+%     temp(subj,1) = ddmfit.mean(line_inds);
+%     behav.(model_name).(pars{ipar}) = temp;
+%     behav.eyemem1_params_biasmodel.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+% %     behav.eyemem1_params_biasmodel.(pars{ipar})(behav.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
+%   end
+%   
+%   if ~any(line_inds); warning('No data found'); continue;  end
+% end
+% 
+% disp 'TODO remove zeros from eyemem1_params_biasmodel!'
+% behav.participants = Participants;
+% 
+%% Add DDM data Niels (separate YA and OA)
 
 disp 'load ddm fits'
-model_names = {'eyemem1_params_biasmodel_YA' 'eyemem1_params_biasmodel_OA' }; % chi_accuracy_basic_runs
+model_names = {'params_HDDMbias_YA' 'params_HDDMbias_OA' }; % chi_accuracy_basic_runs
 pars = {'a' 't' 'v' 'z' 'dc'};
-ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/';
+ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Niels';
 for imodel = 1:length(model_names)
   model_name = model_names{imodel};
   ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
@@ -250,7 +295,7 @@ for imodel = 1:length(model_names)
   behav.(model_name).dimord = 'subj';
   
   for ipar = 1:length(pars)
-    ddmstr = sprintf('%s_subj.',  pars{ipar});
+    ddmstr = sprintf('%s_subj',  pars{ipar});
     line_inds = contains(ddmfit.Var1, ddmstr);
     % get subjID from Var1 strings, to use as index
     subj = ddmfit.Var1(line_inds);
@@ -265,6 +310,45 @@ for imodel = 1:length(model_names)
 %     behav.eyemem1_params_biasmodel.(pars{ipar})(behav.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
   end
   
+  if ~any(line_inds); warning('No data found'); continue;  end
+end
+
+disp 'TODO remove zeros from eyemem1_params_biasmodel!'
+behav.participants = Participants;
+
+
+
+%% Add DDM data Niels (all subjects?)
+
+disp 'load ddm fits'
+model_names = {'params_HDDMbias_test' }; % hddm, young and old together
+pars = {'a' 't' 'v' 'z' 'dc'};
+agegroup = {'YA' 'OA'};
+ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Niels';
+for imodel = 1:length(model_names)
+  model_name = model_names{imodel};
+  ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
+  
+  for iage = 1:2
+    behav.(model_name).(agegroup{iage}) = [];
+    behav.(model_name).(agegroup{iage}).dimord = 'subj';
+    
+    for ipar = 1:length(pars)
+      ddmstr = sprintf('%s_subj(%s).',  pars{ipar}, agegroup{iage});
+      line_inds = contains(ddmfit.Var1, ddmstr);
+      % get subjID from Var1 strings, to use as index
+      subj = ddmfit.Var1(line_inds);
+      subj = cellfun(@(x) tokenize(x, '.'), subj, 'UniformOutput', false);
+      subj = vertcat(subj{:});
+      subj = cellfun(@str2double, subj(:,2));
+      
+      temp = NaN(101,1);
+      temp(subj,1) = ddmfit.mean(line_inds);
+      behav.(model_name).(agegroup{iage}).(pars{ipar}) = temp;
+      behav.eyemem1_params_biasmodel_Niels.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+      %     behav.eyemem1_params_biasmodel.(pars{ipar})(behav.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
+    end
+  end
   if ~any(line_inds); warning('No data found'); continue;  end
 end
 
