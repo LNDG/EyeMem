@@ -1,5 +1,7 @@
 function [behav] = EM_analysebehavioral
 %Read in behav text files, compute d', RT, etc.
+% TODO organize MEG2afc way, track age with Participants table
+% dimord subj_phase_cond
 
 % load('participantinfo.mat') %
 load('/Users/kloosterman/Documents/GitHub/EyeMem/EyeMem_1/participantinfo/participantinfo.mat', 'Participants')
@@ -12,6 +14,9 @@ ntrials_per_run = [30 60];
 SUBJ= [9:101]; % TODO specify further?
 
 behav=[];
+behav.participants = Participants;
+behav.SUBJ = SUBJ;
+
 % for iphase = 1:2
 %   behav.(exp_phases{iphase}).propcorrect = nan(length(SUBJ), 6); % SUBJ, categories
 %   behav.(exp_phases{iphase}).dprime = nan(length(SUBJ), 6); % SUBJ, categories
@@ -222,21 +227,6 @@ for isub = 1:length(SUBJ)
 end
 
 for iphase = 1:2 % study, test
-  %   behav.(exp_phases{iphase}).propcorrect(:,6) = nanmean(behav.(exp_phases{iphase}).propcorrect(:,1:5) ,2);
-  %   behav.(exp_phases{iphase}).dprime(:,6) = nanmean(behav.(exp_phases{iphase}).dprime(:,1:5) ,2);
-  %   behav.(exp_phases{iphase}).criterion(:,6) = nanmean(behav.(exp_phases{iphase}).criterion(:,1:5) ,2);
-  %
-  %   behav.(exp_phases{iphase}).RT(:,6) = nanmean(behav.(exp_phases{iphase}).RT(:,1:5) ,2);
-  %   behav.(exp_phases{iphase}).RTsd(:,6) = nanmean(behav.(exp_phases{iphase}).RTsd(:,1:5) ,2);
-  %   behav.(exp_phases{iphase}).RTsd2(:,6) = nanmean(behav.(exp_phases{iphase}).RTsd2(:,1:5) ,2);
-  %
-  %   behav.(exp_phases{iphase}).omissions(:,6) = nansum(behav.(exp_phases{iphase}).omissions(:,1:5),2);
-  %
-  %   behav.(exp_phases{iphase}).RT_hits(:,6) = nanmean(behav.(exp_phases{iphase}).RT_hits(:,1:5) ,2);
-  %   behav.(exp_phases{iphase}).RT_misses(:,6) = nanmean(behav.(exp_phases{iphase}).RT_misses(:,1:5) ,2);
-  %   behav.(exp_phases{iphase}).RT_fas(:,6) = nanmean(behav.(exp_phases{iphase}).RT_fas(:,1:5) ,2);
-  %   behav.(exp_phases{iphase}).RT_crs(:,6) = nanmean(behav.(exp_phases{iphase}).RT_crs(:,1:5) ,2);
-  
   ddm_dat{iphase} = ddm_dat{iphase}(~isnan(ddm_dat{iphase}(:,5)),:);
   % save ddm_dat to csv:             % For HDDM: Put subjid, category, stim, ac, rt
   csv_file = sprintf('/Users/kloosterman/Dropbox/PROJECTS/EyeMem/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
@@ -306,7 +296,7 @@ for imodel = 1:length(model_names)
     temp = NaN(101,1);
     temp(subj,1) = ddmfit.mean(line_inds);
     behav.(model_name).(pars{ipar}) = temp;
-    behav.eyemem1_params_biasmodel.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+    behav.params_HDDMbias_YAOA.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
 %     behav.eyemem1_params_biasmodel.(pars{ipar})(behav.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
   end
   
@@ -345,15 +335,13 @@ for imodel = 1:length(model_names)
       temp = NaN(101,1);
       temp(subj,1) = ddmfit.mean(line_inds);
       behav.(model_name).(agegroup{iage}).(pars{ipar}) = temp;
-      behav.eyemem1_params_biasmodel_Niels.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
-      %     behav.eyemem1_params_biasmodel.(pars{ipar})(behav.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
+      behav.params_HDDMbias_test_YAOA.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
     end
   end
   if ~any(line_inds); warning('No data found'); continue;  end
 end
 
 disp 'TODO remove zeros from eyemem1_params_biasmodel!'
-behav.participants = Participants;
 
 %%
 disp('Saving')
