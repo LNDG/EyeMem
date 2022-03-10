@@ -3,7 +3,7 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold_vsdprime';
+  analysisname = 'corrSDbold';
   %    analysisname = 'SDbold_OAvsYA_task'
 %   analysisname = 'SDbold_vs_HMAX';
 end
@@ -38,7 +38,7 @@ switch analysisname
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
     
-  case 'corrSDbold_vsdprime'
+  case 'corrSDbold'
     corrtype = 'Spearman'; %Spearman Pearson
     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
@@ -51,11 +51,13 @@ switch analysisname
       %       {'test' 'criterion'};
       %       {'test' 'RTsd'}
       %       {'test' 'p_repeatbalanced'};
-      {'params_HDDMbias_YAOA' 'v'};
-      {'params_HDDMbias_YAOA' 'a'};
-      {'params_HDDMbias_YAOA' 't'};
-      {'params_HDDMbias_YAOA' 'dc'};
-      {'params_HDDMbias_YAOA' 'z'};
+%       {'params_HDDMbias_YAOA' 'v'};
+%       {'params_HDDMbias_YAOA' 'a'};
+%       {'params_HDDMbias_YAOA' 't'};
+%       {'params_HDDMbias_YAOA' 'dc'};
+%       {'params_HDDMbias_YAOA' 'z'};
+%       {'ddmLaura' 'v'};
+      {'ddmNiels' 'v'};
 %       {'eyemem1_params_biasmodel_Niels' 'v'};
       };
     
@@ -70,7 +72,6 @@ switch analysisname
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
     %     resultfilename = 'corrSDbold_vsRT_OA_BfMRIresult.mat';
     outname = analysisname;
-    txtfilename = sprintf('%s%s_%s_BfMRIanalysis.txt', outname, agegroup, corrtype);
     pls_option = '3';    
     mean_type = '2';
     if strcmp(corrtype, 'Pearson' )
@@ -90,18 +91,17 @@ switch analysisname
     
     %%% both groups code
     
-    agegroups = {'young' 'old'};
-    resultfilename = sprintf('%s%s_%s_BfMRIresult.mat', outname, [agegroups{:}], corrtype);
-
+%     agegroups = {'young' 'old'};
+    
 %     agegroups = {'young'};
-%     agegroups = {'old'};
+    agegroups = {''};
     behavior_data =  cell(length(agegroups),1);
     
     id_list = cell(length(agegroups),1);
+    ages=table('Size', [1 1], 'VariableTypes', ["string"]);
     for iage = 1:length(agegroups)
       cd(fullfile(PREIN, agegroups{iage}))
-%       cd(fullfile(PREIN))
-      subjlist = dir('*_BfMRIsessiondata.mat');
+      subjlist = dir('sub*_BfMRIsessiondata.mat');
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
         
@@ -112,25 +112,32 @@ switch analysisname
           behavior_name = [behavior_name '  ' behavnames{ibehav}{:}];
           behavoi = behavior.(behavnames{ibehav}{1});
           behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
+          ages.Var1(isub,1) = behavior.participants.group(find(subjind),:);
           if behav_val == 0
             disp(agegroups{iage})
-            warning('zero found!, dropping subject')
+            warning('zero found!')
             disp(behavior.participants.participant_id(subjind))
-            continue
+            disp('dropping subject'); continue
           end
           behav_valkeep = [behav_valkeep behav_val];
         end
         
-        behavior_data{iage}{end+1} = num2str(behav_valkeep); %
-        id_list{iage}{end+1} = tmp{1};
-        
+        if behav_val > 0
+          behavior_data{iage}{end+1} = num2str(behav_valkeep); %
+          id_list{iage}{end+1} = tmp{1};
+        end
       end
     end
     cd(PREIN)
     
+    outfilename = sprintf('%s_%s_%s_%d_%s', outname, [behavnames{:}{:}], [agegroups{:}], cellfun(@length, id_list), corrtype); %
+    disp(outfilename)
+    txtfilename = [ outfilename '_BfMRIanalysis.txt'];
+    resultfilename = [ outfilename '_BfMRIresult.mat'];
+
+    save ages ages
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
-    
   case 'SDbold_vs_HMAX'
     warning 'PLS_rank does not work with task PLS'
     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc

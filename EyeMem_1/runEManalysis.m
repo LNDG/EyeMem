@@ -25,6 +25,9 @@ startup_MVPA_Light
 % addpath(genpath('/Volumes/FB-LIP/Projects/StateSwitch/dynamic/data/mri/task/analyses/B4_PLS_preproc2/T_tools/pls'))
 addpath(genpath(fullfile(basepath, 'MATLAB', 'tools/custom_tools/plotting')))
 
+   addpath(genpath(fullfile('/Users/kloosterman/Documents/GitHub/plotting-tools')))
+
+
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'custom_tools')) % interpolateblinks
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'NIFTI_toolbox'))
 ft_defaults
@@ -66,7 +69,9 @@ EM_pls_SDbold_vs_HMAX_setup()
 % plot results of gaze-specific HMAX vs IQRbold
 % EM_plot_gazeHMAXvsSDbold
 
-
+% split pls result into age groups, test interaction
+result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/corrSDbold_ddmNielsv__88_Spearman_BfMRIresult.mat')
+EM_plsgroupeffectANOVA(result)
 
 %% NO GLM APPROACH: Cut out trials in continuous fMRI data
 % EM_maketrials_fMRI_setup()

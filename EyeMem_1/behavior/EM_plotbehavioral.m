@@ -1,8 +1,46 @@
-function EM_plotbehavioral(behavior)
+function EM_plotbehavioral(b)
 
-age_groups = {'young' 'old'};
-exp_phases = {'study'; 'test'};
-depvars = {'dprime' 'criterion' 'RT' 'propcorrect'  }; % 'RTsd' 'RTsd2'
+% age_groups = {'young' 'old'};
+% exp_phases = {'study'; 'test'};
+% depvars = {'dprime' 'criterion' 'RT' 'propcorrect'  }; % 'RTsd' 'RTsd2'
+%
+%% plot modelfree
+SAV=1;
+behavnames = {
+  {'dprime'};  {'criterion'};  { 'RT'} ;{ 'RTsd' };
+  }; % all matrices
+close all
+nrow=8; ncol=5;
+
+f = figure; iplot=0;
+f.Position =[   680   467   85*ncol   100*nrow];
+Fontsize = 6;
+for im = 1:length(behavnames)
+  for iphase = 2
+    for iage = 1:2
+      iplot=iplot+1;
+      if isempty(behavnames{im})
+        continue;
+      end
+      curb = getfield(b, behavnames{im}{:});
+      ageinds = b.participants.group == b.age_groups{iage};
+      data = squeeze(curb(ageinds,iphase, 6));  % dimord: 'subj_phase_cond'
+      %   disp 'Drop NK1 high drift'
+      %   data = data(2:end,:);
+      subplot(nrow,ncol,iplot); hold on; % axis tight
+      plotspreadfig(data, Fontsize, [], b.SUBJ);
+      %       title(sprintf('%s %s\nruns %s', behavnames{im}{1}, diffleg{idiff}, avgtypestr{ia}), 'Fontsize', Fontsize-1)
+    end
+  end
+end
+if SAV
+  %   saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.pdf' )))
+  saveas(gcf, fullfile(b.PREOUT, sprintf('behavior_%s_runs%s.png', diffleg{idiff}, avgtypestr{ia} )))
+  cd(b.PREOUT)
+end
+
+
+
 minmax_vals = [0 3.5; -0.1 0.25; 0.5 1.4; 0.5 1]; % 0 0.4; 0 0.35;
 
 % depvars = {'driftrate' 'boundsep' 'nondectime' };
@@ -93,3 +131,29 @@ cd(PREOUT)
 % barwebNK(dat, dat_sem, 0.75, exp_phases)%
 % hold on; axis square; % after barweb call!
 % legend(age_groups)
+
+end
+
+%% plot bars + lines
+function ax = plotspreadfig(data, Fontsize, condlabels, SUBJ)
+% lines between pts
+line([ones(1,size(data,1)); ones(1,size(data,1))+1], [data(:,1) data(:,2)]', 'Color',[0.66 0.66 0.66 ], 'Linewidth', 0.5)
+
+handle = plotSpread( {data(:,1) data(:,2)}, 'distributionMarkers', 'o', 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );% b r circles
+set(handle{1}(1:2), 'MarkerSize', 3, 'Linewidth', 0.5)
+% text(data(:,1)', data(:,2)', num2cell(SUBJ), 'Fontsize', Fontsize)
+
+ax=gca;
+ax.FontSize = Fontsize;
+ax.XTickLabel = condlabels;
+
+% mean lines
+line([0.75 1.25]', [mean(data(:,1)) mean(data(:,1))]',  'Color', 'r', 'Linewidth', 2)
+line([1.75 2.25]', [nanmean(data(:,2)) nanmean(data(:,2))]',  'Color', 'b', 'Linewidth', 2)
+
+% stats
+[~,p] = ttest(data(:,1), data(:,2));
+text(1, ax.YLim(2), sprintf('p=%1.3f', p), 'Fontsize', Fontsize)
+%   if p < 0.05 %   sigstar
+xlim([0.5 2.5])
+end

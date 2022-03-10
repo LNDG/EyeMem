@@ -3,18 +3,26 @@ function [behavior] = EM_analysebehavioral
 % TODO organize MEG2afc way, track age with Participants table
 % dimord subj_phase_cond
 
-% load('participantinfo.mat') %
+behavior=[];
 load('/Users/kloosterman/Documents/GitHub/EyeMem/EyeMem_1/participantinfo/participantinfo.mat', 'Participants')
+behavior.participants = Participants;
 
 category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %1-5
-
 exp_phases = {'study' 'test'};
 ntrials_per_run = [30 60];
 
-SUBJ= [9:101]; % TODO specify further?
+% SUBJ= [9:101]; % TODO specify further?
+% find out which SUBJ are still in the mix in fMRI
+PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific';
+cd(fullfile(PREIN))
+SUBJ = [];
+subjlist = dir('sub*_BfMRIsessiondata.mat');
+for isub=1:length(subjlist)
+  tmp = tokenize(subjlist(isub).name, '_');
+  SUBJ(isub,1) = find(behavior.participants.participant_id == tmp{1});
+end
+SUBJ = sort(SUBJ);
 
-behavior=[];
-behavior.participants = Participants;
 behavior.SUBJ = SUBJ;
 behavior.dimord = 'subj_phase_cond';
 
@@ -206,40 +214,40 @@ for iphase = 1:2 % study, test
   dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
 end
 
-% %% Add DDM data Laura (7 subjects missing)
-% 
-% disp 'load ddm fits'
-% model_names = {'eyemem1_params_biasmodel_YA' 'eyemem1_params_biasmodel_OA' }; % chi_accuracy_basic_runs
-% pars = {'a' 't' 'v' 'z' 'dc'};
-% ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Laura';
-% for imodel = 1:length(model_names)
-%   model_name = model_names{imodel};
-%   ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
-%   
-%   behavior.(model_name) = [];
-%   behavior.(model_name).dimord = 'subj';
-%   
-%   for ipar = 1:length(pars)
-%     ddmstr = sprintf('%s_subj.',  pars{ipar});
-%     line_inds = contains(ddmfit.Var1, ddmstr);
-%     % get subjID from Var1 strings, to use as index
-%     subj = ddmfit.Var1(line_inds);
-%     subj = cellfun(@(x) tokenize(x, '.'), subj, 'UniformOutput', false);
-%     subj = vertcat(subj{:});
-%     subj = cellfun(@str2double, subj(:,2));
-%     
-%     temp = NaN(101,1);
-%     temp(subj,1) = ddmfit.mean(line_inds);
-%     behavior.(model_name).(pars{ipar}) = temp;
-%     behavior.eyemem1_params_biasmodel.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
-% %     behavior.eyemem1_params_biasmodel.(pars{ipar})(behavior.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
-%   end
-%   
-%   if ~any(line_inds); warning('No data found'); continue;  end
-% end
-% 
-% disp 'TODO remove zeros from eyemem1_params_biasmodel!'
-% behavior.participants = Participants;
+%% Add DDM data Laura (7 subjects missing)
+
+disp 'load ddm fits'
+model_names = {'eyemem1_params_biasmodel_YA' 'eyemem1_params_biasmodel_OA' }; % chi_accuracy_basic_runs
+pars = {'a' 't' 'v' 'z' 'dc'};
+ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Laura';
+for imodel = 1:length(model_names)
+  model_name = model_names{imodel};
+  ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
+  
+  behavior.(model_name) = [];
+  behavior.(model_name).dimord = 'subj';
+  
+  for ipar = 1:length(pars)
+    ddmstr = sprintf('%s_subj.',  pars{ipar});
+    line_inds = contains(ddmfit.Var1, ddmstr);
+    % get subjID from Var1 strings, to use as index
+    subj = ddmfit.Var1(line_inds);
+    subj = cellfun(@(x) tokenize(x, '.'), subj, 'UniformOutput', false);
+    subj = vertcat(subj{:});
+    subj = cellfun(@str2double, subj(:,2));
+    
+    temp = NaN(101,1);
+    temp(subj,1) = ddmfit.mean(line_inds);
+    behavior.(model_name).(pars{ipar}) = temp;
+    behavior.ddmLaura.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+%     behavior.eyemem1_params_biasmodel.(pars{ipar})(behavior.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
+  end
+  
+  if ~any(line_inds); warning('No data found'); continue;  end
+end
+
+disp 'TODO remove zeros from eyemem1_params_biasmodel!'
+behavior.participants = Participants;
 % 
 % %% Add DDM data Niels (separate YA and OA)
 % 
@@ -305,11 +313,15 @@ for imodel = 1:length(model_names)
       temp = NaN(101,1);
       temp(subj,1) = ddmfit.mean(line_inds);
       behavior.(model_name).(agegroup{iage}).(pars{ipar}) = temp;
-      behavior.params_HDDMbias_YAOA.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+%       behavior.params_HDDMbias_YAOA.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+      behavior.ddmNiels.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
     end
   end
   if ~any(line_inds); warning('No data found'); continue;  end
 end
+behavior.age_groups = {'young' 'old'};
+behavior.phases = {'study' 'test'};
+behavior.cond = category_labels;
 
 disp 'TODO remove zeros from eyemem1_params_biasmodel!'
 
