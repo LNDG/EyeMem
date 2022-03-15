@@ -40,8 +40,10 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
   cfg=[];
   cfg.latency = [0 5];
   data = ft_selectdata(cfg, data);
-
-  for itrial = 1:length(data.trial)
+  ntrials = length(data.trial);
+  hmax_at_fix_trl = nan(ntrials,1);
+  
+  for itrial = 1:ntrials
     % get HMAX data of pic shown
     catind = data.trialinfo(itrial, 2); % 
     picno = data.trialinfo(itrial, 3); % 
@@ -130,8 +132,12 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     for ifix = 1:nfix
       hmax_at_fix(ifix,1) = curhmax(fixloc_newres(ifix,2), fixloc_newres(ifix,1)); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around
     end    
+    if isempty(hmax_at_fix)
+      continue
+    end
+    
     disp 'average over HMAX vals to get 1 val per trial'
-    weightedmean = 1;
+    weightedmean = 0;
     if weightedmean == 1
       fixdur = fixdur / sum(fixdur);
       hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;

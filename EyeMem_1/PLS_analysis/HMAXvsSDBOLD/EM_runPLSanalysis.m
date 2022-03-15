@@ -40,7 +40,7 @@ switch analysisname
     
   case 'corrSDbold'
     corrtype = 'Spearman'; %Spearman Pearson
-    agegroup = 'OA'; % ALLsubj OA YA
+%     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
       %       {'study' 'criterion'};
