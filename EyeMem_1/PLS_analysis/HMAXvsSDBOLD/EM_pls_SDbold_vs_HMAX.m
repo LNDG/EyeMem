@@ -62,6 +62,7 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     % get XY coords of fixations: average XY within fixations
     nfix = size(fixtrig,1);
     fixloc = NaN(nfix,2);
+    fixdur = NaN(nfix,1);
     cur_res = size(picdat); % resolution of the pics
     desiredres = size(curhmax);
     %     fixmap = zeros([size(curhmax) nfix]);
@@ -71,7 +72,8 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     yshift = (768-480)/2;
     for ifix = 1:nfix
       fixinds = fixtrig(ifix,1):fixtrig(ifix,2);
-      fixloc(ifix,:) = round(mean(data.trial{itrial}(2:3,fixinds),2)); % Xgaze and Ygaze in chan2 and 3
+      fixdur(ifix,1) = length(fixinds);
+      fixloc(ifix,:) = round(mean(data.trial{itrial}(2:3,fixinds),2)); % Xgaze and Ygaze in chan2 and 3      
 %       disp 'shift fixations, account for pic not fullscreen in scanner, but in the middle'
       fixloc(ifix,1) = fixloc(ifix,1)-xshift;
       fixloc(ifix,2) = fixloc(ifix,2)-yshift;
@@ -91,7 +93,7 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     fixloc_newres = fixloc_newres(all(validfix,2),:); % also apply to resampled fix locations
     fixloc = fixloc(all(validfix,2),:);
 
-    plotit=0;
+    plotit=1;
     if ismac && plotit
       figure; hold on
       % The default EyeLink coordinates are those of a 1024 by 768 VGA display, with (0, 0) at the top left.
@@ -128,7 +130,13 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
       hmax_at_fix(ifix,1) = curhmax(fixloc_newres(ifix,2), fixloc_newres(ifix,1)); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around
     end    
     disp 'average over HMAX vals to get 1 val per trial'
-    hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);
+    weightedmean = 0;
+    if weightedmean == 1
+      fixdur = fixdur / sum(fixdur);
+      hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
+    else
+      hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);
+    end
     
   end
   
