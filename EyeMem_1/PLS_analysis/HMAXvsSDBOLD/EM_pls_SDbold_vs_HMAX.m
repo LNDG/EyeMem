@@ -130,7 +130,7 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
       hmax_at_fix(ifix,1) = curhmax(fixloc_newres(ifix,2), fixloc_newres(ifix,1)); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around
     end    
     disp 'average over HMAX vals to get 1 val per trial'
-    weightedmean = 0;
+    weightedmean = 1;
     if weightedmean == 1
       fixdur = fixdur / sum(fixdur);
       hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
@@ -140,9 +140,9 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     
   end
   
-  fprintf('%d trials with fixations found: ', sum(isnan(hmax_at_fix_trl)))
+  fprintf('%d trials without fixations found: ', sum(isnan(hmax_at_fix_trl)))
   if sum(isnan(hmax_at_fix_trl)) > 25
-    warning('More than 25: skipping subject')
+    warning('More than 50: skipping subject')
     return
   end
   

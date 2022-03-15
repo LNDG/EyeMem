@@ -39,7 +39,7 @@ switch analysisname
     batch_plsgui(txtfilename)
     
   case 'corrSDbold'
-    corrtype = 'Pearson'; %Spearman Pearson
+    corrtype = 'Spearman'; %Spearman Pearson
     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
