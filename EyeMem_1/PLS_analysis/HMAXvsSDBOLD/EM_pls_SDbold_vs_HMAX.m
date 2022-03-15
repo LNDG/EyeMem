@@ -140,6 +140,12 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     
   end
   
+  fprintf('%d trials with fixations found: ', sum(isnan(hmax_at_fix_trl)))
+  if sum(isnan(hmax_at_fix_trl)) > 25
+    warning('More than 25: skipping subject')
+    return
+  end
+  
   % continue with sorting
   [sortHMAX, sortinds] = sort(hmax_at_fix_trl);  % gaze-specific HMAX values
   [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));

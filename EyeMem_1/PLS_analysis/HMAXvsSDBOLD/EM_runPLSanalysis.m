@@ -39,7 +39,7 @@ switch analysisname
     batch_plsgui(txtfilename)
     
   case 'corrSDbold'
-    corrtype = 'Spearman'; %Spearman Pearson
+    corrtype = 'Pearson'; %Spearman Pearson
     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
@@ -121,11 +121,16 @@ switch analysisname
           end
           behav_valkeep = [behav_valkeep behav_val];
         end
-        
-        if behav_val > 0
+
+        % could also take from data itself, same result
+%         load(subjlist(isub).name, 'behavdata')
+%         behav_valkeep = behavdata;
+%         behavior_name = 'drift';
+
+%         if behav_val > 0
           behavior_data{iage}{end+1} = num2str(behav_valkeep); %
           id_list{iage}{end+1} = tmp{1};
-        end
+%         end
       end
     end
     cd(PREIN)

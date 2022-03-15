@@ -41,7 +41,7 @@ HMAXfolder = fullfile(basepath, 'D_paradigm', 'stimuli_640x480', 'hmax');
 overwrite = 1;
     
 cd(PREIN);
-subjlist = dir('source*.mat');
+subjlist = dir('source*99.mat');
 
 % SUBJ= [9, 11:59, 61:69, 71,72, 74:101]; % TODO specify further?
 
