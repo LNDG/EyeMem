@@ -21,11 +21,11 @@ binsubtract = cfg.binsubtract;
 HMAXfolder = cfg.HMAXfolder;
 eyefile = cfg.eyefile;
 PREIN = cfg.PREIN;
+gazespecificHMAX= cfg.gazespecificHMAX;
 
 disp(sourcefile)
 source = load(sourcefile); % source comes out
 
-gazespecificHMAX=1;
 if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
   % load HMAX file
   hmaxlist=dir(fullfile(HMAXfolder, '*.mat' ));

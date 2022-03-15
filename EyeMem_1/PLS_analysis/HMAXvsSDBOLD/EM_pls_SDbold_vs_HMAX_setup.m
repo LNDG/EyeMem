@@ -27,6 +27,7 @@ removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
 PLStype = 'behavPLSvsDDM'; % behavPLSvsdprime or taskPLS behavPLSvsDDM
+gazespecificHMAX = 'non-gazespecific';
 
 % binsubtract = [5 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 % binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
@@ -55,6 +56,7 @@ cfg.removeoutliers = removeoutliers;
 cfg.Z_thresh = Z_thresh;
 cfg.do_kstest = do_kstest;
 cfg.BOLDvar_measure = 'nanstd'; % iqr, nanstd
+cfg.gazespecificHMAX = gazespecificHMAX;
 
 cfglist = {};
 
@@ -73,7 +75,7 @@ for isub = 1:length(subjlist)
     
     agefolder = Participants(Participants.participant_id == subj, :);     % give different outfolder for OA and YA
     
-    PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder , binsubtractfolder, 'gazespecific', char(agefolder.group)); % 'SDbold_vs_HMAX'
+    PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder , binsubtractfolder, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
     mkdir(PREOUT)
     mkdir(fullfile( PREOUT, 'source' ))
     cfg.PREOUT = PREOUT;
