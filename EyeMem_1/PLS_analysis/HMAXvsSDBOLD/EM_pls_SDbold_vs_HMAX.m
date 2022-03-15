@@ -240,8 +240,8 @@ switch PLStype
     end
     tmp.session_info.datamat_prefix = 'SDboldHMAX_vs_dprime'; %[subj '_' pattern];%stores common      %datamat prefix
     tmp.behavname = {'dprime'};%no behav names or data just yet, but set up the %field anyway...
-    load(behavfile); % behav comes out
-    subjind = behav.participants.participant_id == subj;
+    load(behavfile); % behavior comes out
+    subjind = behavior.participants.participant_id == subj;
     tmp.behavdata = mean(behav.test(subjind).dprime);
   case 'behavPLSvsDDM'
     if isnumeric(binsubtract)
@@ -256,8 +256,8 @@ switch PLStype
     tmp.session_info.datamat_prefix = 'SDboldHMAX_vs_DDM'; %[subj '_' pattern];%stores common      %datamat prefix
     tmp.behavname = {'drift'};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behav comes out
-    subjind = behav.participants.participant_id == subj;
-    tmp.behavdata = mean(behav.eyemem1_params_biasmodel.v(subjind));
+    subjind = behavior.participants.participant_id == subj;
+    tmp.behavdata = mean(behavior.eyemem1_params_biasmodel.v(subjind));
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];
