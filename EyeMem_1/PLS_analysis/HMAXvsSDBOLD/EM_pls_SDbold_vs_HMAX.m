@@ -93,7 +93,7 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     fixloc_newres = fixloc_newres(all(validfix,2),:); % also apply to resampled fix locations
     fixloc = fixloc(all(validfix,2),:);
 
-    plotit=1;
+    plotit=0;
     if ismac && plotit
       figure; hold on
       % The default EyeLink coordinates are those of a 1024 by 768 VGA display, with (0, 0) at the top left.
@@ -257,7 +257,7 @@ switch PLStype
     tmp.behavname = {'drift'};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behav comes out
     subjind = behavior.participants.participant_id == subj;
-    tmp.behavdata = mean(behavior.eyemem1_params_biasmodel.v(subjind));
+    tmp.behavdata = mean(behavior.ddmNiels.v(subjind));
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];
