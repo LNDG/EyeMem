@@ -92,6 +92,7 @@ if gazespecificHMAX  % TODO for gaze-specific HMAX analysis
     validfix(:,2) = fixloc_newres(:,2) > 0 & fixloc_newres(:,2) < desiredres(1);
     fixloc_newres = fixloc_newres(all(validfix,2),:); % also apply to resampled fix locations
     fixloc = fixloc(all(validfix,2),:);
+    fixdur = fixdur(all(validfix,2));
 
     plotit=0;
     if ismac && plotit
