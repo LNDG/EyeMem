@@ -39,7 +39,7 @@ switch analysisname
     batch_plsgui(txtfilename)
     
   case 'corrSDbold'
-    corrtype = 'Spearman'; %Spearman Pearson
+    corrtype = 'Pearson'; %Spearman Pearson
 %     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
@@ -66,7 +66,7 @@ switch analysisname
     basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
     %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/YA/PLS';
     %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/VOIsel/OA/PLS';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/non-gazespecific'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific'
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';

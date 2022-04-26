@@ -182,7 +182,7 @@ source_bin.pow = nan(size(source_bin.pow,1), nbins);
 source_bin.powdimord = 'pos_freq'; % freq is hmax condition
 if do_kstest; f = figure; f.Position = [  744          -9        1654        1059]; end
 for ibin = 1:nbins
-  seldat = source.pow(:,cond_bins(:,ibin),:);
+  seldat = source.pow(source.inside,cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
   seldat =  seldat(:,:);
   if removeoutliers
     Z = zscore(seldat,1,2);
@@ -221,9 +221,9 @@ for ibin = 1:nbins
   end
   switch BOLDvar_measure
     case 'nanstd'
-      source_bin.pow(:,ibin) = nanstd(seldat,1,2); % take SD across 5 trials, 5 TR's each
+      source_bin.pow(source_bin.inside,ibin) = nanstd(seldat,1,2); % take SD across 5 trials, 5 TR's each
     case 'iqr'
-      source_bin.pow(:,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
+      source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
   end
   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
 end

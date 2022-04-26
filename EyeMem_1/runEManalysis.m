@@ -70,8 +70,7 @@ EM_pls_SDbold_vs_HMAX_setup()
 % EM_plot_gazeHMAXvsSDbold
 
 % split pls result into age groups, test interaction
-result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/corrSDbold_ddmNielsv__88_Spearman_BfMRIresult.mat')
-EM_plsgroupeffectANOVA(result)
+EM_plsgroupeffectANOVA()
 
 %% NO GLM APPROACH: Cut out trials in continuous fMRI data
 % EM_maketrials_fMRI_setup()

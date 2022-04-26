@@ -1,5 +1,10 @@
 function EM_plsgroupeffectANOVA(result)
 % split pls result into age groups, test interaction
+if nargin==0
+%   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/corrSDbold_ddmNielsv__87_Spearman_BfMRIresult.mat')
+  result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/corrSDbold_ddmNielsv__87_Pearson_BfMRIresult.mat')
+end
+
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 load '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/ages.mat'
 
@@ -28,10 +33,12 @@ legend(sc,agegroups, 'Location', 'Southeast')
 title(sprintf('young: r = %1.2f, p = %1.3f\nold: r = %1.2f, p =  %1.3f', r(1), p(1), r(2), p(2)))
 box on; axis square
 xlabel('brainscore (ranked)')
-ylabel('dprime (ranked)')
+ylabel('drift rate (ranked)')
   
 saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold.pdf')
 saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold.png')
 
+%% ANOVA
 
+anovan(brainscores, {ages.Var1 behav},'model',1, 'continuous', 2, 'varnames',{'age','drift rate'}) 
 
