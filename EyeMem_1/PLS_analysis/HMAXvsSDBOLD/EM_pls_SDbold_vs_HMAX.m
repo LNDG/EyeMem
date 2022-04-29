@@ -171,7 +171,8 @@ switch gazespecificHMAX
     lsline
     xlabel('Gaze-specific HMAX rank')
     ylabel('Picture-averaged HMAX rank')
-    
+  otherwise
+    error('Unknown gazespecificHMAX')
 end
 
 disp 'make bins of trials based on hmax'
