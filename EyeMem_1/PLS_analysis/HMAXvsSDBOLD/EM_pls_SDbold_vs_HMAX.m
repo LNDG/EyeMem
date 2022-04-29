@@ -22,6 +22,7 @@ HMAXfolder = cfg.HMAXfolder;
 eyefile = cfg.eyefile;
 PREIN = cfg.PREIN;
 gazespecificHMAX= cfg.gazespecificHMAX;
+fitcoeff = cfg.fitcoeff;
 
 disp(sourcefile)
 source = load(sourcefile); % source comes out
@@ -263,7 +264,7 @@ switch PLStype
       dat = transpose(source.pow(tmp.st_coords, :));
       for i = 1:length(dat)
         fit = polyfit( transpose(1:nbins), dat(:,i), 1 );
-        tmp.st_datamat(1,i) = fit(1);
+        tmp.st_datamat(1,i) = fit(fitcoeff); % fit is in descending powers
       end
     end
     tmp.session_info.datamat_prefix = 'SDboldHMAX_vs_DDM'; %[subj '_' pattern];%stores common      %datamat prefix
