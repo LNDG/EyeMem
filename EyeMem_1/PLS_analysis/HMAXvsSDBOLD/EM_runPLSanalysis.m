@@ -3,10 +3,11 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold';
+%   analysisname = 'corrSDbold';
   %    analysisname = 'SDbold_OAvsYA_task'
-%   analysisname = 'SDbold_vs_HMAX';
+  analysisname = 'SDbold_vs_HMAX';
 end
+%%
 switch analysisname
   case 'SDbold_OAvsYA_task'
     if contains(which('plsgui'), 'rank')
@@ -39,7 +40,8 @@ switch analysisname
     batch_plsgui(txtfilename)
     
   case 'corrSDbold'
-    corrtype = 'Spearman'; %Spearman Pearson
+%%
+corrtype = 'Spearman'; %Spearman Pearson
 %     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
@@ -145,8 +147,14 @@ switch analysisname
     save ages ages
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
+%%    
   case 'SDbold_vs_HMAX'
-    warning 'PLS_rank does not work with task PLS'
+    if contains(which('plsgui'), 'rank')
+      warning 'PLS_rank does not work with task PLS, switching to regular PLS toolbox'
+      rmpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))
+      addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/pls'))
+    end
+%     warning 'PLS_rank does not work with task PLS'
     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
 %     PREIN = fullfile(basepath, 'variability', 'ftsource', 'SDbold_vs_HMAX', 'old', '5bins');
 %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/linearfit/young'
@@ -155,8 +163,10 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_10bins/bin5-bin1/gazespecific'
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_3bins/bin5-bin1/gazespecific'
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_3bins/bin5-bin1/gazespecific'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_5bins/bin5-bin1/gazespecific'
-        
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_5bins/bin5-bin1/gazespecific'
+    
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/gaze-specific/young'
+    
     disp 'Generate model txt file'
     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
     resultfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIresult.mat';
@@ -173,96 +183,21 @@ switch analysisname
     behavior_data = {};
     behavior_name = {};
     
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
-    id_list = cell(length(agegroups),1);
-    for iage = 1:length(agegroups)
-      cd(fullfile(PREIN, agegroups{iage}))
+%     id_list = cell(length(agegroups),1);
+    id_list = cell(1,1);
+%     for iage = 1:length(agegroups)
+%       cd(fullfile(PREIN, agegroups{iage}))
 %       cd(fullfile(PREIN))
       subjlist = dir('*_BfMRIsessiondata.mat');
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
-        id_list{iage}{end+1} = tmp{1};
+        id_list{1}{end+1} = tmp{1};
       end
-    end
+%     end
     cd(PREIN)
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
     
-    %%
-%   case 'behavPLSvsdprime' % load behavior for dprime
-%     corrtype = 'Pearson';
-%     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
-%     %     PREIN = fullfile(basepath, 'variability', 'ftsource', 'behavPLSvsdprime', 'iqr_5bins', 'bin5-bin1', 'young');
-%     PREIN = fullfile(basepath, 'variability', 'ftsource', 'behavPLSvsdprime', 'iqr_5bins');
-%     agegroups = {'young' 'old'};
-%     
-%     disp 'Generate model txt file'
-%     pls_option = '3'; % behavior PLS    
-%     mean_type = '0';
-%     if strcmp(corrtype, 'Pearson' )
-%       cormode = '0'; % Pearson
-%     elseif strcmp(corrtype, 'Spearman' )
-%       cormode = '8'; % Spearman
-%     end
-%     num_perm = '1000';
-%     num_split = '0';
-%     num_boot = '1000';
-%     boot_type = 'strat';
-%     clim = '95';
-%     save_data = '0';
-%     selected_cond = num2str(ones(1,1)); disp 'TODO get ncond somewhere'
-%     
-%     load /Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
-%     behavnames = {...
-%       %       {'study' 'dprime'};
-%       %       {'study' 'criterion'};
-%       %       {'study' 'RT'};
-%       %       {'study' 'RTsd'};
-%       {'test' 'dprime'};
-% %       {'test' 'RT'}
-% %       {'test' 'criterion'};
-% %       {'test' 'RTsd'}
-% %       {'test' 'p_repeatbalanced'};
-%       };
-%     
-%     cd(PREIN)
-% %     runlist = dir('bin*');
-%     runlist = dir('lin*');
-%     for irun = 1:length(runlist) % analysis run
-%       for iage = 1%:2
-%         cd(fullfile(PREIN, runlist(irun).name, agegroups{iage}))
-%         disp(pwd)
-%         subjlist = dir('sub*_BfMRIsessiondata.mat');
-%         behavior_data_keep = {}; behavior_name_keep = {};
-%         for ibehav = 1:size(behavnames,1)
-%           behavior_name = [behavnames{ibehav}{:}];
-%           behavior_name_keep = [behavior_name_keep [behavnames{ibehav}{:}]];
-%           behavior_data = {};
-%           txtfilename = sprintf('Model_behavPLSvs_%s_%s_BfMRIanalysis.mat', behavior_name, corrtype) ; %  'Model_behavPLSvsdprime_BfMRIanalysis.txt';
-%           resultfilename = sprintf('Model_behavPLSvs_%s_%s_BfMRIresult.mat', behavior_name, corrtype) ;
-%           id_list = {};
-%           for isub=1:length(subjlist)
-%             tmp = tokenize(subjlist(isub).name, '_');
-%             id_list{end+1} = tmp{1};
-%             subjind = behavior.participants.participant_id == tmp{1};
-%             %       behavior_data{end+1,1} = num2str(mean(behavior.test(subjind).dprime));
-%             %         behavior_data{end+1,1} = num2str(mean(behavior.test(subjind).dprime));
-%             %         getfield(behavior.(behavnames{ibehav}{1}), behavnames{ibehav}{2});
-%             
-%             behavoi = behavior.(behavnames{ibehav}{1});
-%             behavior_data{isub,1} = num2str(mean(behavoi(subjind).(behavnames{ibehav}{2}))); %
-%             behavior_data_keep{isub,ibehav} = num2str(mean(behavoi(subjind).(behavnames{ibehav}{2}))); %
-%           end
-%           %           PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,{behavior_name})
-%           %           batch_plsgui(txtfilename)
-%         end
-%         disp 'model with all behavior at once'
-%         txtfilename = sprintf('Model_behavPLSvs_%s_%s_BfMRIanalysis.mat', [behavior_name_keep{:}], corrtype) ; %  'Model_behavPLSvsdprime_BfMRIanalysis.txt';
-%         resultfilename = sprintf('Model_behavPLSvs_%s_%s_BfMRIresult.mat',[behavior_name_keep{:}], corrtype) ;
-%         PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,...
-%           clim,save_data,selected_cond,behavior_data_keep,behavior_name_keep)
-%         batch_plsgui(txtfilename)
-%       end
-%     end
 end

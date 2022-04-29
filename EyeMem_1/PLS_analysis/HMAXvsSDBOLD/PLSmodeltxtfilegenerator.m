@@ -1,36 +1,36 @@
 function PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
 
 %Native generation of PLS model txt files from variables and parameters of interest. Avoids manual manipulation of txt files!
-    %
-    %txtfilename: string-based name of the PLS model txt file you want to generate (e.g., 'ModelXX_BfMRIanalysis.txt')
-    %
-    %resultfilename: string-based name of model output (e.g., 'ModelXX_BfMRIresult.mat')
-    %
-    %id_list: cell array of string-based IDs in your preferred order (e.g., {'id1','id2'}).
-    %
-    %pls_option: PLS model type. 1. Mean-Centering PLS; 2. Non-Rotated Task PLS; 3. Regular Behav PLS, 4. Multiblock PLS, 5. Non-Rotated Behav PLS, 6.Non-Rotated Multiblock PLS (e.g., '3')
-    %
-    %mean_type: Mean-Centering Type. 0. Remove group condition means from conditon means within each group, 1. Remove grand condition means from each group condition mean, 2. Remove grand mean over all subjects and conditions, 3. Remove all main effects by subtracting condition and group means. (e.g., '1')
-    %
-    %cormode: Correlation Mode. 0. Pearson correlation, 2. covariance, 4. cosine angle, 6. dot product (e.g., '0')
-    %
-    %num_perm: # permutations (e.g., '1000')
-    %
-    %num_split: # of "Natasha" split halfs (e.g., '0')
-    %
-    %num_boot: # bootstrap samples (e.g., '1000')
-    %
-    %boot_type: Bootstrap type. Either 'strat' or 'nonstrat' (e.g., 'strat')
-    %
-    %clim: Bootstrap confidence Level (e.g., '95')
-    %
-    %save_data: Set to '1' to save stacked datamat.
-    %
-    %selected_cond: binary string of conditions of interest. (e.g., if three conds and want only the first cond, then '1 0 0')
-    %
-    %behavior_data: cell array of string data for behaviours of interest in columnar format (e.g., single behavioral variable for 2 subjects = {'13';'65'}
-    %
-    %behavior_name: name of behaviours of interest (e.g., {'fluid intelligence','crystallized intelligence'})
+%
+%txtfilename: string-based name of the PLS model txt file you want to generate (e.g., 'ModelXX_BfMRIanalysis.txt')
+%
+%resultfilename: string-based name of model output (e.g., 'ModelXX_BfMRIresult.mat')
+%
+%id_list: cell array of string-based IDs in your preferred order (e.g., {'id1','id2'}).
+%
+%pls_option: PLS model type. 1. Mean-Centering PLS; 2. Non-Rotated Task PLS; 3. Regular Behav PLS, 4. Multiblock PLS, 5. Non-Rotated Behav PLS, 6.Non-Rotated Multiblock PLS (e.g., '3')
+%
+%mean_type: Mean-Centering Type. 0. Remove group condition means from conditon means within each group, 1. Remove grand condition means from each group condition mean, 2. Remove grand mean over all subjects and conditions, 3. Remove all main effects by subtracting condition and group means. (e.g., '1')
+%
+%cormode: Correlation Mode. 0. Pearson correlation, 2. covariance, 4. cosine angle, 6. dot product (e.g., '0')
+%
+%num_perm: # permutations (e.g., '1000')
+%
+%num_split: # of "Natasha" split halfs (e.g., '0')
+%
+%num_boot: # bootstrap samples (e.g., '1000')
+%
+%boot_type: Bootstrap type. Either 'strat' or 'nonstrat' (e.g., 'strat')
+%
+%clim: Bootstrap confidence Level (e.g., '95')
+%
+%save_data: Set to '1' to save stacked datamat.
+%
+%selected_cond: binary string of conditions of interest. (e.g., if three conds and want only the first cond, then '1 0 0')
+%
+%behavior_data: cell array of string data for behaviours of interest in columnar format (e.g., single behavioral variable for 2 subjects = {'13';'65'}
+%
+%behavior_name: name of behaviours of interest (e.g., {'fluid intelligence','crystallized intelligence'})
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %open txt file for writing
@@ -149,58 +149,60 @@ fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
 fprintf(fid,'\n');
 fprintf(fid,'%%------------------------------------------------------------------------\n');
 fprintf(fid,'\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'	%%  Behavior Data Start  %%\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'\n');
-fprintf(fid,'%%  Notes: only list selected conditions (selected_cond)\n');
-fprintf(fid,'\n');
-fprintf(fid,'%%behavedata\n');
-fprintf(fid,'\n');
-%Now repmat 'behavior_data' convention for PLS in front of each behavioural data line entry. 
-label = {'behavior_data'};
-label_rep = repmat(label,size(behavior_data,1),1);
-combo = horzcat(label_rep,behavior_data)';%bring data together
-% s_rep = [repmat('%s ',1,size(combo,1)),'\n'];
-% %now write whole behavioral data cell array in single fprintf command and
-% %the on to rest of lines to write...
-% fprintf(fid,s_rep,combo{:});%%%%%
-
-for igroup = 1:length(id_list)
-  %Append file suffix to ID list so don't have to include in id list
-  %itself...
-  id_list_append = {};
-  for i = 1:length(id_list{igroup})
-    %     id_list_append{i} = [id_list{igroup}{i},'_BfMRIsessiondata.mat'];
-    fprintf(fid,'behavior_data %s\n', combo{2,igroup}{i});
+if ~isempty(behavior_data)
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'	%%  Behavior Data Start  %%\n');
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'%%  Notes: only list selected conditions (selected_cond)\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'%%behavedata\n');
+  fprintf(fid,'\n');
+  %Now repmat 'behavior_data' convention for PLS in front of each behavioural data line entry.
+  label = {'behavior_data'};
+  label_rep = repmat(label,size(behavior_data,1),1);
+  combo = horzcat(label_rep,behavior_data)';%bring data together
+  % s_rep = [repmat('%s ',1,size(combo,1)),'\n'];
+  % %now write whole behavioral data cell array in single fprintf command and
+  % %the on to rest of lines to write...
+  % fprintf(fid,s_rep,combo{:});%%%%%
+  
+  for igroup = 1:length(id_list)
+    %Append file suffix to ID list so don't have to include in id list
+    %itself...
+    id_list_append = {};
+    for i = 1:length(id_list{igroup})
+      %     id_list_append{i} = [id_list{igroup}{i},'_BfMRIsessiondata.mat'];
+      fprintf(fid,'behavior_data %s\n', combo{2,igroup}{i});
+    end
   end
+  fprintf(fid,'\n\n');
+  
+  fprintf(fid,'\n');
+  fprintf(fid,'%% ... following above pattern for more groups\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'	%%  Behavior Data End  %%\n');
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'%%------------------------------------------------------------------------\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'	%%  Behavior Name Start  %%\n');
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'%%  Numbers of Behavior Name should match the Behavior Data above\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'%s ','behavior_name	',behavior_name);
+  fprintf(fid,'\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'	%%  Behavior Name End  %%\n');
+  fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
+  fprintf(fid,'\n');
+  fprintf(fid,'%%------------------------------------------------------------------------\n');
+  fprintf(fid,'\n');
 end
-fprintf(fid,'\n\n');
-
-fprintf(fid,'\n');
-fprintf(fid,'%% ... following above pattern for more groups\n');
-fprintf(fid,'\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'	%%  Behavior Data End  %%\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'\n');
-fprintf(fid,'%%------------------------------------------------------------------------\n');
-fprintf(fid,'\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'	%%  Behavior Name Start  %%\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'\n');
-fprintf(fid,'%%  Numbers of Behavior Name should match the Behavior Data above\n');
-fprintf(fid,'\n');
-fprintf(fid,'%s ','behavior_name	',behavior_name);
-fprintf(fid,'\n');
-fprintf(fid,'\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'	%%  Behavior Name End  %%\n');
-fprintf(fid,'	%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%\n');
-fprintf(fid,'\n');
-fprintf(fid,'%%------------------------------------------------------------------------\n');
-fprintf(fid,'\n');
 
 %now close file
 fclose(fid);
