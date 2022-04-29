@@ -70,7 +70,7 @@ EM_pls_SDbold_vs_HMAX_setup()
 % EM_plot_gazeHMAXvsSDbold
 
 % split pls result into age groups, test interaction
-EM_plsgroupeffectANOVA()
+% EM_plsgroupeffectANOVA()
 
 %% NO GLM APPROACH: Cut out trials in continuous fMRI data
 % EM_maketrials_fMRI_setup()
