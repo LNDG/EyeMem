@@ -22,7 +22,7 @@ timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
 % analysis settings
-nbins = 75; % no of bins used for Hmax binning
+nbins = 3; % no of bins used for Hmax binning
 removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
@@ -56,7 +56,7 @@ cfg.nbins = nbins;
 cfg.removeoutliers = removeoutliers;
 cfg.Z_thresh = Z_thresh;
 cfg.do_kstest = do_kstest;
-cfg.BOLDvar_measure = 'iqr'; % iqr, nanstd
+cfg.BOLDvar_measure = 'nanstd'; % iqr, nanstd
 cfg.gazespecificHMAX = gazespecificHMAX;
 cfg.fitcoeff = fitcoeff;
 
