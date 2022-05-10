@@ -377,8 +377,12 @@ tmp.session_info.run.num_scans = source.hdr.nframes;
 tmp.session_info.run.data_path = pathstr;
 tmp.session_info.run.data_files = { [name '.nii'] };
 tmp.session_info.run.file_pattern = [name '.nii'];
-tmp.session_info.run.blk_onsets = num2cell(cond_bins, 2)'; % =  {[9×1 double]  [9×1 double]  [9×1 double]  [2×1 double]} vectors with TR onsets
-tmp.session_info.run.blk_length = num2cell(ones(size(cond_bins)), 2)'; % =  {[9×1 double]  [9×1 double]  [9×1 double]  [2×1 double]} vectors with TR onsets% =  {[9×1 double]  [9×1 double]  [9×1 double]  [2×1 double]} vectors with lengths pe onset
+% tmp.session_info.run.blk_onsets = num2cell(cond_bins, 2)'; % =  {[9×1 double]  [9×1 double]  [9×1 double]  [2×1 double]} vectors with TR onsets
+% tmp.session_info.run.blk_length = num2cell(ones(size(cond_bins)), 2)'; % =  {[9×1 double]  [9×1 double]  [9×1 double]  [2×1 double]} vectors with TR onsets% =  {[9×1 double]  [9×1 double]  [9×1 double]  [2×1 double]} vectors with lengths pe onset
+for ibin = 1:nbins
+  tmp.session_info.run.blk_onsets{ibin} = find(bininds==ibin);
+  tmp.session_info.run.blk_length{ibin} = ones(size(tmp.session_info.run.blk_onsets{ibin}));
+end
 
 % all hardcoded stuff:
 tmp.create_ver = '5.0807231';%not sure where value comes from; check.
