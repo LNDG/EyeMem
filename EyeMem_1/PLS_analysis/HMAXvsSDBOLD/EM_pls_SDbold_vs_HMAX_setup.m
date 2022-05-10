@@ -60,6 +60,7 @@ cfg.do_kstest = do_kstest;
 cfg.BOLDvar_measure = 'nanstd'; % iqr, nanstd
 cfg.gazespecificHMAX = gazespecificHMAX;
 cfg.fitcoeff = fitcoeff;
+cfg.bintype = bintype;
 
 cfglist = {};
 
