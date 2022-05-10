@@ -22,7 +22,8 @@ timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
 % analysis settings
-nbins = 3; % no of bins used for Hmax binning
+nbins = 5; % no of bins used for Hmax binning
+bintype = 'uniformbinwidth';
 removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
@@ -78,9 +79,9 @@ for isub = 1:length(subjlist)
     agefolder = Participants(Participants.participant_id == subj, :);     % give different outfolder for OA and YA
     
     if contains(PLStype, 'behav')
-      PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder , sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
+      PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder, bintype, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
     else
-      PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
+      PREOUT = fullfile(basepath, 'variability', 'ftsource', PLStype, BOLDvar_binsfolder, bintype, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
     end
     mkdir(PREOUT)
     mkdir(fullfile( PREOUT, 'source' ))

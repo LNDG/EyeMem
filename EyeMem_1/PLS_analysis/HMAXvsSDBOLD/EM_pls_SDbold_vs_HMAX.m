@@ -23,6 +23,7 @@ eyefile = cfg.eyefile;
 PREIN = cfg.PREIN;
 gazespecificHMAX= cfg.gazespecificHMAX;
 fitcoeff = cfg.fitcoeff;
+bintype = cfg.bintype;
 
 disp(sourcefile)
 source = load(sourcefile); % source comes out
@@ -157,34 +158,47 @@ switch gazespecificHMAX
       warning('More than 50: skipping subject')
       return
     end
+
+    switch bintype
+      case 'fixednbins'
+        % continue with sorting
+        [sortHMAX, sortinds] = sort(hmax_at_fix_trl);  % gaze-specific HMAX values
+        [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));
+
+        % TODO Fixed N trial per bin
+        binedges = linspace( min(hmax_at_fix_trl), max(hmax_at_fix_trl), nbins+1)
+        [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,binedges);
+
+      case 'uniformbinwidth'
+        [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,nbins);
+
+    end
     
-    % continue with sorting
-    [sortHMAX, sortinds] = sort(hmax_at_fix_trl);  % gaze-specific HMAX values
-    [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));
-    
-    disp 'Does the rank change compared to using picture-averaged HMAX?'
-    figure; hold on; axis square; box on
-    %   scatter(sortHMAX, sortHMAXold)
-    scatter(sortinds, sortindsold)
-    [r,p] = corr(sortinds, sortindsold);
-    title(sprintf('%s, r = %1.2f, p = %1.3f', subj, r, p))
-    lsline
-    xlabel('Gaze-specific HMAX rank')
-    ylabel('Picture-averaged HMAX rank')
+    disp 'TODO Does the rank change compared to using picture-averaged HMAX?'
+%     figure; hold on; axis square; box on
+%     %   scatter(sortHMAX, sortHMAXold)
+%     scatter(sortinds, sortindsold)
+%     [r,p] = corr(sortinds, sortindsold);
+%     title(sprintf('%s, r = %1.2f, p = %1.3f', subj, r, p))
+%     lsline
+%     xlabel('Gaze-specific HMAX rank')
+%     ylabel('Picture-averaged HMAX rank')
   otherwise
     error('Unknown gazespecificHMAX')
 end
 
-disp 'make bins of trials based on hmax'
-ntrlperbin = 150 / nbins; % each subject has 150 trials
-cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
-hmax_bins = reshape(sortHMAX, ntrlperbin, nbins); % dimord: TR trials cond
+% fixed bin width, variable n trials per bin
+disp 'make bins of trials based on hmax: fixed bin width, variable n trials per bin'
+% ntrlperbin = 150 / nbins; % each subject has 150 trials
+% cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
+% hmax_bins = reshape(sortHMAX, ntrlperbin, nbins); % dimord: TR trials cond
 source_bin = source; % binned
 source_bin.pow = nan(size(source_bin.pow,1), nbins);
 source_bin.powdimord = 'pos_freq'; % freq is hmax condition
 if do_kstest; f = figure; f.Position = [  744          -9        1654        1059]; end
 for ibin = 1:nbins
-  seldat = source.pow(source.inside,cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
+%   seldat = source.pow(source.inside,cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
+  seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:); 
   seldat =  seldat(:,:);
   if removeoutliers
     Z = zscore(seldat,1,2);
@@ -227,9 +241,67 @@ for ibin = 1:nbins
     case 'iqr'
       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
   end
-  source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
+%   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
+  source_bin.freq(ibin) = mean(binedges(ibin:ibin+1)); % use freq field for HMAX bin_No
 end
 source = source_bin;
+
+%% old with fixed N trls per bin
+% disp 'make bins of trials based on hmax'
+% ntrlperbin = 150 / nbins; % each subject has 150 trials
+% cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
+% hmax_bins = reshape(sortHMAX, ntrlperbin, nbins); % dimord: TR trials cond
+% source_bin = source; % binned
+% source_bin.pow = nan(size(source_bin.pow,1), nbins);
+% source_bin.powdimord = 'pos_freq'; % freq is hmax condition
+% if do_kstest; f = figure; f.Position = [  744          -9        1654        1059]; end
+% for ibin = 1:nbins
+%   seldat = source.pow(source.inside,cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
+%   seldat =  seldat(:,:);
+%   if removeoutliers
+%     Z = zscore(seldat,1,2);
+%     %   Z = Z(Z~=0);  figure; histogram(Z(:))
+%     seldat_outliers = seldat(Z < -Z_thresh | Z > Z_thresh);
+%     source_bin.perc_outliers(ibin,1) = (numel(seldat_outliers) / numel(seldat(seldat~=0)))*100;
+%     seldat(Z < -Z_thresh | Z > Z_thresh) = NaN;
+%   end
+%   if do_kstest
+%     disp 'Kolmogorov-Smirnov test for normality'
+%     load(fullfile(PREIN, 'common_coords.mat'));
+%     
+%     % zscore each voxel
+%     %     ksdat = zscore(seldat(source.inside,:), 0, 2 );    % kstest tests for a standard normal distribution by default
+%     ksdat = seldat(common_coords,:);    % kstest tests for a standard normal distribution by default
+%     for ivox = 1:10
+%       ksdatsel = ksdat(ivox,:);
+%       %     ksdat = ksdat(:);    %ksdat = ksdat(1e5:2e5);
+%       %     [~,p] = kstest(ksdat);
+%       subplot(3,4,ivox);
+%       histogram(ksdatsel,15); %, 'Normalization', 'probability'
+%       %     cdfplot(ksdat);
+%       %     hold on
+%       %     x_values = linspace(min(ksdat),max(ksdat));
+%       %     plot(x_values,normcdf(x_values,0,1),'r-')
+%       %     legend('Empirical CDF','Standard Normal CDF','Location','best')
+%       %     xlim([-3 3])
+%       %     xlabel('GLM beta weight (Z-score)');
+%       %     ylabel('Cumulative frequency')
+%       %     title(sprintf('bin %d, kstest p = %g', ibin, p))
+%       %       xlim([-2.5e3 2.5e3])
+%       title(sprintf('bin %d', ibin))
+%       xlabel('GLM beta weight');
+%       ylabel('Frequency')
+%     end
+%   end
+%   switch BOLDvar_measure
+%     case 'nanstd'
+%       source_bin.pow(source_bin.inside,ibin) = nanstd(seldat,1,2); % take SD across 5 trials, 5 TR's each
+%     case 'iqr'
+%       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
+%   end
+%   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
+% end
+% source = source_bin;
 
 %% make PLS sesssiondata structure, prepare important fields
 % 1. standard stuff: TODO turn into function?
