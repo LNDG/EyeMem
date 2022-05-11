@@ -3,7 +3,9 @@ function EM_plsgroupeffectANOVA(result)
 if nargin==0
   %   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/corrSDbold_ddmNielsv__87_Spearman_BfMRIresult.mat')
   %   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific/corrSDbold_ddmNielsv__87_Pearson_BfMRIresult.mat')
-%   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/linearfit/gaze-specific/corrSDbold_ddmNielsv__86_Pearson_BfMRIresult.mat')
+  %   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/linearfit/gaze-specific/corrSDbold_ddmNielsv__86_Pearson_BfMRIresult.mat')
+%   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_3bins/linearfit/gaze-specific/corrSDbold_ddmNielsv__86_Spearman_BfMRIresult.mat')
+  %unibinwidth:
   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_3bins/linearfit/gaze-specific/corrSDbold_ddmNielsv__86_Spearman_BfMRIresult.mat')
 end
 
@@ -40,13 +42,13 @@ ranked=0;
 if ranked
   xlabel('brainscore (ranked)')
   ylabel('drift rate (ranked)')
-%   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold_ranked.pdf')
-%   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold_ranked.png')
+  %   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold_ranked.pdf')
+  %   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold_ranked.png')
 else
   xlabel('brainscore')
   ylabel('drift rate')
-%   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold.pdf')
-%   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold.png')
+  %   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold.pdf')
+  %   saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold.png')
 end
 
 

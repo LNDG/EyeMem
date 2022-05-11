@@ -28,7 +28,7 @@ bintype = 'uniformbinwidth';
 removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
-PLStype = 'taskPLS'; % behavPLSvsdprime taskPLS behavPLSvsDDM
+PLStype = 'behavPLSvsDDM'; % behavPLSvsdprime taskPLS behavPLSvsDDM
 gazespecificHMAX = 'gaze-specific'; % gaze-specific  non-gazespecific
 
 % binsubtract = [5 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime

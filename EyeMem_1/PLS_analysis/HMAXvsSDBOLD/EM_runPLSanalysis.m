@@ -174,9 +174,11 @@ corrtype = 'Spearman'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_25bins/gaze-specific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_150bins/gaze-specific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_75bins/gaze-specific/young';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_3bins/gaze-specific/young'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_3bins/gaze-specific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/nanstd_5bins/uniformbinwidth/gaze-specific/young';
-    
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/uniformbinwidth/gaze-specific/young';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/uniformbinwidth/gaze-specific'
+ 
     disp 'Generate model txt file'
     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
     resultfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIresult.mat';
@@ -200,7 +202,7 @@ corrtype = 'Spearman'; %Spearman Pearson
 %     for iage = 1:length(agegroups)
 %       cd(fullfile(PREIN, agegroups{iage}))
 %       cd(fullfile(PREIN))
-      subjlist = dir('*_BfMRIsessiondata.mat');
+      subjlist = dir('sub*_BfMRIsessiondata.mat');
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
         id_list{1}{end+1} = tmp{1};
