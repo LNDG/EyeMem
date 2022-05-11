@@ -171,13 +171,12 @@ switch gazespecificHMAX
 
       case 'uniformbinwidth'
         disp 'drop HMAX outlier trials'
+%         figure; histogram(hmax_at_fix_trl, 100)
         [~,TF]=rmoutliers(hmax_at_fix_trl);
+        fprintf('%d HMAX outliers found\n', sum(TF))
         hmax_at_fix_trl(TF) = NaN; % set outliers to nan
         [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,nbins);
         %         figure; histogram(hmax_at_fix_trl, 100)
-        %         figure; histogram(zscore(hmax_at_fix_trl), 100)
-
-
     end
     
     disp 'TODO Does the rank change compared to using picture-averaged HMAX?'
