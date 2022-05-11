@@ -170,7 +170,13 @@ switch gazespecificHMAX
         [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,binedges);
 
       case 'uniformbinwidth'
+        disp 'drop HMAX outlier trials'
+        [~,TF]=rmoutliers(hmax_at_fix_trl);
+        hmax_at_fix_trl(TF) = NaN; % set outliers to nan
         [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,nbins);
+        %         figure; histogram(hmax_at_fix_trl, 100)
+        %         figure; histogram(zscore(hmax_at_fix_trl), 100)
+
 
     end
     
