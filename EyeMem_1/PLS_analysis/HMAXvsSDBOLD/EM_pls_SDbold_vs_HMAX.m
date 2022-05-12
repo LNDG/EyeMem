@@ -30,7 +30,7 @@ source = load(sourcefile); % source comes out
 
 switch gazespecificHMAX
   case 'non-gazespecific' % bin based on overall HMAX, take SD over 5 trials    
-    % sort onsets based on hmax
+    % sort onsets based on hmax TODO run for HMAX C2
     [sortHMAX, sortinds] = sort(source.trialinfo(:,10));  %hmax in 10, ascending, trial inds - 10 is c1median
   case 'gaze-specific'
     % load HMAX file
@@ -163,11 +163,12 @@ switch gazespecificHMAX
       case 'fixednbins'
         % continue with sorting
         [sortHMAX, sortinds] = sort(hmax_at_fix_trl);  % gaze-specific HMAX values
-        [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));
+        %         [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));
+        ntrlperbin = ntrials / nbins; % each subject has 150 trials
 
-        % TODO Fixed N trial per bin
-        binedges = linspace( min(hmax_at_fix_trl), max(hmax_at_fix_trl), nbins+1)
-        [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,binedges);
+        bininds = repmat(1:nbins, ntrlperbin, 1);
+        bininds = bininds(sortinds(:));
+        binedges = sortHMAX([1:ntrlperbin:ntrials ntrials])
 
       case 'uniformbinwidth'
         disp 'drop HMAX outlier trials'
@@ -247,7 +248,7 @@ for ibin = 1:nbins
       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
   end
 %   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
-  source_bin.freq(ibin) = mean(binedges(ibin:ibin+1)); % use freq field for HMAX bin_No
+  source_bin.freq(ibin) = nanmean(binedges(ibin:ibin+1)); % use freq field for HMAX bin_No
 end
 source = source_bin;
 

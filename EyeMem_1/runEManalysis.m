@@ -42,7 +42,7 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 % EM_runHmax_setup()
 
 %% eye pupil and gaze analysis
-% EM_eye_analysis_setup()
+% EM_eye_analysis_setup()   % EM_sortTrials_Marija
 
 %% fMRI ANALYSIS:
 %% set up vartbx for single-TR GLM (LEast squares, single)

@@ -23,9 +23,9 @@ memreq = 2000; % in MB
 
 % analysis settings
 PLStype = 'taskPLS'; % behavPLSvsdprime taskPLS behavPLSvsDDM
-nbins = 7; % no of bins used for Hmax binning
+nbins = 5; % no of bins used for Hmax binning
 BOLDvar_measure = 'iqr'; % iqr, nanstd
-bintype = 'uniformbinwidth';
+bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
