@@ -181,10 +181,11 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/uniformbinwidth/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_9bins/uniformbinwidth/gaze-specific/old'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/gaze-specific/old'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/fixednbins/gaze-specific/young'
     
     disp 'Generate model txt file'
-    txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
-    resultfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIresult.mat';
+%     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
+%     resultfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIresult.mat';
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
@@ -198,19 +199,25 @@ corrtype = 'Pearson'; %Spearman Pearson
     behavior_data = {};
     behavior_name = {};
     
-%     agegroups = {'young' 'old'};
-%     agegroups = {'young'};
-%     id_list = cell(length(agegroups),1);
+    %     agegroups = {'young' 'old'};
+    %     agegroups = {'young'};
+    %     id_list = cell(length(agegroups),1);
     id_list = cell(1,1);
-%     for iage = 1:length(agegroups)
-%       cd(fullfile(PREIN, agegroups{iage}))
-%       cd(fullfile(PREIN))
-      subjlist = dir('sub*_BfMRIsessiondata.mat');
-      for isub=1:length(subjlist)
-        tmp = tokenize(subjlist(isub).name, '_');
-        id_list{1}{end+1} = tmp{1};
-      end
-%     end
+    %     for iage = 1:length(agegroups)
+    %       cd(fullfile(PREIN, agegroups{iage}))
+    %       cd(fullfile(PREIN))
+    subjlist = dir('sub*_BfMRIsessiondata.mat');
+    for isub=1:length(subjlist)
+      tmp = tokenize(subjlist(isub).name, '_');
+      id_list{1}{end+1} = tmp{1};
+    end
+    %     end
+    outname = analysisname;
+    outfilename = sprintf('%s_%d', outname, cellfun(@length, id_list)); %
+    disp(outfilename)
+    txtfilename = [ outfilename '_BfMRIanalysis.txt'];
+    resultfilename = [ outfilename '_BfMRIresult.mat'];
+    
     cd(PREIN)
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)

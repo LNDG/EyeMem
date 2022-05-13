@@ -167,8 +167,12 @@ switch gazespecificHMAX
         ntrlperbin = ntrials / nbins; % each subject has 150 trials
 
         bininds = repmat(1:nbins, ntrlperbin, 1);
-        bininds = bininds(sortinds(:));
-        binedges = sortHMAX([1:ntrlperbin:ntrials ntrials])
+%         bininds = bininds(:);        
+%         bininds = bininds(sortinds); % does this reorder? NO just indexing                
+        bininds = sortrows([sortinds, bininds(:)]);
+        bininds = bininds(:,2);
+        
+        binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
 
       case 'uniformbinwidth'
         disp 'drop HMAX outlier trials'
@@ -196,15 +200,15 @@ end
 % fixed bin width, variable n trials per bin
 disp 'make bins of trials based on hmax: fixed bin width, variable n trials per bin'
 % ntrlperbin = 150 / nbins; % each subject has 150 trials
-% cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
+cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
 % hmax_bins = reshape(sortHMAX, ntrlperbin, nbins); % dimord: TR trials cond
 source_bin = source; % binned
 source_bin.pow = nan(size(source_bin.pow,1), nbins);
 source_bin.powdimord = 'pos_freq'; % freq is hmax condition
 if do_kstest; f = figure; f.Position = [  744          -9        1654        1059]; end
 for ibin = 1:nbins
-%   seldat = source.pow(source.inside,cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
-  seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:); 
+%   seldat = source.pow(source.inside, cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
+  seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:);   
   seldat =  seldat(:,:);
   if removeoutliers
     Z = zscore(seldat,1,2);
