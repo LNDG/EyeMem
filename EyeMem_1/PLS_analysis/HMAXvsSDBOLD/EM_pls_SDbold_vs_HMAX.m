@@ -27,11 +27,23 @@ bintype = cfg.bintype;
 
 disp(sourcefile)
 source = load(sourcefile); % source comes out
+ntrials = size(source.trialinfo,1);
 
 switch gazespecificHMAX
   case 'non-gazespecific' % bin based on overall HMAX, take SD over 5 trials    
     % sort onsets based on hmax TODO run for HMAX C2
     [sortHMAX, sortinds] = sort(source.trialinfo(:,10));  %hmax in 10, ascending, trial inds - 10 is c1median
+    ntrlperbin = ntrials / nbins; % each subject has 150 trials
+    
+    bininds = repmat(1:nbins, ntrlperbin, 1);
+    %         bininds = bininds(:);
+    %         bininds = bininds(sortinds); % does this reorder? NO just indexing
+    bininds = sortrows([sortinds, bininds(:)]);
+    bininds = bininds(:,2);
+    bininds(isnan(sortHMAX)) = NaN; % set outliers to nan
+    
+    binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
+
   case 'gaze-specific'
     % load HMAX file
     hmaxlist=dir(fullfile(HMAXfolder, '*.mat' ));
@@ -46,7 +58,7 @@ switch gazespecificHMAX
     cfg=[];
     cfg.latency = [0 5];
     data = ft_selectdata(cfg, data);
-    ntrials = length(data.trial);
+%     ntrials = length(data.trial);
     hmax_at_fix_trl = nan(ntrials,1);
     
     for itrial = 1:ntrials
