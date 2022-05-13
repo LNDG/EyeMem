@@ -182,6 +182,7 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_9bins/uniformbinwidth/gaze-specific/old'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/gaze-specific/old'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/fixednbins/gaze-specific/young'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/fixednbins/gaze-specific/old'
     
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';

@@ -204,7 +204,7 @@ end
 % fixed bin width, variable n trials per bin
 disp 'make bins of trials based on hmax: fixed bin width, variable n trials per bin'
 % ntrlperbin = 150 / nbins; % each subject has 150 trials
-cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
+% cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
 % hmax_bins = reshape(sortHMAX, ntrlperbin, nbins); % dimord: TR trials cond
 source_bin = source; % binned
 source_bin.pow = nan(size(source_bin.pow,1), nbins);
@@ -323,10 +323,10 @@ tmp=[];
 % tmp.st_coords = find(source.inside); %these are defined above as a mask of voxels %to use. All others are excluded (e.g., in a GM mask). % cond x voxels
 load(fullfile(PREIN, 'common_coords.mat'));
 tmp.st_coords = find(common_coords); %these are defined above as a mask of voxels %to use. All others are excluded (e.g., in a GM mask). % cond x voxels
+tmp.session_info.datamat_prefix = subj; %[subj '_' pattern];%stores common      %datamat prefix
 switch PLStype
   case 'taskPLS'
     tmp.st_datamat = transpose(source.pow(tmp.st_coords,:)); %these are defined above as a mask of voxels %to use. All others are excluded (e.g., in a GM mask). % cond x voxels
-    tmp.session_info.datamat_prefix = 'SDbold_vs_HMAX'; %[subj '_' pattern];%stores common      %datamat prefix
     tmp.behavdata = [];
     tmp.behavname = {};%no behav names or data just yet, but set up the %field anyway...
   case 'behavPLSvsdprime'
@@ -339,7 +339,6 @@ switch PLStype
         tmp.st_datamat(1,i) = fit(1);
       end
     end
-    tmp.session_info.datamat_prefix = 'SDboldHMAX_vs_dprime'; %[subj '_' pattern];%stores common      %datamat prefix
     tmp.behavname = {'dprime'};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behavior comes out
     subjind = behavior.participants.participant_id == subj;
@@ -354,7 +353,6 @@ switch PLStype
         tmp.st_datamat(1,i) = fit(fitcoeff); % fit is in descending powers
       end
     end
-    tmp.session_info.datamat_prefix = 'SDboldHMAX_vs_DDM'; %[subj '_' pattern];%stores common      %datamat prefix
     tmp.behavname = {'drift'};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behav comes out
     subjind = behavior.participants.participant_id == subj;
