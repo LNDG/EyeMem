@@ -159,6 +159,15 @@ switch gazespecificHMAX
       return
     end
 
+    dropoutliers=1;
+    if dropoutliers
+      disp 'drop HMAX outlier trials'
+      %         figure; histogram(hmax_at_fix_trl, 100)
+      [~,TF]=rmoutliers(hmax_at_fix_trl);
+      fprintf('%d HMAX outliers found\n', sum(TF))
+%       hmax_at_fix_trl(TF) = NaN; % set outliers to nan
+    end
+    
     switch bintype
       case 'fixednbins'
         % continue with sorting
@@ -171,17 +180,12 @@ switch gazespecificHMAX
 %         bininds = bininds(sortinds); % does this reorder? NO just indexing                
         bininds = sortrows([sortinds, bininds(:)]);
         bininds = bininds(:,2);
+        bininds(isnan(hmax_at_fix_trl)) = NaN; % set outliers to nan
         
         binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
 
       case 'uniformbinwidth'
-        disp 'drop HMAX outlier trials'
-%         figure; histogram(hmax_at_fix_trl, 100)
-        [~,TF]=rmoutliers(hmax_at_fix_trl);
-        fprintf('%d HMAX outliers found\n', sum(TF))
-        hmax_at_fix_trl(TF) = NaN; % set outliers to nan
         [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,nbins);
-        %         figure; histogram(hmax_at_fix_trl, 100)
     end
     
     disp 'TODO Does the rank change compared to using picture-averaged HMAX?'
