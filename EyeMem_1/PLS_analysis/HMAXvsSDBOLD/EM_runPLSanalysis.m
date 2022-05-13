@@ -3,9 +3,9 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
   %    analysisname = 'SDbold_OAvsYA_task'
-  analysisname = 'SDbold_vs_HMAX';  % task PLS
+%   analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -23,9 +23,9 @@ switch analysisname
     resultfilename = sprintf('%s_BfMRIresult.mat', analysisname);    
     pls_option = '1';    
     mean_type = '1';
-    num_perm = '1000';
+    num_perm = '100';
     num_split = '0';
-    num_boot = '1000';
+    num_boot = '100';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
@@ -72,7 +72,9 @@ corrtype = 'Pearson'; %Spearman Pearson
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/linearfit/gaze-specific'
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_3bins/linearfit/gaze-specific'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/uniformbinwidth/linearfit_fitcoeff1/gaze-specific/old';
-        
+
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/young';
+    
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
     %     resultfilename = 'corrSDbold_vsRT_OA_BfMRIresult.mat';
@@ -186,7 +188,7 @@ corrtype = 'Pearson'; %Spearman Pearson
 
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/fixednbins/non-gazespecific/young'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/fixednbins/non-gazespecific/old'
-    
+        
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
 %     resultfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIresult.mat';
