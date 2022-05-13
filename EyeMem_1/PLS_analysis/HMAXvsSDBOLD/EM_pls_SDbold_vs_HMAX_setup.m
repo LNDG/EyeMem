@@ -24,12 +24,13 @@ memreq = 2000; % in MB
 % analysis settings
 PLStype = 'taskPLS'; % behavPLSvsdprime taskPLS behavPLSvsDDM
 nbins = 5; % no of bins used for Hmax binning
+% gazespecificHMAX = 'gaze-specific'; % gaze-specific  non-gazespecific
+gazespecificHMAX = 'non-gazespecific'; % gaze-specific  
 BOLDvar_measure = 'iqr'; % iqr, nanstd
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
-gazespecificHMAX = 'gaze-specific'; % gaze-specific  non-gazespecific
 
 % binsubtract = [5 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 % binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
