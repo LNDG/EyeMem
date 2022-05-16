@@ -74,6 +74,7 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/uniformbinwidth/linearfit_fitcoeff1/gaze-specific/old';
 
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/young';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/fixednbins/linearfit_fitcoeff1/gaze-specific/young';
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -87,9 +88,9 @@ corrtype = 'Pearson'; %Spearman Pearson
       cormode = '8'; % Spearman
     end
 
-    num_perm = '1000';
+    num_perm = '100';
     num_split = '0';
-    num_boot = '1000';
+    num_boot = '100';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';

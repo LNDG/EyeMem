@@ -262,8 +262,8 @@ for ibin = 1:nbins
     end
   end
   switch BOLDvar_measure
-    case 'nanstd'
-      source_bin.pow(source_bin.inside,ibin) = nanstd(seldat,1,2); % take SD across 5 trials, 5 TR's each
+    case 'std'
+      source_bin.pow(source_bin.inside,ibin) = std(seldat,1,2); % take SD across 5 trials, 5 TR's each
     case 'iqr'
       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
   end
