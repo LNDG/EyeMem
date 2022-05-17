@@ -29,6 +29,34 @@ disp(sourcefile)
 source = load(sourcefile); % source comes out
 ntrials = size(source.trialinfo,1);
 
+%%
+if ismac
+  %   cfg = [];
+  %   cfg.funparameter  = 'pow';
+  %   cfg.maskparameter = cfg.funparameter;
+  % %   cfg.maskparameter = ;
+  % %   cfg.colorlim      = [-3 3]; % or 'maxabs'
+  % %   cfg.opacitymap    = 'vdown';
+  % %   cfg.opacitylim    = [-3 3]; % or 'maxabs'
+  %   ft_sourceplot(cfg, source)
+%   plotdat = squeeze(mean(source.pow(source.inside, :,1)));
+  plotdat = source.pow(source.inside, :,1);
+  figure; imagesc(plotdat); colorbar
+  figure; plot(plotdat)
+  figure
+  for i=1:5
+    subplot(2,3,i)
+    plot(plotdat(:,i))
+    % figure; plot(mean(plotdat,2))
+  end
+  source2plot = source;
+  source2plot.time = 1:5;
+  source2plot.cfg = [];
+  source2plot.pow = source2plot.pow(source2plot.inside,:,:);
+  source2plot.pos = source2plot.pos(source2plot.inside,:);
+  ft_rejectvisual([], source2plot)
+end
+%%
 switch gazespecificHMAX
   case 'non-gazespecific' % bin based on overall HMAX, take SD over 5 trials    
     % sort onsets based on hmax TODO run for HMAX C2
@@ -222,6 +250,7 @@ source_bin = source; % binned
 source_bin.pow = nan(size(source_bin.pow,1), nbins);
 source_bin.powdimord = 'pos_freq'; % freq is hmax condition
 if do_kstest; f = figure; f.Position = [  744          -9        1654        1059]; end
+TFkeep=0;
 for ibin = 1:nbins
 %   seldat = source.pow(source.inside, cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
   seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:);   
@@ -266,8 +295,15 @@ for ibin = 1:nbins
       disp 'removing outliers and taking SD'
       %       source_bin.pow(source_bin.inside,ibin) = std(seldat,1,2); % take SD across 5 trials, 5 TR's each
       inside_ind = find(source_bin.inside);
-      for i = 1:size(seldat,1)
-        source_bin.pow(inside_ind(i),ibin) = std(rmoutliers(seldat(i,:)),1,2); % take SD across 5 trials, 5 TR's each
+      for i = 1:10000:size(seldat,1)
+%         close all
+        f=figure;  f.Position = [        1000         997        1335         341];
+        subplot(1,2,1)
+        plot(seldat(i,:))
+        [seldat_clean, TF] = rmoutliers(seldat(i,:));
+        subplot(1,2,2); plot(seldat_clean); xlim([1 150])
+        source_bin.pow(inside_ind(i),ibin) = std(seldat_clean); % take SD across 5 trials, 5 TR's each
+        TFkeep = TFkeep + length(find(TF));
       end
     case 'iqr'
       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
