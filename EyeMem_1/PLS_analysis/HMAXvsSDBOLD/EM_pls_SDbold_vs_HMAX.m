@@ -264,9 +264,10 @@ for ibin = 1:nbins
   switch BOLDvar_measure
     case 'std'
       disp 'removing outliers and taking SD'
-%       source_bin.pow(source_bin.inside,ibin) = std(seldat,1,2); % take SD across 5 trials, 5 TR's each
+      %       source_bin.pow(source_bin.inside,ibin) = std(seldat,1,2); % take SD across 5 trials, 5 TR's each
+      inside_ind = find(source_bin.inside);
       for i = 1:size(seldat,1)
-        source_bin.pow(source_bin.inside(i),ibin) = std(rmoutliers(seldat(i,:)),1,2); % take SD across 5 trials, 5 TR's each
+        source_bin.pow(inside_ind(i),ibin) = std(rmoutliers(seldat(i,:)),1,2); % take SD across 5 trials, 5 TR's each
       end
     case 'iqr'
       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
