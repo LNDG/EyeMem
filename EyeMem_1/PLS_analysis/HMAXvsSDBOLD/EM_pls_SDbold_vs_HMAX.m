@@ -29,6 +29,10 @@ disp(sourcefile)
 source = load(sourcefile); % source comes out
 ntrials = size(source.trialinfo,1);
 
+disp 'only take GM voxels common in all subjects'
+load(fullfile(PREIN, 'common_coords.mat'), 'common_coords');
+source.inside = common_coords;
+
 %%
 if ismac
   %   cfg = [];
@@ -294,14 +298,17 @@ for ibin = 1:nbins
     case 'std'
       disp 'removing outliers and taking SD'
       %       source_bin.pow(source_bin.inside,ibin) = std(seldat,1,2); % take SD across 5 trials, 5 TR's each
+      
       inside_ind = find(source_bin.inside);
-      for i = 1:10000:size(seldat,1)
+%       seldat = source.pow(source.inside, :, :); %seldat = source.pow(:,cond_bins(:,ibin),:);  
+%       seldat = seldat(:,:);
+      for i = 1:size(seldat,1)  % 1:5000:size(seldat,1)
 %         close all
-        f=figure;  f.Position = [        1000         997        1335         341];
-        subplot(1,2,1)
-        plot(seldat(i,:))
+%         f=figure;  f.Position = [        1000         997        1335         341];
+%         subplot(1,2,1); plot(seldat(i,:))
         [seldat_clean, TF] = rmoutliers(seldat(i,:));
-        subplot(1,2,2); plot(seldat_clean); xlim([1 150])
+%         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
+        
         source_bin.pow(inside_ind(i),ibin) = std(seldat_clean); % take SD across 5 trials, 5 TR's each
         TFkeep = TFkeep + length(find(TF));
       end
@@ -310,6 +317,7 @@ for ibin = 1:nbins
   end
 %   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
   source_bin.freq(ibin) = nanmean(binedges(ibin:ibin+1)); % use freq field for HMAX bin_No
+  source_bin.perc_BOLDremoved = (TFkeep / numel(seldat)) * 100;
 end
 source = source_bin;
 
@@ -317,8 +325,7 @@ source = source_bin;
 %% make PLS sesssiondata structure, prepare important fields
 % 1. standard stuff: TODO turn into function?
 tmp=[];
-% tmp.st_coords = find(source.inside); %these are defined above as a mask of voxels %to use. All others are excluded (e.g., in a GM mask). % cond x voxels
-load(fullfile(PREIN, 'common_coords.mat'));
+% load(fullfile(PREIN, 'common_coords.mat'));
 tmp.st_coords = find(common_coords); %these are defined above as a mask of voxels %to use. All others are excluded (e.g., in a GM mask). % cond x voxels
 tmp.session_info.datamat_prefix = subj; %[subj '_' pattern];%stores common      %datamat prefix
 switch PLStype
