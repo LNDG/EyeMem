@@ -423,6 +423,7 @@ tmp.create_datamat_info.normalize_with_baseline = 0;%yes, normalize %to baseline
 % tmp.create_datamat_info.merge_across_runs = 1;%says to merge across %runs, but we don't do this below anyway...is overridden...??
 tmp.create_datamat_info.merge_across_runs = 0;%says to merge across %runs, but we don't do this below anyway...is overridden...??
 tmp.create_datamat_info.single_subject_analysis = 0;%not single subj
+tmp.perc_BOLDremoved = source_bin.perc_BOLDremoved;
 
 disp(outfile_source)
 save(outfile_source, 'source')
