@@ -191,7 +191,7 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/fixednbins/non-gazespecific/old'
        
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/non-gazespecific/old';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/gaze-specific/young';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/gaze-specific/old';
     
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
@@ -199,9 +199,9 @@ corrtype = 'Pearson'; %Spearman Pearson
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
-    num_perm = '1000';
+    num_perm = '100';
     num_split = '0';
-    num_boot = '1000';
+    num_boot = '100';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
@@ -217,10 +217,15 @@ corrtype = 'Pearson'; %Spearman Pearson
     %       cd(fullfile(PREIN, agegroups{iage}))
     %       cd(fullfile(PREIN))
     subjlist = dir('sub*_BfMRIsessiondata.mat');
+    outlier_perc_BOLDremoved = zeros(length(subjlist),1)
     for isub=1:length(subjlist)
       tmp = tokenize(subjlist(isub).name, '_');
       id_list{1}{end+1} = tmp{1};
+      load(subjlist(isub).name, 'perc_BOLDremoved');
+      outlier_perc_BOLDremoved(isub) = perc_BOLDremoved;
     end
+    disp 'avg BOLD removed in outlier removal:'
+    mean(perc_BOLDremoved)
     %     end
     outname = analysisname;
     outfilename = sprintf('%s_%d', outname, cellfun(@length, id_list)); %
@@ -229,8 +234,6 @@ corrtype = 'Pearson'; %Spearman Pearson
     resultfilename = [ outfilename '_BfMRIresult.mat'];
     
     cd(PREIN)
-    
-    
     PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
     batch_plsgui(txtfilename)
     
