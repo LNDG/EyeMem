@@ -3,9 +3,9 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
   %    analysisname = 'SDbold_OAvsYA_task'
-  analysisname = 'SDbold_vs_HMAX';  % task PLS
+%   analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -75,6 +75,8 @@ corrtype = 'Pearson'; %Spearman Pearson
 
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/fixednbins/linearfit_fitcoeff1/gaze-specific/young';
+
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_5bins/fixednbins/linearfit_fitcoeff1/non-gazespecific';
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
