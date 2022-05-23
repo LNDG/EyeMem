@@ -225,6 +225,8 @@ corrtype = 'Pearson'; %Spearman Pearson
       id_list{1}{end+1} = tmp{1};
       load(subjlist(isub).name, 'perc_BOLDremoved');
       outlier_perc_BOLDremoved(isub) = perc_BOLDremoved;
+      % do corr hmax vs fixdur
+      
     end
     disp 'avg BOLD removed in outlier removal:'
     mean(perc_BOLDremoved)

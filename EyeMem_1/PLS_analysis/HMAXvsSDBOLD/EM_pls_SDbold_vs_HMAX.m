@@ -203,7 +203,7 @@ switch gazespecificHMAX
       fixdur_keep =      [fixdur_keep; fixdur];
       
     end
-    figure; scatter(hmax_at_fix_keep, fixdur_keep); lsline; title(corr(hmax_at_fix_keep, fixdur_keep))
+%     figure; scatter(hmax_at_fix_keep, fixdur_keep); lsline; title(corr(hmax_at_fix_keep, fixdur_keep))
 % %     dat = [log(hmax_at_fix_keep) log(fixdur_keep)];
 % %     dat = dat(all(~isinf(dat),2),:);
 % %     figure; scatter(dat(:,1), dat(:,2)); lsline; title(corr(dat(:,1), dat(:,2)))
