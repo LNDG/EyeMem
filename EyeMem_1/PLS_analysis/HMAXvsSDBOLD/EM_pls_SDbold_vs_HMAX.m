@@ -92,7 +92,9 @@ switch gazespecificHMAX
     data = ft_selectdata(cfg, data);
 %     ntrials = length(data.trial);
     hmax_at_fix_trl = nan(ntrials,1);
-    
+    hmax_at_fix_keep = [];
+    fixdur_keep = [];
+
     for itrial = 1:ntrials
       % get HMAX data of pic shown
       catind = data.trialinfo(itrial, 2); %
@@ -195,7 +197,17 @@ switch gazespecificHMAX
         hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);
       end
       
+      % keep hmax and fix dur values to correlate: YA better track
+      % complexity, i.e. get it better?
+      hmax_at_fix_keep = [hmax_at_fix_keep; hmax_at_fix];
+      fixdur_keep =      [fixdur_keep; fixdur];
+      
     end
+    figure; scatter(hmax_at_fix_keep, fixdur_keep); lsline; title(corr(hmax_at_fix_keep, fixdur_keep))
+% %     dat = [log(hmax_at_fix_keep) log(fixdur_keep)];
+% %     dat = dat(all(~isinf(dat),2),:);
+% %     figure; scatter(dat(:,1), dat(:,2)); lsline; title(corr(dat(:,1), dat(:,2)))
+
     
     fprintf('%d trials without fixations found: ', sum(isnan(hmax_at_fix_trl)))
     if sum(isnan(hmax_at_fix_trl)) > 25
@@ -321,6 +333,10 @@ for ibin = 1:nbins
 end
 source = source_bin;
 
+if strcmp(gazespecificHMAX, 'gaze-specific')
+  source.fixdur_keep = fixdur_keep;
+  source.hmax_at_fix_keep = hmax_at_fix_keep;
+end
 
 %% make PLS sesssiondata structure, prepare important fields
 % 1. standard stuff: TODO turn into function?
