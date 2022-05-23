@@ -333,10 +333,6 @@ for ibin = 1:nbins
 end
 source = source_bin;
 
-if strcmp(gazespecificHMAX, 'gaze-specific')
-  source.fixdur_keep = fixdur_keep;
-  source.hmax_at_fix_keep = hmax_at_fix_keep;
-end
 
 %% make PLS sesssiondata structure, prepare important fields
 % 1. standard stuff: TODO turn into function?
@@ -440,6 +436,11 @@ tmp.create_datamat_info.normalize_with_baseline = 0;%yes, normalize %to baseline
 tmp.create_datamat_info.merge_across_runs = 0;%says to merge across %runs, but we don't do this below anyway...is overridden...??
 tmp.create_datamat_info.single_subject_analysis = 0;%not single subj
 tmp.perc_BOLDremoved = source_bin.perc_BOLDremoved;
+
+if strcmp(gazespecificHMAX, 'gaze-specific')
+  tmp.fixdur_keep = fixdur_keep;
+  tmp.hmax_at_fix_keep = hmax_at_fix_keep;
+end
 
 disp(outfile_source)
 save(outfile_source, 'source')
