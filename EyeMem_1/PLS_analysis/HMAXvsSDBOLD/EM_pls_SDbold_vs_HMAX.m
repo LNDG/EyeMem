@@ -27,11 +27,15 @@ bintype = cfg.bintype;
 
 disp(sourcefile)
 source = load(sourcefile); % source comes out
-ntrials = size(source.trialinfo,1);
 
 disp 'only take GM voxels common in all subjects'
 load(fullfile(PREIN, 'common_coords.mat'), 'common_coords');
 source.inside = common_coords;
+source.pow(~source.inside,:,:) = 0;
+% source.pow = source.pow(source.inside,:,:);
+source.time = 1:5;
+source.cfg = [];
+source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
 %%
 if ismac
@@ -54,17 +58,47 @@ if ismac
     % figure; plot(mean(plotdat,2))
   end
   source2plot = source;
-  source2plot.time = 1:5;
-  source2plot.cfg = [];
   source2plot.pow = source2plot.pow(source2plot.inside,:,:);
   source2plot.pos = source2plot.pos(source2plot.inside,:);
-  ft_rejectvisual([], source2plot)
+  cfg=[];
+  cfg.method = 'summary';
+  sourcedata = ft_rejectvisual(cfg, source2plot)
+  %% Detect outlier trials and reject: var taken per voxel, only 5 data points per trial.... still looks meaningful 
+  cfg = [];
+  cfg.cov_cut    = [0, 98]; % not used with zscorecut
+  cfg.badtrs     = [];
+  cfg.bad_trials = [];
+  cfg.method = 'maxmin_perct'; % zscorecut (abs(min)+1 threshold) or maxmin_perct (original)
+  [selecttrials, cfg] = EM_ft_varcut3(sourcedata, cfg, ismac); %https://dx.doi.org/10.1101/795799
 end
+
+disp 'Remove trials with max var taken over voxels, var computed per voxel over time1. 3 Zscores'
+powvar = zscore(max(var(source.pow,1,3))); 
+zscorelim = 3;
+if ismac 
+  figure; scatter(1:150,powvar);
+  line([0 150], [zscorelim zscorelim])
+end
+cfg = [];
+cfg.trials = find(powvar < zscorelim);
+fprintf('%d trials removed with zscore > %d\n',  size(source.pow,2) - length(cfg.trials), zscorelim)
+source = ft_selectdata(cfg, source);
+
+% disp 'remove trials with 0 (sometimes happens for last trial)'
+examplevoxel = squeeze(source.pow(find(source.inside,1,'first'),:,:));
+cfg=[];
+cfg.trials = find(~any(examplevoxel==0, 2));
+fprintf('%d trials removed with zeros in them\n', size(source.pow,2) - length(cfg.trials))
+source = ft_selectdata(cfg, source);
+
+ntrials = size(source.trialinfo,1);
+validtrials = find(source.trialinfo(:,13));
+
 %%
 switch gazespecificHMAX
   case 'non-gazespecific' % bin based on overall HMAX, take SD over 5 trials    
-    % sort onsets based on hmax TODO run for HMAX C2
-    [sortHMAX, sortinds] = sort(source.trialinfo(:,10));  %hmax in 10, ascending, trial inds - 10 is c1median
+    % sort onsets based on hmax TODO run for HMAX C2    
+    [sortHMAX, sortinds] = sort(source.trialinfo(validtrials,10));  %hmax in 10, ascending, trial inds - 10 is c1median
     ntrlperbin = ntrials / nbins; % each subject has 150 trials
     
     bininds = repmat(1:nbins, ntrlperbin, 1);
@@ -90,6 +124,12 @@ switch gazespecificHMAX
     cfg=[];
     cfg.latency = [0 5];
     data = ft_selectdata(cfg, data);
+    
+    disp 'remove trials rejected based on BOLD outliers'
+    cfg=[];
+    cfg.trials = validtrials;
+    data = ft_selectdata(cfg, data);
+    
 %     ntrials = length(data.trial);
     hmax_at_fix_trl = nan(ntrials,1);
     hmax_at_fix_keep = [];
@@ -229,11 +269,14 @@ switch gazespecificHMAX
         % continue with sorting
         [sortHMAX, sortinds] = sort(hmax_at_fix_trl);  % gaze-specific HMAX values
         %         [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));
-        ntrlperbin = ntrials / nbins; % each subject has 150 trials
-
-        bininds = repmat(1:nbins, ntrlperbin, 1);
-%         bininds = bininds(:);        
-%         bininds = bininds(sortinds); % does this reorder? NO just indexing                
+ 
+        bininds = repmat(transpose(1:5), ceil(ntrials/nbins), 1);
+        bininds = sort(bininds(1:ntrials));
+        
+        ntrlperbin = floor(ntrials / nbins); % each subject has 150 trials
+% 
+%         bininds = repmat(1:nbins, ntrlperbin, 1);
+% %         bininds = bininds(:);        
         bininds = sortrows([sortinds, bininds(:)]);
         bininds = bininds(:,2);
         bininds(isnan(hmax_at_fix_trl)) = NaN; % set outliers to nan
