@@ -367,7 +367,7 @@ for ibin = 1:nbins
           [seldat_clean, TF] = rmoutliers(seldat(i,:));
           %         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
         else
-          seldat_clean = seldat;
+          seldat_clean = seldat(i,:);
           TF=0;
         end
         source_bin.pow(inside_ind(i),ibin) = std(seldat_clean); % take SD across 5 trials, 5 TR's each
