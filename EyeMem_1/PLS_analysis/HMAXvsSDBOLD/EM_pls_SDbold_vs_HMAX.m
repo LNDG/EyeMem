@@ -355,15 +355,21 @@ for ibin = 1:nbins
       %       source_bin.pow(source_bin.inside,ibin) = std(seldat,1,2); % take SD across 5 trials, 5 TR's each
       
       inside_ind = find(source_bin.inside);
-%       seldat = source.pow(source.inside, :, :); %seldat = source.pow(:,cond_bins(:,ibin),:);  
-%       seldat = seldat(:,:);
+      %       seldat = source.pow(source.inside, :, :); %seldat = source.pow(:,cond_bins(:,ibin),:);
+      %       seldat = seldat(:,:);
       for i = 1:size(seldat,1)  % 1:5000:size(seldat,1)
-%         close all
-%         f=figure;  f.Position = [        1000         997        1335         341];
-%         subplot(1,2,1); plot(seldat(i,:))
-        [seldat_clean, TF] = rmoutliers(seldat(i,:));
-%         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
+        %         close all
+        %         f=figure;  f.Position = [        1000         997        1335         341];
+        %         subplot(1,2,1); plot(seldat(i,:))
         
+        rmboldoutliers = 0;
+        if rmboldoutliers
+          [seldat_clean, TF] = rmoutliers(seldat(i,:));
+          %         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
+        else
+          seldat_clean = seldat;
+          TF=0;
+        end
         source_bin.pow(inside_ind(i),ibin) = std(seldat_clean); % take SD across 5 trials, 5 TR's each
         TFkeep = TFkeep + length(find(TF));
       end
