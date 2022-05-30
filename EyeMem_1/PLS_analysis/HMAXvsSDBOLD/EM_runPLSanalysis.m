@@ -228,8 +228,8 @@ corrtype = 'Pearson'; %Spearman Pearson
       % do corr hmax vs fixdur
       
     end
-    disp 'avg BOLD removed in outlier removal:'
-    mean(perc_BOLDremoved)
+%     disp 'avg BOLD removed in outlier removal:'
+%     mean(perc_BOLDremoved)
     %     end
     outname = analysisname;
     outfilename = sprintf('%s_%d', outname, cellfun(@length, id_list)); %
