@@ -72,24 +72,27 @@ if ismac
   [selecttrials, cfg] = EM_ft_varcut3(sourcedata, cfg, ismac); %https://dx.doi.org/10.1101/795799
 end
 
-disp 'Remove trials with max var taken over voxels, var computed per voxel over time1. 3 Zscores'
-powvar = zscore(max(var(source.pow,1,3))); 
-zscorelim = 3;
-if ismac 
-  figure; scatter(1:150,powvar);
-  line([0 150], [zscorelim zscorelim])
+remove_artf_eegstyle = 0;
+if remove_artf_eegstyle
+  disp 'Remove trials with max var taken over voxels, var computed per voxel over time1. 3 Zscores'
+  powvar = zscore(max(var(source.pow,1,3)));
+  zscorelim = 3;
+  if ismac
+    figure; scatter(1:150,powvar);
+    line([0 150], [zscorelim zscorelim])
+  end
+  cfg = [];
+  cfg.trials = find(powvar < zscorelim);
+  fprintf('%d trials removed with zscore > %d\n',  size(source.pow,2) - length(cfg.trials), zscorelim)
+  source = ft_selectdata(cfg, source);
+  
+  % disp 'remove trials with 0 (sometimes happens for last trial)'
+  examplevoxel = squeeze(source.pow(find(source.inside,1,'first'),:,:));
+  cfg=[];
+  cfg.trials = find(~any(examplevoxel==0, 2));
+  fprintf('%d trials removed with zeros in them\n', size(source.pow,2) - length(cfg.trials))
+  source = ft_selectdata(cfg, source);
 end
-cfg = [];
-cfg.trials = find(powvar < zscorelim);
-fprintf('%d trials removed with zscore > %d\n',  size(source.pow,2) - length(cfg.trials), zscorelim)
-source = ft_selectdata(cfg, source);
-
-% disp 'remove trials with 0 (sometimes happens for last trial)'
-examplevoxel = squeeze(source.pow(find(source.inside,1,'first'),:,:));
-cfg=[];
-cfg.trials = find(~any(examplevoxel==0, 2));
-fprintf('%d trials removed with zeros in them\n', size(source.pow,2) - length(cfg.trials))
-source = ft_selectdata(cfg, source);
 
 ntrials = size(source.trialinfo,1);
 validtrials = find(source.trialinfo(:,13));
@@ -362,7 +365,7 @@ for ibin = 1:nbins
         %         f=figure;  f.Position = [        1000         997        1335         341];
         %         subplot(1,2,1); plot(seldat(i,:))
         
-        rmboldoutliers = 0;
+        rmboldoutliers = 1;
         if rmboldoutliers
           [seldat_clean, TF] = rmoutliers(seldat(i,:));
           %         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
