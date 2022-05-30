@@ -261,7 +261,7 @@ switch gazespecificHMAX
       %         figure; histogram(hmax_at_fix_trl, 100)
       [~,TF]=rmoutliers(hmax_at_fix_trl);
       fprintf('%d HMAX outliers found\n', sum(TF))
-%       hmax_at_fix_trl(TF) = NaN; % set outliers to nan
+      hmax_at_fix_trl(TF) = NaN; % set outliers to nan
     end
     
     switch bintype
