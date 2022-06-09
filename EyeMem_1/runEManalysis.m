@@ -25,7 +25,7 @@ startup_MVPA_Light
 % addpath(genpath('/Volumes/FB-LIP/Projects/StateSwitch/dynamic/data/mri/task/analyses/B4_PLS_preproc2/T_tools/pls'))
 addpath(genpath(fullfile(basepath, 'MATLAB', 'tools/custom_tools/plotting')))
 
-   addpath(genpath(fullfile('/Users/kloosterman/Documents/GitHub/plotting-tools')))
+addpath(genpath(fullfile('/Users/kloosterman/Documents/GitHub/plotting-tools')))
 
 
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'custom_tools')) % interpolateblinks

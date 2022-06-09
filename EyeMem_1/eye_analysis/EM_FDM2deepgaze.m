@@ -1,6 +1,7 @@
 function [maps] = EM_FDM2deepgaze()
 % load in FDM and Deepgaze, correlate maps to get a measure of how well
 % subjects track the Deepgaze model
+% supports both Deepgaze and Hmax
 
 if ismac
   %   basepath = '/Users/kloosterman/gridmaster2012/kloosterman/';
@@ -11,8 +12,12 @@ else
 end
 
 addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'npy-matlab')));
-PREINeye = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/eye';
-PREINdeepgaze = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/DeepGazeII';
+PREINeye = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye';
+PREINdeepgaze = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/DeepGazeII';
+PREINhmax = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/D_paradigm/stimuli_640x480/hmax';
+
+% saliencymodel = 'deepgaze';
+saliencymodel = 'hmax';
 
 nbins_x = 3;
 nbins_y = 3;
@@ -23,33 +28,59 @@ omit_centerAOI = 1;
 % time = 0.5:1:5;
 % timewin = 1;
 
-% works well:
-time = 0.25:0.25:4.75;
-timewin = 0.5;
+% % works well:
+% time = 0.25:0.25:4.75;
+% timewin = 0.5;
 
-% % quick:
-% time = 1.25:2.5:4.75;
-% timewin = 2.5;
+% quick:
+time = 1.25:2.5:4.75;
+timewin = 2.5;
+
+% no timebins:
+% time = 2.5;
+% timewin = 5;
 
 agegroups = {'YA' 'OA'};
 
 %% 1. load deepgaze maps and downsample
-cd(PREINdeepgaze)
+% deepgaze = 
+%           dat: [5×30×3×3 double]
+%        dimord: 'cond_pic_xpos_ypos'
+%     picnolist: [5×30 double]
+
 cond_names = {'fractals' 'landscapes' 'naturals1' 'streets1' 'streets2'}; % numbering
 deepgaze=[];
 deepgaze.dat = NaN( 5, 30, nbins_x, nbins_y);
 deepgaze.dimord = 'cond_pic_xpos_ypos';
-for icond=1:5
-  piclist = dir(sprintf('outfile_%s*.npy', cond_names{icond}));
-  for ipic = 1:length(piclist)
-    
-    temp = readNPY(piclist(ipic).name)';
-    %       figure; imagesc(temp)
-    deepgaze.dat(icond,ipic, :,:) = imresize(temp, [nbins_x, nbins_y]);
-    strtok = tokenize(piclist(ipic).name, '_');
-    strtok = tokenize(strtok{3}, '.');
-    deepgaze.picnolist(icond,ipic) = str2double(strtok{1}); % pic nr in filename
-  end
+
+switch saliencymodel
+  case 'deepgaze'
+    cd(PREINdeepgaze)
+    for icond=1:5
+      piclist = dir(sprintf('outfile_%s*.npy', cond_names{icond}));
+      for ipic = 1:length(piclist)
+        
+        temp = readNPY(piclist(ipic).name)';
+        %       figure; imagesc(temp')
+        deepgaze.dat(icond,ipic, :,:) = imresize(temp, [nbins_x, nbins_y]);
+        strtok = tokenize(piclist(ipic).name, '_');
+        strtok = tokenize(strtok{3}, '.');
+        deepgaze.picnolist(icond,ipic) = str2double(strtok{1}); % pic nr in filename
+      end
+    end
+  case 'hmax'
+    cd(PREINhmax)
+    hmaxlist=dir(fullfile(PREINhmax, '*.mat' ));
+    hmaxdat = {};
+    for icond = 1:length(hmaxlist)
+      load(fullfile(hmaxlist(icond).folder, hmaxlist(icond).name));
+      for ipic = 1:size(hmaxout.c1, 3)
+%               figure; imagesc(hmaxout.c1(:,:,ipic))
+%               figure; imagesc(hmaxout.picdat(:,:,ipic))
+        deepgaze.dat(icond,ipic, :,:) = imresize(hmaxout.c1(:,:,ipic)', [nbins_x, nbins_y]);
+        deepgaze.picnolist(icond,ipic) = hmaxout.picno(ipic);
+      end
+    end
 end
 
 %% 2. FDMs: Load timelocks, make % time spent in each AOI per age group
@@ -145,7 +176,7 @@ for iage = 1:2
   maps(iage).y_edges = fixdens.y_edges;
   maps(iage).agegroup = agegroups{iage};
   maps(iage).time = time;
-  
+  maps(iage).saliencymodel = saliencymodel;
   for isub = 1:length(fixdens_age{iage})
     fixdens = fixdens_age{iage}{isub};
 
@@ -164,8 +195,8 @@ for iage = 1:2
     end
     
     % add behavior
-    maps(iage).behavior(isub,1) = nanmean(fixdens.behavior.test.dprime);
-    maps(iage).behavior(isub,2) = nanmean(fixdens.behavior.test.RT);
+    maps(iage).behavior(isub,1) = nanmean(fixdens.behavior.study.dprime);
+    maps(iage).behavior(isub,2) = nanmean(fixdens.behavior.study.RT);
     maps(iage).behavior(isub,3) = sum(fixdens.trialinfo(:,13))/length(fixdens.trialinfo); % prop remembered
     remtrls = logical(fixdens.trialinfo(:,13));
     maps(iage).behavior(isub,4) = nanmean(fixdens.trialinfo(remtrls,14)); % RT remembered old trials
@@ -181,7 +212,8 @@ for iage = 1:2
         maps(iage).corrdat{isub,itoi} = [NaN NaN];
         continue
       end
-      corrtype = 'Spearman'; % Spearman
+%       corrtype = 'Spearman'; % Spearman
+      corrtype = 'Pearson'; % Spearman
       maps(iage).corr(isub,itoi) = corr( corrdat(:,1), corrdat(:,2), 'type', corrtype); % Spearman
       maps(iage).corrdat{isub,itoi} = corrdat;
     end
@@ -189,7 +221,7 @@ for iage = 1:2
   end
 end
 
-%% 4. corr FDM to Deepgaze match to memory at test
+%% 4. corr FDM to Deepgaze match to memory 
 
 for iage = 1:2
   maps(iage).corr2behav = NaN(size(maps(iage).behavior,2), length(fixdens.time));
@@ -198,7 +230,11 @@ for iage = 1:2
     for ibehav = 1:size(maps(iage).behavior,2)
       corrdat = [maps(iage).corr(:,itoi), maps(iage).behavior(:,ibehav)];
       corrdat = corrdat(~isnan(corrdat(:,1)),:);
+      corrdat = corrdat(~isinf(corrdat(:,1)),:);
+      corrdat = corrdat(~isinf(corrdat(:,2)),:); 
+      disp 'TODO fix time bins loop'
       maps(iage).corr2behav(ibehav,itoi) = corr( corrdat(:,1), corrdat(:,2), 'type', corrtype );
+      maps(iage).corrdatbehav{ibehav,itoi} = corrdat;
     end
   end
 end

@@ -1,10 +1,10 @@
-function EM_FDM2deepgaze_plot(maps)
+function [stat] = EM_FDM2deepgaze_plot(maps)
 
 addpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/FACS')
 addpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/custom_tools/plotting')
 % PREOUT = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/plots';
-PREOUT = '/Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/plots';
-SAV=1;
+PREOUT = '/Users/kloosterman/Dropbox/PROJECTS/EyeMem/plots';
+SAV=0;
 close all
 
 %% plotting
@@ -16,7 +16,7 @@ for iage= 1:2
   nsub = length(maps(iage).corr);
   h(iage) = shadedErrorBar(maps(iage).time, mean(maps(iage).corr), std(maps(iage).corr) / sqrt(nsub), agecolors{iage}, 1 );
 end
-permstats = 0
+permstats = 1
 if permstats
   timelock=[];
   for iage = 1:2
@@ -35,6 +35,7 @@ if permstats
   cfg.tail             = 0;
   cfg.clustertail      = 0;
   cfg.alpha            = 0.025;
+%   cfg.alpha            = 0.99;
   cfg.numrandomization = 10000;
   cfg.minnbchan        = 0;
   nsub(1) = size(timelock(1).fixdens,2);
@@ -43,6 +44,7 @@ if permstats
   cfg.design(1,:) = [1:nsub(1) 1:nsub(2)];
   cfg.design(2,nsub(1)+1:end) = 2;
   cfg.ivar     = 2;
+  cfg.spmversion = 'spm12';
   
   stat = ft_timelockstatistics(cfg, timelock(1), timelock(2));
   if any(stat.mask)
@@ -56,7 +58,7 @@ end
 legend([h.mainLine], {maps.agegroup}); legend boxoff
 xlabel('Time from picture onset (s)')
 ylabel( sprintf('%s correlation', maps(iage).corrtype))
-title(sprintf('Corr subjectgaze vs. Deepgaze\n%dx%d AOIs, omit_centerAOI=%d',  maps(iage).nbins_x, maps(iage).nbins_y, maps(iage).omit_centerAOI))
+title(sprintf('Corr subjectgaze vs. %s\n%dx%d AOIs, omit_centerAOI=%d', maps(iage).saliencymodel, maps(iage).nbins_x, maps(iage).nbins_y, maps(iage).omit_centerAOI))
 if SAV
   outfile = sprintf('corrtc_%dx%d_AOIs_omit_centerAOI=%d.png', maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI);
   saveas(gcf, fullfile(PREOUT, outfile ))
@@ -75,10 +77,23 @@ for iage= 1:2
   ylim([-.4 .4])
 end
 if SAV
-  outfile = sprintf('corrDG2SG_vs_behavior_%dx%d_AOIs_omit_centerAOI=%d.png', maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI);
+  outfile = sprintf('corr_%s2SG_vs_behavior_%dx%d_AOIs_omit_centerAOI=%d.png',  maps(iage).saliencymodel, maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI);
   saveas(gcf, fullfile(PREOUT, outfile ))
 end
 cd(PREOUT)
+
+ibehav=2; % 2 is RT study
+itime=2;
+iage = 2;
+figure;
+scatter(maps(iage).corrdatbehav{ibehav,itime}(:,1), maps(iage).corrdatbehav{ibehav,itime}(:,2))
+[r,p]=corr(maps(iage).corrdatbehav{ibehav,itime}(:,1), maps(iage).corrdatbehav{ibehav,itime}(:,2), 'type', 'Spearman');
+title(sprintf('r=%g p=%g', r, p))
+
+
+alldat=[maps(iage).corrdatbehav{ibehav,itime}; maps(iage).corrdatbehav{ibehav,itime}];
+corr(alldat(:,1), alldat(:,2), 'type', 'Spearman')
+
 
 disp 'TODO, update the below'
 return
