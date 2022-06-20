@@ -3,9 +3,9 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
   %    analysisname = 'SDbold_OAvsYA_task'
-%   analysisname = 'SDbold_vs_HMAX';  % task PLS
+  analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -197,7 +197,9 @@ corrtype = 'Spearman'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/iqr_5bins/fixednbins/non-gazespecific/old'
        
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/non-gazespecific/young';
-%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/gaze-specific/young';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/gaze-specific/young';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific/young';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific/old';
     
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';

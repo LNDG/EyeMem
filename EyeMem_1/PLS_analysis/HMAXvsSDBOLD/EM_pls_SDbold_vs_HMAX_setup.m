@@ -22,7 +22,8 @@ timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
 % analysis settings
-PLStype = 'taskPLS'; % behavPLSvsdprime taskPLS behavPLSvsDDM
+% PLStype = 'taskPLS'; % behavPLSvsdprime taskPLS behavPLSvsDDM
+PLStype = 'behavPLSvsDDM'; % behavPLSvsdprime taskPLS behavPLSvsDDM
 nbins = 3; % no of bins used for Hmax binning
 gazespecificHMAX = 'gaze-specific';
 % gazespecificHMAX = 'non-gazespecific'; 
