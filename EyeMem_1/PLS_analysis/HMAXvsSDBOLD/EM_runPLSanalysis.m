@@ -4,8 +4,8 @@ load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyeme
 
 if nargin==0
   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-  %    analysisname = 'SDbold_OAvsYA_task'
 %   analysisname = 'SDbold_vs_HMAX';  % task PLS
+  %    analysisname = 'SDbold_OAvsYA_task' % overall BSV YA vs OA
 end
 %%
 switch analysisname
@@ -41,8 +41,8 @@ switch analysisname
     
   case 'corrSDbold'
 %%
-corrtype = 'Pearson'; %Spearman Pearson
-% corrtype = 'Spearman'; %Spearman Pearson
+% corrtype = 'Pearson'; %Spearman Pearson
+corrtype = 'Spearman'; %Spearman Pearson
 %     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
@@ -200,7 +200,7 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/non-gazespecific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_5bins/fixednbins/gaze-specific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific/young';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific/old';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific';
     
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
@@ -208,9 +208,9 @@ corrtype = 'Pearson'; %Spearman Pearson
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
-    num_perm = '100';
+    num_perm = '1000';
     num_split = '0';
-    num_boot = '100';
+    num_boot = '1000';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
@@ -218,26 +218,23 @@ corrtype = 'Pearson'; %Spearman Pearson
     behavior_data = {};
     behavior_name = {};
     
-    %     agegroups = {'young' 'old'};
+    agegroups = {'young' 'old'};
     %     agegroups = {'young'};
-    %     id_list = cell(length(agegroups),1);
-    id_list = cell(1,1);
-    %     for iage = 1:length(agegroups)
-    %       cd(fullfile(PREIN, agegroups{iage}))
-    %       cd(fullfile(PREIN))
-    subjlist = dir('sub*_BfMRIsessiondata.mat');
-    outlier_perc_BOLDremoved = zeros(length(subjlist),1)
-    for isub=1:length(subjlist)
-      tmp = tokenize(subjlist(isub).name, '_');
-      id_list{1}{end+1} = tmp{1};
-      load(subjlist(isub).name, 'perc_BOLDremoved');
-      outlier_perc_BOLDremoved(isub) = perc_BOLDremoved;
-      % do corr hmax vs fixdur
-      
+    id_list = cell(length(agegroups),1);
+    % %     id_list = cell(1,1);
+    for iage = 1:length(agegroups)
+      cd(fullfile(PREIN, agegroups{iage}))
+      subjlist = dir('sub*_BfMRIsessiondata.mat');
+      outlier_perc_BOLDremoved = zeros(length(subjlist),1)
+      for isub=1:length(subjlist)
+        tmp = tokenize(subjlist(isub).name, '_');
+        id_list{iage}{end+1} = tmp{1};
+%         load(subjlist(isub).name, 'perc_BOLDremoved');
+%         outlier_perc_BOLDremoved(isub) = perc_BOLDremoved;
+      end
+      %     disp 'avg BOLD removed in outlier removal:'
+      %     mean(perc_BOLDremoved)
     end
-%     disp 'avg BOLD removed in outlier removal:'
-%     mean(perc_BOLDremoved)
-    %     end
     outname = analysisname;
     outfilename = sprintf('%s_%d', outname, cellfun(@length, id_list)); %
     disp(outfilename)
