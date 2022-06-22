@@ -11,19 +11,40 @@ ind_start = linspace(1, nsub(1)*ncond, ncond+1)
 ind_end   = linspace(nsub(1), nsub(1)*ncond, ncond)
 
 lv=1;
-inds=0;
-iage=1;
-plotdat = {};
 
+% age groups in different cells
+uscdat{1} = result.usc(1:nsub(1)*ncond,lv);
+uscdat{2} = result.usc(nsub(1)*ncond+1:end,lv);
+
+plotdat = {};
 ageinds = 0;
 for iage =1:2
-  
-  uscdat = result.usc(ageinds,lv)
+  inds=0;
   for icond = 1:ncond
-    curinds = inds+1:(inds+1+nsub(iage));
-    plotdat{iage, icond} = uscdat(curinds,:)
+    curinds = inds+1:(inds+nsub(iage));
+    plotdat{icond, iage} = uscdat{iage}(curinds,:)
     
     inds = curinds(end);
     
   end
 end
+
+%%
+ylims = [14.2e4 15.4e4; 11.6e4 12.8e4];
+ylims = [1.1e5 2.1e5; 0.9e5 1.9e5];
+titleg = {'YA' 'OA'};
+figure;
+for iage=1:2
+  subplot(1,2,iage); hold on
+%   bar(cellfun(@mean, plotdat(:,iage)))
+  plotSpread(plotdat(:,iage))
+  for icond=1:3
+    ydat = mean(plotdat{icond,iage});
+    line([icond-0.25 icond+0.25], [ydat ydat], 'linewidth', 4)
+  end
+  ylim(ylims(iage,:))
+  title(titleg{iage})
+  ylabel('Brain score')
+end
+saveas(gcf, 'brainscores.pdf')
+saveas(gcf, 'brainscores.png')

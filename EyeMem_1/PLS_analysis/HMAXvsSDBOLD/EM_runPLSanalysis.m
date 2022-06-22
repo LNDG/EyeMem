@@ -41,8 +41,8 @@ switch analysisname
     
   case 'corrSDbold'
 %%
-% corrtype = 'Pearson'; %Spearman Pearson
-corrtype = 'Spearman'; %Spearman Pearson
+corrtype = 'Pearson'; %Spearman Pearson
+% corrtype = 'Spearman'; %Spearman Pearson
 %     agegroup = 'OA'; % ALLsubj OA YA
     behavnames = {...
       %       {'study' 'dprime'};
@@ -81,7 +81,7 @@ corrtype = 'Spearman'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_5bins/fixednbins/linearfit_fitcoeff1/gaze-specific/young';
     
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_5bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/young';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific/young';
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -106,10 +106,11 @@ corrtype = 'Spearman'; %Spearman Pearson
     
     %%% both groups code
     
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
     
 %     agegroups = {'young'};
-%     agegroups = {''};
+%     agegroups = {'old'};
+    agegroups = {''};
     behavior_data =  cell(length(agegroups),1);
     
     id_list = cell(length(agegroups),1);
