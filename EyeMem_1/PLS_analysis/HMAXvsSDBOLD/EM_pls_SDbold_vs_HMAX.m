@@ -37,8 +37,9 @@ source.time = 1:5;
 source.cfg = [];
 source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
-%%
-if ismac
+%% inspection of fMRI, not used in further processing
+plotit = 0;
+if ismac && plotit
   %   cfg = [];
   %   cfg.funparameter  = 'pow';
   %   cfg.maskparameter = cfg.funparameter;
@@ -273,7 +274,7 @@ switch gazespecificHMAX
         [sortHMAX, sortinds] = sort(hmax_at_fix_trl);  % gaze-specific HMAX values
         %         [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));
  
-        bininds = repmat(transpose(1:5), ceil(ntrials/nbins), 1);
+        bininds = repmat(transpose(1:nbins), ceil(ntrials/nbins), 1);
         bininds = sort(bininds(1:ntrials));
         
         ntrlperbin = floor(ntrials / nbins); % each subject has 150 trials

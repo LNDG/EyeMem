@@ -33,9 +33,9 @@ removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
 
-binsubtract = [2 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
+% binsubtract = [2 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 % binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
-% binsubtract = 'linearfit';
+binsubtract = 'linearfit';
 fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
 
 load participantinfo.mat % TODO make this reliable

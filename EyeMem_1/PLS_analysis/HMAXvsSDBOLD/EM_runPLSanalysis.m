@@ -84,7 +84,14 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/old'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/bin2-bin1_fitcoeff1/gaze-specific'
     
+    %     agegroups = {'young' 'old'};
+    
+%     agegroups = {'young'};
+    agegroups = {'old'};
+%     agegroups = {''};
+
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
     %     resultfilename = 'corrSDbold_vsRT_OA_BfMRIresult.mat';
@@ -108,11 +115,6 @@ corrtype = 'Pearson'; %Spearman Pearson
     
     %%% both groups code
     
-    agegroups = {'young' 'old'};
-    
-%     agegroups = {'young'};
-%     agegroups = {'old'};
-%     agegroups = {''};
     behavior_data =  cell(length(agegroups),1);
     
     id_list = cell(length(agegroups),1);
@@ -151,7 +153,9 @@ corrtype = 'Pearson'; %Spearman Pearson
 %         end
       end
     end
-    cd(PREIN)
+    if numel(agegroups) == 2
+      cd(PREIN)
+    end
     
     outfilename = sprintf('%s_%s_%s_%d_%s', outname, [behavnames{:}{:}], [agegroups{:}], cellfun(@length, id_list), corrtype); %
     disp(outfilename)
