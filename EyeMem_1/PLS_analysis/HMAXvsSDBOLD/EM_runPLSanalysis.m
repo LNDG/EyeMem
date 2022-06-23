@@ -90,6 +90,7 @@ corrtype = 'Pearson'; %Spearman Pearson
 %     agegroups = {'young' 'old'};
         agegroups = {'young'};
 %     agegroups = {'old'};
+%         agegroups = {''};
 
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -208,6 +209,8 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific/young';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific';
     
+    agegroups = {'young' 'old'};
+
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
 %     resultfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIresult.mat';
@@ -224,14 +227,13 @@ corrtype = 'Pearson'; %Spearman Pearson
     behavior_data = {};
     behavior_name = {};
     
-    agegroups = {'young' 'old'};
     %     agegroups = {'young'};
     id_list = cell(length(agegroups),1);
     % %     id_list = cell(1,1);
     for iage = 1:length(agegroups)
       cd(fullfile(PREIN, agegroups{iage}))
       subjlist = dir('sub*_BfMRIsessiondata.mat');
-      outlier_perc_BOLDremoved = zeros(length(subjlist),1)
+      outlier_perc_BOLDremoved = zeros(length(subjlist),1);
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
         id_list{iage}{end+1} = tmp{1};
@@ -242,7 +244,9 @@ corrtype = 'Pearson'; %Spearman Pearson
       %     mean(perc_BOLDremoved)
     end
     outname = analysisname;
-    outfilename = sprintf('%s_%d', outname, cellfun(@length, id_list)); %
+%         outfilename = sprintf('%s_%s_%s_%d_%s', outname, [behavnames{:}{:}], [agegroups{:}], cellfun(@length, id_list), corrtype); %
+
+    outfilename = sprintf('%s_%s_%d_%d', outname, [agegroups{:}], cellfun(@length, id_list)'); %
     disp(outfilename)
     txtfilename = [ outfilename '_BfMRIanalysis.txt'];
     resultfilename = [ outfilename '_BfMRIresult.mat'];
