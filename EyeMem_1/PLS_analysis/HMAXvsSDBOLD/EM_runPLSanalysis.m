@@ -43,26 +43,6 @@ switch analysisname
 %%
 corrtype = 'Pearson'; %Spearman Pearson
 % corrtype = 'Spearman'; %Spearman Pearson
-%     agegroup = 'OA'; % ALLsubj OA YA
-    behavnames = {...
-      %       {'study' 'dprime'};
-      %       {'study' 'criterion'};
-      %       {'study' 'RT'};
-      %       {'study' 'RTsd'};
-%       {'test' 'dprime'};
-      %       {'test' 'RT'}
-      %       {'test' 'criterion'};
-      %       {'test' 'RTsd'}
-      %       {'test' 'p_repeatbalanced'};
-%       {'params_HDDMbias_YAOA' 'v'};
-%       {'params_HDDMbias_YAOA' 'a'};
-%       {'params_HDDMbias_YAOA' 't'};
-%       {'params_HDDMbias_YAOA' 'dc'};
-%       {'params_HDDMbias_YAOA' 'z'};
-%       {'ddmLaura' 'v'};
-      {'ddmNiels' 'v'};
-%       {'eyemem1_params_biasmodel_Niels' 'v'};
-      };
     
     %     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
     %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
@@ -87,6 +67,8 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific/';
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/bin2-bin1_fitcoeff1/gaze-specific'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/';
+
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsdprime/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific/';
     
     agegroups = {'young' 'old'};
 %         agegroups = {'young'};
@@ -125,28 +107,15 @@ corrtype = 'Pearson'; %Spearman Pearson
       subjlist = dir('sub*_BfMRIsessiondata.mat');
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
-        
-        subjind = behavior.participants.participant_id == tmp{1};
-        behav_valkeep = [];
-        behavior_name = [];
-        for ibehav = 1:length(behavnames)
-          behavior_name = [behavior_name '  ' behavnames{ibehav}{:}];
-          behavoi = behavior.(behavnames{ibehav}{1});
-          behav_val = behavoi.(behavnames{ibehav}{2})(subjind,1);
-          ages.Var1(isub,1) = behavior.participants.group(find(subjind),:);
-          if behav_val == 0
-            disp(agegroups{iage})
-            warning('zero found!')
-            disp(behavior.participants.participant_id(subjind))
-            disp('dropping subject'); continue
-          end
-          behav_valkeep = [behav_valkeep behav_val];
-        end
 
-        % could also take from data itself, same result
-%         load(subjlist(isub).name, 'behavdata')
-%         behav_valkeep = behavdata;
-%         behavior_name = 'drift';
+        % take behav from data 
+        load(subjlist(isub).name, 'behavdata', 'behavname')
+        if isnan(behavdata)
+          disp(subjlist(isub).name)
+          continue
+        end
+        behav_valkeep = behavdata;
+        behavior_name = behavname{:};
 
 %         if behav_val > 0
           behavior_data{iage}{end+1} = num2str(behav_valkeep); %
@@ -158,7 +127,7 @@ corrtype = 'Pearson'; %Spearman Pearson
       cd(PREIN)
     end
     
-    outfilename = sprintf('%s_%s_%s_%d_%s', outname, [behavnames{:}{:}], [agegroups{:}], cellfun(@length, id_list), corrtype); %
+    outfilename = sprintf('%s_%s_%s_%d_%s', outname, behavior_name, [agegroups{:}], cellfun(@length, id_list), corrtype); %
     disp(outfilename)
     txtfilename = [ outfilename '_BfMRIanalysis.txt'];
     resultfilename = [ outfilename '_BfMRIresult.mat'];
