@@ -411,7 +411,7 @@ switch PLStype
     tmp.behavname = {'dprime'};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behavior comes out
     subjind = behavior.participants.participant_id == subj;
-    tmp.behavdata = mean(behav.test(subjind).dprime);
+    tmp.behavdata = mean(behavior.dprime(subjind,2,6)); % 2 is test, 6 is cond average
   case 'behavPLSvsDDM'
     if isnumeric(binsubtract)
       tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
