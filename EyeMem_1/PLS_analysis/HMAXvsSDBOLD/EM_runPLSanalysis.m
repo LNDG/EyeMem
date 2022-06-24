@@ -94,10 +94,6 @@ corrtype = 'Pearson'; %Spearman Pearson
     clim = '95';
     save_data = '0';
     selected_cond = []; %num2str(ones(1,5)); disp 'TODO get ncond somewhere'
-    behavior_data = {};
-    
-    %%% both groups code
-    
     behavior_data =  cell(length(agegroups),1);
     
     id_list = cell(length(agegroups),1);

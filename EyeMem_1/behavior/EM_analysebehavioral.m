@@ -1,4 +1,4 @@
-function [behavior] = EM_analysebehavioral
+function [behavior] = EM_analysebehavioral()
 %Read in behavior text files, compute d', RT, etc.
 % TODO organize MEG2afc way, track age with Participants table
 % dimord subj_phase_cond
@@ -13,7 +13,7 @@ ntrials_per_run = [30 60];
 
 % SUBJ= [9:101]; % TODO specify further?
 % find out which SUBJ are still in the mix in fMRI
-PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific';
+PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsdprime/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific';
 cd(fullfile(PREIN))
 SUBJ = [];
 subjlist = dir('sub*_BfMRIsessiondata.mat');
@@ -202,7 +202,7 @@ end
 disp 'average over conditions'
 bmeas = {'dprime' 'criterion' 'propcorrect' 'RT' 'RTsd' 'RTsd2' 'RT_misses' 'RT_hits' 'RT_fas' 'RT_crs' 'omissions'}; % p_repeatbalanced dim5 is LR
 for im = 1:length(bmeas)
-  behavior.(bmeas{im})(:,:,6) = mean(behavior.(bmeas{im}), 3); % avg over diff
+  behavior.(bmeas{im})(:,:,6) = nanmean(behavior.(bmeas{im}), 3); % avg over diff
 end
 
 for iphase = 1:2 % study, test
