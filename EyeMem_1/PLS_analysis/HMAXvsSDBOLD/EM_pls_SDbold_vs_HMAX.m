@@ -113,7 +113,7 @@ switch gazespecificHMAX
     bininds(isnan(sortHMAX)) = NaN; % set outliers to nan
     
     binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
-
+    
   case 'gaze-specific'
     % load HMAX file
     hmaxlist=dir(fullfile(HMAXfolder, '*.mat' ));
