@@ -15,6 +15,7 @@ nbins = cfg.nbins;
 do_kstest = cfg.do_kstest;
 behavfile = cfg.behavfile ;
 PLStype = cfg.PLStype;
+PLSbehav = cfg.PLSbehav;
 subj = cfg.subj;
 BOLDvar_measure = cfg.BOLDvar_measure;
 binsubtract = cfg.binsubtract;
@@ -398,7 +399,7 @@ switch PLStype
     tmp.st_datamat = transpose(source.pow(tmp.st_coords,:)); %these are defined above as a mask of voxels %to use. All others are excluded (e.g., in a GM mask). % cond x voxels
     tmp.behavdata = [];
     tmp.behavname = {};%no behav names or data just yet, but set up the %field anyway...
-  case 'behavPLSvsdprime'
+  case contains(PLStype, 'behavPLSvsSDT')
     if isnumeric(binsubtract)
       tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
     else
@@ -408,11 +409,11 @@ switch PLStype
         tmp.st_datamat(1,i) = fit(1);
       end
     end
-    tmp.behavname = {'dprime'};%no behav names or data just yet, but set up the %field anyway...
+    tmp.behavname = {PLSbehav};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behavior comes out
     subjind = behavior.participants.participant_id == subj;
-    tmp.behavdata = mean(behavior.dprime(subjind,2,6)); % 2 is test, 6 is cond average
-  case 'behavPLSvsDDM'
+    tmp.behavdata = mean(behavior.(PLSbehav)(subjind,2,6)); % 2 is test, 6 is cond average
+  case contains(PLStype, 'behavPLSvsDDM')
     if isnumeric(binsubtract)
       tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
     else

@@ -123,7 +123,7 @@ corrtype = 'Pearson'; %Spearman Pearson
       cd(PREIN)
     end
     
-    outfilename = sprintf('%s_%s_%s_%d_%s', outname, behavior_name, [agegroups{:}], cellfun(@length, id_list), corrtype); %
+    outfilename = sprintf('%s_%s_%s_%d_%d_%s', outname, behavior_name, [agegroups{:}], cellfun(@length, id_list), corrtype); %
     disp(outfilename)
     txtfilename = [ outfilename '_BfMRIanalysis.txt'];
     resultfilename = [ outfilename '_BfMRIresult.mat'];
