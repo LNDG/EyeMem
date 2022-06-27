@@ -22,6 +22,7 @@ binsubtract = cfg.binsubtract;
 HMAXfolder = cfg.HMAXfolder;
 eyefile = cfg.eyefile;
 PREIN = cfg.PREIN;
+PREOUT = cfg.PREOUT;
 gazespecificHMAX= cfg.gazespecificHMAX;
 fitcoeff = cfg.fitcoeff;
 bintype = cfg.bintype;
@@ -496,12 +497,15 @@ if strcmp(gazespecificHMAX, 'gaze-specific')
   tmp.hmax_at_fix_keep = hmax_at_fix_keep;
 end
 
-disp(outfile_source)
-save(outfile_source, 'source')
+% disp(outfile_source)
+% save(outfile_source, 'source')
 
 % save PLS sesdat
 disp(outfile_sesdat)
 save(outfile_sesdat, '-struct','tmp')
+
+out = fullfile(fileparts(fileparts(outfile_sesdat)), [subj '_BfMRIsessiondata.mat']);
+save(out , '-struct','tmp')
 % % save([subj '_' pattern '_BfMRIdatamat.mat'], '-struct','tmp'); %,'-mat'
 
 
