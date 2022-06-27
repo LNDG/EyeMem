@@ -23,8 +23,8 @@ memreq = 2000; % in MB
 
 % analysis settings
 % PLStype = 'taskPLS'; 
-% PLStype = 'behavPLSvsDDM'; 
-PLStype = 'behavPLSvsSDT'; 
+% PLStype = 'behavPLSvsDDM';
+PLStype = 'behavPLSvsSDT';
 PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 

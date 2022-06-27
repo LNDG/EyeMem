@@ -399,7 +399,7 @@ switch PLStype
     tmp.st_datamat = transpose(source.pow(tmp.st_coords,:)); %these are defined above as a mask of voxels %to use. All others are excluded (e.g., in a GM mask). % cond x voxels
     tmp.behavdata = [];
     tmp.behavname = {};%no behav names or data just yet, but set up the %field anyway...
-  case contains(PLStype, 'behavPLSvsSDT')
+  case 'behavPLSvsSDT'
     if isnumeric(binsubtract)
       tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
     else
@@ -413,7 +413,7 @@ switch PLStype
     load(behavfile); % behavior comes out
     subjind = behavior.participants.participant_id == subj;
     tmp.behavdata = mean(behavior.(PLSbehav)(subjind,2,6)); % 2 is test, 6 is cond average
-  case contains(PLStype, 'behavPLSvsDDM')
+  case 'behavPLSvsDDM'
     if isnumeric(binsubtract)
       tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
     else
@@ -423,10 +423,10 @@ switch PLStype
         tmp.st_datamat(1,i) = fit(fitcoeff); % fit is in descending powers
       end
     end
-    tmp.behavname = {'drift'};%no behav names or data just yet, but set up the %field anyway...
+    tmp.behavname = {PLSbehav};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behav comes out
     subjind = behavior.participants.participant_id == subj;
-    tmp.behavdata = mean(behavior.ddmNiels.v(subjind));
+    tmp.behavdata = mean(behavior.ddmNiels.(PLSbehav)(subjind));
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];
