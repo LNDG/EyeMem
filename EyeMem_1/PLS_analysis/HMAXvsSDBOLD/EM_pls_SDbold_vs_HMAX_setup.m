@@ -25,8 +25,8 @@ memreq = 2000; % in MB
 % PLStype = 'taskPLS'; 
 % PLStype = 'behavPLSvsDDM';
 PLStype = 'behavPLSvsSDT';
-PLSbehav = 'dprime';
-% PLSbehav = 'criterion';
+% PLSbehav = 'dprime';
+PLSbehav = 'criterion';
 
 nbins = 3; % no of bins used for Hmax binning
 gazespecificHMAX = 'gaze-specific';

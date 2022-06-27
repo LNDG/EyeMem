@@ -177,6 +177,10 @@ corrtype = 'Pearson'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/taskPLS/std_3bins/fixednbins/non-gazespecific';
     
+    %%% new dir naming
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
+    
+    
     agegroups = {'young' 'old'};
 
     disp 'Generate model txt file'
