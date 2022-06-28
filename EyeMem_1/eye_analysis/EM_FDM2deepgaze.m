@@ -16,6 +16,8 @@ PREINeye = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye';
 PREINdeepgaze = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/DeepGazeII';
 PREINhmax = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/D_paradigm/stimuli_640x480/hmax';
 
+PREOUT = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye';
+
 % saliencymodel = 'deepgaze';
 saliencymodel = 'hmax';
 
@@ -28,13 +30,13 @@ omit_centerAOI = 1;
 % time = 0.5:1:5;
 % timewin = 1;
 
-% % works well:
-% time = 0.25:0.25:4.75;
-% timewin = 0.5;
+% works well:
+time = 0.25:0.25:4.75;
+timewin = 0.5;
 
-% quick:
-time = 1.25:2.5:4.75;
-timewin = 2.5;
+% % quick:
+% time = 1.25:2.5:4.75;
+% timewin = 2.5;
 
 % no timebins:
 % time = 2.5;
@@ -238,4 +240,8 @@ for iage = 1:2
     end
   end
 end
+
+out = fullfile(PREOUT, ['maps_gaze_vs_' saliencymodel '.mat']);
+disp(out)
+save(out, 'maps')
 disp 'done'

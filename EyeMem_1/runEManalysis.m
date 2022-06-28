@@ -87,6 +87,8 @@ EM_pls_SDbold_vs_HMAX_setup()
 
 %% Compare FDMs to deepgaze maps
 % [maps] = EM_FDM2deepgaze();
+% or 
+load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye/maps_gaze_vs_hmax.mat', 'maps')
 % EM_FDM2deepgaze_plot(maps);
 
 %% OLD remove soon

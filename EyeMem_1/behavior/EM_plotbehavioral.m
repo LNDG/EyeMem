@@ -1,14 +1,29 @@
 function EM_plotbehavioral(b)
 
-% age_groups = {'young' 'old'};
 % exp_phases = {'study'; 'test'};
 % depvars = {'dprime' 'criterion' 'RT' 'propcorrect'  }; % 'RTsd' 'RTsd2'
 %
 %% plot modelfree
+
+% find out which SUBJ are still in the mix in fMRI
+PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/criterion/linearfit_fitcoeff1';;
+cd(fullfile(PREIN))
+SUBJ = [];
+subjlist = dir('sub*_BfMRIsessiondata.mat');
+for isub=1:length(subjlist)
+  tmp = tokenize(subjlist(isub).name, '_');
+  SUBJ(isub,1) = find(b.participants.participant_id == tmp{1});
+end
+SUBJ = sort(SUBJ);
+SUBJage = b.participants.group(SUBJ,1);
+
 SAV=1;
 behavnames = {
   {'dprime'};  {'criterion'};  { 'RT'} ;{ 'RTsd' };
-  }; % all matrices
+  };
+age_groups = {'young' 'old'};
+age_colors = [1 0.5 0.5; 0.5 0.5 1];
+
 close all
 nrow=8; ncol=5;
 
@@ -18,24 +33,31 @@ Fontsize = 6;
 for im = 1:length(behavnames)
   for iphase = 2
     for iage = 1:2
-      iplot=iplot+1;
       if isempty(behavnames{im})
         continue;
       end
       curb = getfield(b, behavnames{im}{:});
-      ageinds = b.participants.group == b.age_groups{iage};
-      data = squeeze(curb(ageinds,iphase, 6));  % dimord: 'subj_phase_cond'
-      %   disp 'Drop NK1 high drift'
-      %   data = data(2:end,:);
-      subplot(nrow,ncol,iplot); hold on; % axis tight
-      plotspreadfig(data, Fontsize, [], b.SUBJ);
-      %       title(sprintf('%s %s\nruns %s', behavnames{im}{1}, diffleg{idiff}, avgtypestr{ia}), 'Fontsize', Fontsize-1)
+      curb = curb(SUBJ,iphase, 6); % select SUBJ made it to fMRI
+      
+      
+%       ageinds = b.participants.group == b.age_groups{iage};
+      
+      
+      data{iage} = curb(SUBJage == age_groups{iage});
+
     end
+    iplot=iplot+1;
+    subplot(nrow,ncol,iplot); hold on; % axis tight
+    handle = plotSpread( data, 'distributionMarkers', 'o', 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );
+    br = bar(cellfun(@mean, data)')
+    shading flat
+    
+    title(sprintf('%s %s\nruns %s', behavnames{im}{1} ))
   end
 end
 if SAV
-  %   saveas(gcf, fullfile(b.PREOUT, sprintf('behavior.pdf' )))
-  saveas(gcf, fullfile(b.PREOUT, sprintf('behavior_%s_runs%s.png', diffleg{idiff}, avgtypestr{ia} )))
+  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior.pdf' )))
+  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior.png')))
   cd(b.PREOUT)
 end
 
@@ -137,9 +159,9 @@ end
 %% plot bars + lines
 function ax = plotspreadfig(data, Fontsize, condlabels, SUBJ)
 % lines between pts
-line([ones(1,size(data,1)); ones(1,size(data,1))+1], [data(:,1) data(:,2)]', 'Color',[0.66 0.66 0.66 ], 'Linewidth', 0.5)
+% line([ones(1,size(data,1)); ones(1,size(data,1))+1], [data(:,1) data(:,2)]', 'Color',[0.66 0.66 0.66 ], 'Linewidth', 0.5)
 
-handle = plotSpread( {data(:,1) data(:,2)}, 'distributionMarkers', 'o', 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );% b r circles
+handle = plotSpread( {data}, 'distributionMarkers', 'o', 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );% b r circles
 set(handle{1}(1:2), 'MarkerSize', 3, 'Linewidth', 0.5)
 % text(data(:,1)', data(:,2)', num2cell(SUBJ), 'Fontsize', Fontsize)
 

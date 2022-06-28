@@ -41,8 +41,8 @@ switch analysisname
     
   case 'corrSDbold'
 %%
-corrtype = 'Pearson'; %Spearman Pearson
-% corrtype = 'Spearman'; %Spearman Pearson
+% corrtype = 'Pearson'; %Spearman Pearson
+corrtype = 'Spearman'; %Spearman Pearson
     
     %     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
     %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
@@ -68,7 +68,9 @@ corrtype = 'Pearson'; %Spearman Pearson
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/bin2-bin1_fitcoeff1/gaze-specific'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/';
 
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsdprime/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific/';
+    % new dir structure naming
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/criterion/linearfit_fitcoeff1';
     
     agegroups = {'young' 'old'};
 %         agegroups = {'young'};

@@ -4,18 +4,27 @@ addpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/FACS')
 addpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/custom_tools/plotting')
 % PREOUT = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/plots';
 PREOUT = '/Users/kloosterman/Dropbox/PROJECTS/EyeMem/plots';
-SAV=0;
+SAV=1;
 close all
 
 %% plotting
 disp 'time course of corr'
-figure; hold on
+f = figure; 
+f.Position = [ 1000         918         180         135 ];
+
+hold on
 agecolors = {'r' 'b'}; 
 clear h
 for iage= 1:2
   nsub = length(maps(iage).corr);
-  h(iage) = shadedErrorBar(maps(iage).time, mean(maps(iage).corr), std(maps(iage).corr) / sqrt(nsub), agecolors{iage}, 1 );
+  h(iage) = shadedErrorBar(maps(iage).time, mean(maps(iage).corr), std(maps(iage).corr) / sqrt(nsub), agecolors{iage}, 0 );
 end
+ax=gca;
+ax.XLim = [0 5];
+ax.XTick = 0:5;
+ax.XTickLabel = 0:5;
+ax.FontSize = 8;
+
 permstats = 1
 if permstats
   timelock=[];
@@ -48,21 +57,28 @@ if permstats
   
   stat = ft_timelockstatistics(cfg, timelock(1), timelock(2));
   if any(stat.mask)
-    pl = plot_sig_bar(timelock(1).time, stat.mask, [], 6, [0 0 0]); % vpos, height, Color
+    pl = plot_sig_bar(timelock(1).time, stat.mask, [], 3, [0 0 0]); % vpos, height, Color
   end
 else
   [~,p]=ttest2(maps(1).corr,maps(2).corr);
 end
 
-
-legend([h.mainLine], {maps.agegroup}); legend boxoff
+leg = {'younger' 'older', 'p < 0.05, corrected'};
+% legend([h.mainLine], {maps.agegroup}); legend boxoff
+legend([h.mainLine], leg); legend boxoff
 xlabel('Time from picture onset (s)')
-ylabel( sprintf('%s correlation', maps(iage).corrtype))
-title(sprintf('Corr subjectgaze vs. %s\n%dx%d AOIs, omit_centerAOI=%d', maps(iage).saliencymodel, maps(iage).nbins_x, maps(iage).nbins_y, maps(iage).omit_centerAOI))
+ylabel( sprintf('Map similarity (%s’s r)', maps(iage).corrtype))
+
+% title(sprintf('Corr subjectgaze vs. %s\n%dx%d AOIs, omit_centerAOI=%d', maps(iage).saliencymodel, maps(iage).nbins_x, maps(iage).nbins_y, maps(iage).omit_centerAOI))
 if SAV
-  outfile = sprintf('corrtc_%dx%d_AOIs_omit_centerAOI=%d.png', maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI);
+  outfile = sprintf('corrtc_%s_%dx%d_AOIs_omit_centerAOI=%d.png', maps(iage).saliencymodel, maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI);
+  saveas(gcf, fullfile(PREOUT, outfile ))
+  outfile = sprintf('corrtc_%s_%dx%d_AOIs_omit_centerAOI=%d.pdf', maps(iage).saliencymodel, maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI);
   saveas(gcf, fullfile(PREOUT, outfile ))
 end
+
+%% the below shows nothing interesting
+return
 
 %% time course of deepgaze correlation vs behavior correlation
 f=figure; f.Position = [744 358 565 692];
@@ -140,6 +156,8 @@ xlim([0.5 2.5])
 ylabel('Correlation per subj FDM vs Deepgaze')
 if SAV
   outfile = sprintf('%dx%d_AOIs_omit_centerAOI=%d_spread.png', maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI)
+  saveas(gcf, fullfile(PREOUT, outfile ))
+  outfile = sprintf('%dx%d_AOIs_omit_centerAOI=%d_spread.pdf', maps(1).nbins_x, maps(1).nbins_y, maps(1).omit_centerAOI)
   saveas(gcf, fullfile(PREOUT, outfile ))
 end
 cd(PREOUT)
