@@ -21,8 +21,8 @@ PREOUT = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye';
 % saliencymodel = 'deepgaze';
 saliencymodel = 'hmax';
 
-nbins_x = 3;
-nbins_y = 3;
+nbins_x = 5;
+nbins_y = 5;
 omit_centerAOI = 1; 
 
 % nbins_x = 832-192;
@@ -31,14 +31,14 @@ omit_centerAOI = 1;
 % timewin = 1;
 
 % works well:
-time = 0.25:0.25:4.75;
-timewin = 0.5;
+% time = 0.25:0.25:4.75;
+% timewin = 0.5;
 
-% % quick:
-% time = 1.25:2.5:4.75;
-% timewin = 2.5;
+% quick:
+time = 1.25:2.5:4.75;
+timewin = 2.5;
 
-% no timebins:
+% % no timebins:
 % time = 2.5;
 % timewin = 5;
 
@@ -54,6 +54,7 @@ cond_names = {'fractals' 'landscapes' 'naturals1' 'streets1' 'streets2'}; % numb
 deepgaze=[];
 deepgaze.dat = NaN( 5, 30, nbins_x, nbins_y);
 deepgaze.dimord = 'cond_pic_xpos_ypos';
+deepgaze.cond_names = cond_names;
 
 switch saliencymodel
   case 'deepgaze'
@@ -92,7 +93,10 @@ for iage = 1:2
   cd(fullfile(PREINeye, agegroups{iage}))
   subjlist = dir('eye*.mat');
   nsub = length(subjlist);
+%   nsub = randperm(42,1);
+  
   for isub = 1:nsub %
+%   for isub = nsub %
     disp(isub)
     load(subjlist(isub).name)
     
@@ -126,9 +130,13 @@ for iage = 1:2
       cfg.latency = [time(itoi)-timewin/2 time(itoi)+timewin/2]; % only select viewing period, make timeresolved
       datsel = ft_selectdata(cfg, timelock);
       for itrial = 1:size(datsel.trial,1)
-        %       disp 'remove b and s samples'
-        validsmp = squeeze(datsel.trial(itrial,5,:) == 0 & datsel.trial(itrial,6,:) == 0);
-        gazedat = transpose(squeeze(datsel.trial(itrial,2:3,validsmp)));
+        gazedat = transpose(squeeze(datsel.trial(itrial,2:3,:)));       
+        dropblinksandsaccades = 0;
+        if dropblinksandsaccades %       disp 'remove b and s samples'          
+          validsmp = squeeze(datsel.trial(itrial,5,:) == 0 & datsel.trial(itrial,6,:) == 0);
+          gazedat = gazedat(validsmp,:); %         transpose(squeeze(datsel.trial(itrial,2:3,validsmp)));
+        end
+        gazedatkeep{iage}(:,:,isub) = gazedat;
         
         if isempty(gazedat)
           warning('No gaze data found')
@@ -167,7 +175,7 @@ end
 incbins = incbins(:);
 
 maps = [];
-for iage = 1:2  
+for iage = 1:2
   maps(iage).deepgaze = [];
   maps(iage).fixation = [];
   maps(iage).dimord = 'subj_rpt_pos';
@@ -179,6 +187,10 @@ for iage = 1:2
   maps(iage).agegroup = agegroups{iage};
   maps(iage).time = time;
   maps(iage).saliencymodel = saliencymodel;
+  f = figure; 
+  f.Position = [  1          52        2560        1293 ];
+  f.Colormap = autumn;
+  iplot = 0;
   for isub = 1:length(fixdens_age{iage})
     fixdens = fixdens_age{iage}{isub};
 
@@ -187,10 +199,26 @@ for iage = 1:2
       trialinfo = fixdens.trialinfo(itrial,:);
       condind = trialinfo(2);
       picwatched = trialinfo(3);
-      
       picind = deepgaze.picnolist(condind,:) == picwatched;
       maps(iage).deepgaze(isub,itrial,:) = deepgaze.dat(condind,picind,incbins);      % collapse over location here
-      
+
+      %       if condind == 5 && picwatched == 142
+      if condind == 4 && picwatched == 1        
+        iplot = iplot+1; subplot(12,12,iplot)
+        imagesc(squeeze(deepgaze.dat(condind,picind,:,:)))
+        iplot = iplot+1; subplot(12,12,iplot)
+        plot(gazedatkeep{iage}(:,1,isub), gazedatkeep{iage}(:,2,isub))
+        ax=gca; ax.YDir = 'reverse';
+        ax.XLim = [192, 832];
+        ax.YLim = [144, 624];
+        iplot = iplot+1; subplot(12,12,iplot);
+        imagesc(squeeze(fixdens.map(itrial,itoi,:,:)))
+%          hold on
+%         plot(gazedat(:,1), gazedat(:,2), 'Color', 'red')
+        title(isub)
+        disp('done')
+      end
+
       for itoi=1:length(fixdens.time)
           maps(iage).fixation(isub,itoi,itrial,:) = squeeze(fixdens.map(itrial,itoi,incbins));
       end
@@ -221,6 +249,7 @@ for iage = 1:2
     end
     maps(iage).corrtype = corrtype;
   end
+  saveas(gcf, sprintf('/Users/kloosterman/Dropbox/PROJECTS/EyeMem/plots/picvsgze_%s_cond%d_pic%d.eps', agegroups{iage},  condind, picwatched), 'epsc' )
 end
 
 %% 4. corr FDM to Deepgaze match to memory 
