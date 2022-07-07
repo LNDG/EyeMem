@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-  analysisname = 'SDbold_vs_HMAX';  % task PLS
+  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+%   analysisname = 'SDbold_vs_HMAX';  % task PLS
   %    analysisname = 'SDbold_OAvsYA_task' % overall BSV YA vs OA
 end
 %%
@@ -41,8 +41,8 @@ switch analysisname
     
   case 'corrSDbold'
 %%
-% corrtype = 'Pearson'; %Spearman Pearson
-corrtype = 'Spearman'; %Spearman Pearson
+corrtype = 'Pearson'; %Spearman Pearson
+% corrtype = 'Spearman'; %Spearman Pearson
     
     %     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
     %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
@@ -72,10 +72,12 @@ corrtype = 'Spearman'; %Spearman Pearson
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/criterion/linearfit_fitcoeff1';
     
-    agegroups = {'young' 'old'};
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
+    
+%     agegroups = {'young' 'old'};
 %         agegroups = {'young'};
 %     agegroups = {'old'};
-%         agegroups = {''};
+        agegroups = {''};
 
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -104,8 +106,8 @@ corrtype = 'Spearman'; %Spearman Pearson
       cd(fullfile(PREIN, agegroups{iage}))
       subjlist = dir('sub*_BfMRIsessiondata.mat');
       for isub=1:length(subjlist)
-        tmp = tokenize(subjlist(isub).name, '_');
-
+        tmp = tokenize(subjlist(isub).name, '_');        
+        subjind = behavior.participants.participant_id == tmp{1};
         % take behav from data 
         load(subjlist(isub).name, 'behavdata', 'behavname')
         if isnan(behavdata)
@@ -114,11 +116,13 @@ corrtype = 'Spearman'; %Spearman Pearson
         end
         behav_valkeep = behavdata;
         behavior_name = behavname{:};
-
-%         if behav_val > 0
-          behavior_data{iage}{end+1} = num2str(behav_valkeep); %
-          id_list{iage}{end+1} = tmp{1};
-%         end
+        
+        ages.Var1(isub,1) = behavior.participants.group(find(subjind),:);
+        
+        %         if behav_val > 0
+        behavior_data{iage}{end+1} = num2str(behav_valkeep); %
+        id_list{iage}{end+1} = tmp{1};
+        %         end
       end
     end
     if numel(agegroups) == 2

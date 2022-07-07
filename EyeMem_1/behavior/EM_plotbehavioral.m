@@ -19,7 +19,7 @@ SUBJage = b.participants.group(SUBJ,1);
 
 SAV=1;
 behavnames = {
-  {'dprime'};  {'criterion'};  { 'RT'} ;{ 'RTsd' };
+  {'dprime'}; {'propcorrect'}; {'criterion'};  { 'RT'} ;{ 'RTsd' };{ 'omissions' };
   };
 age_groups = {'young' 'old'};
 age_colors = [1 0.5 0.5; 0.5 0.5 1];
@@ -31,7 +31,7 @@ f = figure; iplot=0;
 f.Position =[   680   467   85*ncol   100*nrow];
 Fontsize = 6;
 for im = 1:length(behavnames)
-  for iphase = 2
+  for iphase = 1:2
     for iage = 1:2
       if isempty(behavnames{im})
         continue;
@@ -48,10 +48,34 @@ for im = 1:length(behavnames)
     end
     iplot=iplot+1;
     subplot(nrow,ncol,iplot); hold on; % axis tight
-    handle = plotSpread( data, 'distributionMarkers', 'o', 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );
-    br = bar(cellfun(@mean, data)')
+    handle = plotSpread_incmarkersz( data, 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );
+
+    br = bar(transpose(cellfun(@mean, data)));
+    br.FaceColor = 'flat';
+    br.CData(1,:) = [255 0 0];
+    br.CData(2,:) = [0 0 255];
+    br.FaceAlpha = .4;
+    br.EdgeAlpha = 0;
     shading flat
     
+    [h,p] = ttest2(data{1}, data{2});
+    sigstar({[1,2]},p);
+
+    
+%     barmeans = cellfun(@mean, data)';
+%     barsem = cellfun(@(x) std(x)/sqrt(length(x)), data)';
+%     b = barweb(barmeans, barsem, 0.5, {'Young' 'Older'});
+% %     ylim(ylims)
+%     % b = gca
+%     b.bars(1).FaceColor = 'flat';
+%     b.bars(2).FaceColor = 'flat';
+%     b.bars(1).CData = [255 0 0; 255 0 0];
+%     b.bars(2).CData = [0 0 255; 0 0 255];
+%     b.bars(1).FaceAlpha = .4;
+%     b.bars(2).FaceAlpha = .4;
+%     b.bars(1).EdgeAlpha = 0;
+%     b.bars(2).EdgeAlpha = 0;
+%     
     title(sprintf('%s %s\nruns %s', behavnames{im}{1} ))
   end
 end
@@ -61,7 +85,7 @@ if SAV
   cd(b.PREOUT)
 end
 
-
+return
 
 minmax_vals = [0 3.5; -0.1 0.25; 0.5 1.4; 0.5 1]; % 0 0.4; 0 0.35;
 

@@ -100,7 +100,7 @@ for isub = 1:length(SUBJ)
       %             nondec time
       %                 rt(itrial,:) = rt(itrial,:) - 0.75;
       %             end
-      if isnan(resp)
+      if isnan(resp(itrial,1))
         n_omissions = n_omissions + 1;
       end
       
@@ -156,17 +156,25 @@ for isub = 1:length(SUBJ)
       
       if itrial == ntrials_per_run(iphase) % calculate things per run
         
-        if n_omissions < 4 % only allow runs with < 10 % missed responses
+        if n_omissions < 100 % only allow runs with < 10 % missed responses
           behavior.propcorrect(subNo,iphase,icond) = ac_accum/itrial; % TODO omit first trial(s)
           
           Hitrate = hits/n_present;
           if Hitrate == 1; Hitrate = 0.95; end
-          if Hitrate == 0; continue; end % wrong response pressed or st
+          if Hitrate == 0;
+            warning('0 Hitrate')
+            continue; 
+          end % wrong response pressed or st
           
           FArate = fas/n_absent;
           if FArate == 0; FArate = 0.05; end
           
           behavior.dprime(subNo,iphase,icond) = norminv(Hitrate) - norminv(FArate); % TODO omit first trial(s)
+%           if  behavior.dprime(subNo,iphase,icond) == 0
+          if  subNo == 27
+            warning('stop')
+          end
+          
           behavior.criterion(subNo,iphase,icond) = -0.5 * (norminv(Hitrate) + norminv(FArate)); % TODO omit first trial(s)
           
           behavior.RT(subNo,iphase,icond) = nanmean(rt);
@@ -202,7 +210,11 @@ end
 disp 'average over conditions'
 bmeas = {'dprime' 'criterion' 'propcorrect' 'RT' 'RTsd' 'RTsd2' 'RT_misses' 'RT_hits' 'RT_fas' 'RT_crs' 'omissions'}; % p_repeatbalanced dim5 is LR
 for im = 1:length(bmeas)
-  behavior.(bmeas{im})(:,:,6) = nanmean(behavior.(bmeas{im}), 3); % avg over diff
+  if strcmp(bmeas{im}, 'omissions')
+    behavior.(bmeas{im})(:,:,6) = nansum(behavior.(bmeas{im}), 3); % avg over diff
+  else
+    behavior.(bmeas{im})(:,:,6) = nanmean(behavior.(bmeas{im}), 3); % avg over diff
+  end
 end
 
 for iphase = 1:2 % study, test
