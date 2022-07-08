@@ -74,7 +74,7 @@ for isub = 1:length(SUBJ)
       ac = str2double(strtok{10});
       rt(itrial,:) = str2double(strtok{11}) / 1000; % convert to s
       
-      if rt(itrial,:) < 0 % subj 60 has 1 negative rt
+      if rt(itrial,:) <= 0 % subj 60 has 1 negative rt
         rt(itrial,:) = NaN;
       end
       %               leftbutton = 'z'; % Yellow left
@@ -178,6 +178,7 @@ for isub = 1:length(SUBJ)
           behavior.criterion(subNo,iphase,icond) = -0.5 * (norminv(Hitrate) + norminv(FArate)); % TODO omit first trial(s)
           
           behavior.RT(subNo,iphase,icond) = nanmean(rt);
+          behavior.RTsingletrial{iphase}(subNo,:,icond) = rt;
           behavior.RTsd(subNo,iphase,icond) = nanstd(rt);
           behavior.RTsd2(subNo,iphase,icond) = nanstd(rt) / nanmean(rt);
           
