@@ -1,4 +1,4 @@
-function EM_pls_SDbold_vs_HMAX_setup()
+function EM_pls_SDbold_vs_HMAX_setup(PLSbehav)
 % PLS-preprocess data and collect all subj on the cluster, cast them to local machine
 close all
 
@@ -23,12 +23,14 @@ memreq = 2000; % in MB
 
 % analysis settings
 % PLStype = 'taskPLS'; 
-% PLStype = 'behavPLSvsDDM';
+PLStype = 'behavPLSvsDDM';
 
-PLStype = 'behavPLSvsSDT';
+% PLStype = 'behavPLSvsSDT';
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
-PLSbehav = 'RT';
+if nargin==0
+  PLSbehav = 'RT';
+end
 
 nbins = 3; % no of bins used for Hmax binning
 gazespecificHMAX = 'gaze-specific';

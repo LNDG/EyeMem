@@ -37,7 +37,7 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 
 %% behavioral analysis (txt files)
 % % behavior = EM_analysebehavioral()
-% load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat')
+load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat')
 
 %% run Hmax on stim pics, also save original pic and full HMAX maps
 % EM_runHmax_setup()
@@ -59,7 +59,11 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 % EM_mri_to_ftsource_setup()
 
 %% set up PLS analysis for HMAX vs SDBOLD fieldtrip source way
-EM_pls_SDbold_vs_HMAX_setup()
+EM_pls_SDbold_vs_HMAX_setup('v')
+EM_pls_SDbold_vs_HMAX_setup('a')
+EM_pls_SDbold_vs_HMAX_setup('t')
+EM_pls_SDbold_vs_HMAX_setup('z')
+EM_pls_SDbold_vs_HMAX_setup('dc')
 
 %%  set up PLS analysis  SDbold YA vs OA 
 % EM_pls_OAvsYA_setup()
@@ -89,7 +93,7 @@ EM_pls_SDbold_vs_HMAX_setup()
 %% Compare FDMs to deepgaze maps
 % [maps] = EM_FDM2deepgaze();
 % or 
-load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye/maps_gaze_vs_hmax.mat', 'maps')
+% load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye/maps_gaze_vs_hmax.mat', 'maps')
 % EM_FDM2deepgaze_plot(maps);
 
 %% OLD remove soon

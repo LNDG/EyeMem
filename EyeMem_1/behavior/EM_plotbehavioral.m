@@ -3,6 +3,24 @@ function EM_plotbehavioral(b)
 % exp_phases = {'study'; 'test'};
 % depvars = {'dprime' 'criterion' 'RT' 'propcorrect'  }; % 'RTsd' 'RTsd2'
 %
+% these subjects waited until after picture presentation until responding
+% during test
+% b.participants.participant_id(b.t>1)
+% 
+% ans = 
+% 
+%   9×1 string array
+% 
+%     "sub-15"
+%     "sub-32"
+%     "su8b-58"
+%     "sub-62"
+%     "sub-65"
+%     "sub-76"
+%     "sub-84"
+%     "sub-93"
+%     "sub-95"
+
 %% get data into structure with cells for age groups
 
 % find out which SUBJ are still in the mix in fMRI
@@ -17,7 +35,9 @@ end
 SUBJ = sort(SUBJ);
 SUBJage = b.participants.group(SUBJ,1);
 
-behavnames = {  'dprime'; 'propcorrect'; 'criterion';   'RT' ; 'RTsd' ; 'omissions' ;  };
+% behavnames = {  'dprime'; 'propcorrect'; 'criterion';   'RT' ; 'RTsd' ; 'omissions' ;  };
+behavnames = {  'dprime'; 'propcorrect'; 'criterion';   'RT' ; 'RTsd' ; 'omissions' ; 
+  'v'; 'a'; 't';   'z' ; 'dc' ; };
 age_groups = {'Young' 'Older'};
 phase_names = {'study' 'test'};
 age_colors = [1 0.5 0.5; 0.5 0.5 1];
@@ -32,17 +52,21 @@ for iphase = 1:2
   for im = 1:length(behavnames)
     for iage = 1:2
       curb = getfield(b, behavnames{im});
-      curb = curb(SUBJ,iphase, 6); % select SUBJ made it to fMRI
+      if size(curb,2) == 1
+        curb = curb(SUBJ,1); % select SUBJ made it to fMRI
+      else
+        curb = curb(SUBJ,iphase, end); % select SUBJ made it to fMRI
+      end
       %       data{im,iphase}{iage} = curb(SUBJage == age_groups{iage});
       data.(phase_names{iphase}).(behavnames{im}){iage} = curb(SUBJage == SUBJagegroups{iage});
     end
   end
 end
 
-%% plot SDT behavior
+%% plot SDT and DDM behavior
 SAV=1;
 close all
-nrow=2; ncol=6;
+nrow=4; ncol=6;
 
 f = figure; iplot=0;
 f.Position =[   680   467   85*ncol   150*nrow];
@@ -70,7 +94,13 @@ for iphase = 1:2
       sigstar({[1,2]},p);
     end
     title(sprintf('%s\n%s\n', phase_names{iphase}, behavnames{im} ))
+    if strcmp( behavnames{im}, 'z')
+      ylim([0.4 0.65])
+      plot(ax.XLim, [0.5 0.5], 'k', 'Linewidth', 0.5)
+      br.BaseLine.BaseValue = 0.5;
+    end
   end
+  iplot=iplot+1;
 end
 if SAV
   saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior.pdf' )))
@@ -119,7 +149,7 @@ for iage = 1:2
   for iphase = 1:2
     curb = b.RTsingletrial{iphase}(SUBJ,:);  % select SUBJ made it to fMRI
     for iage = 1:2
-      data = curb(SUBJage == age_groups{iage},:);
+      data = curb(SUBJage == SUBJagegroups{iage},:);
       for isub = 1:size(data,1)
         histdat{iage}(isub,:,iphase) = histcounts(data(isub,:), edges);
       end
@@ -163,6 +193,7 @@ end
 end
 
 %% correlate behavior with each other study vs test
+%TODO FIX, run this in spearman
 
 f=figure;iplot=0;
 f.Position =        [1000         498         961         840];

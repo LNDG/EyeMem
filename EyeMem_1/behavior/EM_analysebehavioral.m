@@ -80,7 +80,7 @@ for isub = 1:length(SUBJ)
       %               leftbutton = 'z'; % Yellow left
       %         rightbutton = 'g'; % Green right
       if hand == 1
-        if strcmp(resptmp, 'z') | strcmp(resptmp, 'LeftGUI')
+        if strcmp(resptmp, 'z') | strcmp(resptmp, 'b') | strcmp(resptmp, 'LeftGUI')
           resp(itrial,1) = 2; % 1 = old, 2 = new
         elseif strcmp(resptmp, 'g') | strcmp(resptmp, 'RightGUI')
           resp(itrial,1) = 1;
@@ -88,7 +88,7 @@ for isub = 1:length(SUBJ)
           resp(itrial,1) = NaN;
         end
       elseif hand == 2
-        if strcmp(resptmp, 'z') | strcmp(resptmp, 'LeftGUI')
+        if strcmp(resptmp, 'z') | strcmp(resptmp, 'b') | strcmp(resptmp, 'LeftGUI')
           resp(itrial,1) = 1;
         elseif strcmp(resptmp, 'g') | strcmp(resptmp, 'RightGUI')
           resp(itrial,1) = 2;
@@ -153,6 +153,10 @@ for isub = 1:length(SUBJ)
       %       ddm_dat{iphase} = [ddm_dat{iphase}; isub-1  icond target_present resp(itrial,:) ac rt(itrial,:) ageind];
       ddm_dat{iphase} = [ddm_dat{iphase}; subNo icond target_present resp(itrial,:) ac rt(itrial,:) ageind];
       singletrial{iphase} = [singletrial{iphase}; icond target_present resp(itrial,:) ac rt(itrial,:) picno];
+      
+      if any(rt)==0
+        warning('zero RT remains')
+      end
       
       if itrial == ntrials_per_run(iphase) % calculate things per run
         
@@ -228,41 +232,41 @@ for iphase = 1:2 % study, test
 end
 
 %% Add DDM data Laura (7 subjects missing)
-
-disp 'load ddm fits'
-model_names = {'eyemem1_params_biasmodel_YA' 'eyemem1_params_biasmodel_OA' }; % chi_accuracy_basic_runs
-pars = {'a' 't' 'v' 'z' 'dc'};
-ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Laura';
-for imodel = 1:length(model_names)
-  model_name = model_names{imodel};
-  ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
-  
-  behavior.(model_name) = [];
-  behavior.(model_name).dimord = 'subj';
-  
-  for ipar = 1:length(pars)
-    ddmstr = sprintf('%s_subj.',  pars{ipar});
-    line_inds = contains(ddmfit.Var1, ddmstr);
-    % get subjID from Var1 strings, to use as index
-    subj = ddmfit.Var1(line_inds);
-    subj = cellfun(@(x) tokenize(x, '.'), subj, 'UniformOutput', false);
-    subj = vertcat(subj{:});
-    subj = cellfun(@str2double, subj(:,2));
-    
-    temp = NaN(101,1);
-    temp(subj,1) = ddmfit.mean(line_inds);
-    behavior.(model_name).(pars{ipar}) = temp;
-    behavior.ddmLaura.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
-%     behavior.eyemem1_params_biasmodel.(pars{ipar})(behavior.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
-  end
-  
-  if ~any(line_inds); warning('No data found'); continue;  end
-end
-
-disp 'TODO remove zeros from eyemem1_params_biasmodel!'
-behavior.participants = Participants;
 % 
-% %% Add DDM data Niels (separate YA and OA)
+% disp 'load ddm fits'
+% model_names = {'eyemem1_params_biasmodel_YA' 'eyemem1_params_biasmodel_OA' }; % chi_accuracy_basic_runs
+% pars = {'a' 't' 'v' 'z' 'dc'};
+% ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Laura';
+% for imodel = 1:length(model_names)
+%   model_name = model_names{imodel};
+%   ddmfit = readtable(fullfile(ddmpath, [model_name '.csv'] ));
+%   
+%   behavior.(model_name) = [];
+%   behavior.(model_name).dimord = 'subj';
+%   
+%   for ipar = 1:length(pars)
+%     ddmstr = sprintf('%s_subj.',  pars{ipar});
+%     line_inds = contains(ddmfit.Var1, ddmstr);
+%     % get subjID from Var1 strings, to use as index
+%     subj = ddmfit.Var1(line_inds);
+%     subj = cellfun(@(x) tokenize(x, '.'), subj, 'UniformOutput', false);
+%     subj = vertcat(subj{:});
+%     subj = cellfun(@str2double, subj(:,2));
+%     
+%     temp = NaN(101,1);
+%     temp(subj,1) = ddmfit.mean(line_inds);
+%     behavior.(model_name).(pars{ipar}) = temp;
+%     behavior.ddmLaura.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+% %     behavior.eyemem1_params_biasmodel.(pars{ipar})(behavior.eyemem1_params_biasmodel.(pars{ipar}) == 0) = NaN;
+%   end
+%   
+%   if ~any(line_inds); warning('No data found'); continue;  end
+% end
+% 
+% disp 'TODO remove zeros from eyemem1_params_biasmodel!'
+% behavior.participants = Participants;
+
+%% Add DDM data Niels (separate YA and OA)
 % 
 % disp 'load ddm fits'
 % model_names = {'params_HDDMbias_YA' 'params_HDDMbias_OA' }; % chi_accuracy_basic_runs
@@ -302,7 +306,8 @@ behavior.participants = Participants;
 %% Add DDM data YAOA fit together, does not differ from fitting separately 
 
 disp 'load ddm fits'
-model_names = {'params_HDDMbias_YAOA' }; % hddm, young and old together
+% model_names = {'params_HDDMbias_YAOA' }; % hddm, young and old together
+model_names = {'params_HDDMbias_study' 'params_HDDMbias_test' }; % hddm, young and old together
 pars = {'a' 't' 'v' 'z' 'dc'};
 agegroup = {'YA' 'OA'};
 ddmpath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/HDDM/Niels';
@@ -328,6 +333,7 @@ for imodel = 1:length(model_names)
       behavior.(model_name).(agegroup{iage}).(pars{ipar}) = temp;
 %       behavior.params_HDDMbias_YAOA.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
       behavior.ddmNiels.(pars{ipar})(subj,1) = ddmfit.mean(line_inds);
+      behavior.(pars{ipar})(subj,imodel) = ddmfit.mean(line_inds); % set as primary ddm
     end
   end
   if ~any(line_inds); warning('No data found'); continue;  end

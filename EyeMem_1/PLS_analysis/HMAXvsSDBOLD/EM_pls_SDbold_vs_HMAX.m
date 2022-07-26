@@ -427,7 +427,7 @@ switch PLStype
     tmp.behavname = {PLSbehav};%no behav names or data just yet, but set up the %field anyway...
     load(behavfile); % behav comes out
     subjind = behavior.participants.participant_id == subj;
-    tmp.behavdata = mean(behavior.ddmNiels.(PLSbehav)(subjind));
+    tmp.behavdata = behavior.(PLSbehav)(subjind,2); % 2 is test phase
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];
