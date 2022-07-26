@@ -37,9 +37,9 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 
 %% behavioral analysis (txt files)
 % % behavior = EM_analysebehavioral()
-if ismac
-  load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat')
-end
+% if ismac
+%   load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat')
+% end
 %% run Hmax on stim pics, also save original pic and full HMAX maps
 % EM_runHmax_setup()
 
