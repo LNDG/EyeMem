@@ -180,6 +180,7 @@ for isub = 1:length(SUBJ)
           end
           
           behavior.criterion(subNo,iphase,icond) = -0.5 * (norminv(Hitrate) + norminv(FArate)); % TODO omit first trial(s)
+          behavior.propNo(subNo,iphase,icond) = 1-(hits+fas)/(n_present+n_absent);
           
           behavior.RT(subNo,iphase,icond) = nanmean(rt);
           behavior.RTsingletrial{iphase}(subNo,:,icond) = rt;
@@ -213,7 +214,7 @@ for isub = 1:length(SUBJ)
 end
 
 disp 'average over conditions'
-bmeas = {'dprime' 'criterion' 'propcorrect' 'RT' 'RTsd' 'RTsd2' 'RT_misses' 'RT_hits' 'RT_fas' 'RT_crs' 'omissions'}; % p_repeatbalanced dim5 is LR
+bmeas = {'dprime' 'criterion' 'propcorrect' 'RT' 'RTsd' 'RTsd2' 'RT_misses' 'RT_hits' 'RT_fas' 'RT_crs' 'omissions' 'propNo'}; % p_repeatbalanced dim5 is LR
 for im = 1:length(bmeas)
   if strcmp(bmeas{im}, 'omissions')
     behavior.(bmeas{im})(:,:,6) = nansum(behavior.(bmeas{im}), 3); % avg over diff

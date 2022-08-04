@@ -21,8 +21,6 @@ PREOUT = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye';
 % saliencymodel = 'deepgaze';
 saliencymodel = 'hmax';
 
-nbins_x = 5;
-nbins_y = 5;
 omit_centerAOI = 1; 
 
 % nbins_x = 832-192;
@@ -31,14 +29,20 @@ omit_centerAOI = 1;
 % timewin = 1;
 
 % works well:
-% time = 0.25:0.25:4.75;
-% timewin = 0.5;
+nbins_x = 5;
+nbins_y = 5;
+time = 0.25:0.25:4.75;
+timewin = 0.5;
 
-% quick:
-time = 1.25:2.5:4.75;
-timewin = 2.5;
+% % quick:
+% nbins_x = 5;
+% nbins_y = 5;
+% time = 1.25:2.5:4.75;
+% timewin = 2.5;
 
-% % no timebins:
+% % % no timebins:
+% nbins_x = 5;
+% nbins_y = 5;
 % time = 2.5;
 % timewin = 5;
 

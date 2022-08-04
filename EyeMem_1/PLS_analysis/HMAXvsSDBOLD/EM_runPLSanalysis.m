@@ -40,50 +40,23 @@ switch analysisname
     batch_plsgui(txtfilename)
     
   case 'corrSDbold'
-%%
-corrtype = 'Pearson'; %Spearman Pearson
-% corrtype = 'Spearman'; %Spearman Pearson
+    %%
+    corrtype = 'Pearson'; %Spearman Pearson
+%     corrtype = 'Spearman'; %Spearman Pearson
     
-    %     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
-    %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
     basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
-    %     PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/VOIsel/YA/PLS';
-    %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/VOIsel/OA/PLS';
-%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/nanstd_5bins/linearfit/gazespecific'
-%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/linearfit/gaze-specific'
-%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_3bins/linearfit/gaze-specific'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/uniformbinwidth/linearfit_fitcoeff1/gaze-specific/old';
-
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/young';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/iqr_5bins/fixednbins/linearfit_fitcoeff1/gaze-specific/young';
-
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_5bins/fixednbins/linearfit_fitcoeff1/gaze-specific';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_5bins/fixednbins/linearfit_fitcoeff1/gaze-specific/young';
-    
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_5bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/young';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/old'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/'
-
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific/';
-%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/bin2-bin1_fitcoeff1/gaze-specific'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/non-gazespecific/';
-
     % new dir structure naming
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/criterion/linearfit_fitcoeff1';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/RT/linearfit_fitcoeff1';
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/criterion/linearfit_fitcoeff1';
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/RT/linearfit_fitcoeff1';
+        
+    params = {'v' 'a' 't' 'dc' 'z'};
+    PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
     
-    %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM/v/linearfit_fitcoeff1'
-    %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM/a/linearfit_fitcoeff1'
-    %         PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM/t/linearfit_fitcoeff1'
-    %         PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM/z/linearfit_fitcoeff1'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM/dc/linearfit_fitcoeff1'
-    
-    cd(PREIN)
-    agegroups = {'young' 'old'};
-    %         agegroups = {'young'};
-    %     agegroups = {'old'};
-    %         agegroups = {''};
+    %     agegroups = {'young' 'old'};
+%             agegroups = {'young'};
+        agegroups = {'old'};
+%     agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -96,7 +69,7 @@ corrtype = 'Pearson'; %Spearman Pearson
     elseif strcmp(corrtype, 'Spearman' )
       cormode = '8'; % Spearman
     end
-
+    
     num_perm = '1000';
     num_split = '0';
     num_boot = '1000';
@@ -104,45 +77,49 @@ corrtype = 'Pearson'; %Spearman Pearson
     clim = '95';
     save_data = '0';
     selected_cond = []; %num2str(ones(1,5)); disp 'TODO get ncond somewhere'
-    behavior_data =  cell(length(agegroups),1);
     
-    id_list = cell(length(agegroups),1);
-    ages=table('Size', [1 1], 'VariableTypes', ["string"]);
-    for iage = 1:length(agegroups)
-      cd(fullfile(PREIN, agegroups{iage}))
-      subjlist = dir('sub*_BfMRIsessiondata.mat');
-      for isub=1:length(subjlist)
-        tmp = tokenize(subjlist(isub).name, '_');        
-        subjind = behavior.participants.participant_id == tmp{1};
-        % take behav from data 
-        load(subjlist(isub).name, 'behavdata', 'behavname')
-        if isnan(behavdata)
-          disp(subjlist(isub).name)
-          continue
-        end
-        behav_valkeep = behavdata;
-        behavior_name = behavname{:};
-        
-        ages.Var1(isub,1) = behavior.participants.group(find(subjind),:);
-        
-        %         if behav_val > 0
-        behavior_data{iage}{end+1} = num2str(behav_valkeep); %
-        id_list{iage}{end+1} = tmp{1};
-        %         end
-      end
-    end
-    if numel(agegroups) == 2
+    for iparam = 1:length(params)
+      PREIN = fullfile(PRE, params{iparam}, 'linearfit_fitcoeff1');
       cd(PREIN)
+      behavior_data =  cell(length(agegroups),1);
+      id_list = cell(length(agegroups),1);
+      ages=table('Size', [1 1], 'VariableTypes', ["string"]);
+      for iage = 1:length(agegroups)
+        cd(fullfile(PREIN, agegroups{iage}))
+        subjlist = dir('sub*_BfMRIsessiondata.mat');
+        for isub=1:length(subjlist)
+          tmp = tokenize(subjlist(isub).name, '_');
+          subjind = behavior.participants.participant_id == tmp{1};
+          % take behav from data
+          load(subjlist(isub).name, 'behavdata', 'behavname')
+          if isnan(behavdata)
+            disp(subjlist(isub).name)
+            continue
+          end
+          behav_valkeep = behavdata;
+          behavior_name = behavname{:};
+          
+          ages.Var1(isub,1) = behavior.participants.group(find(subjind),:);
+          
+          %         if behav_val > 0
+          behavior_data{iage}{end+1} = num2str(behav_valkeep); %
+          id_list{iage}{end+1} = tmp{1};
+          %         end
+        end
+      end
+      if numel(agegroups) == 2
+        cd(PREIN)
+      end
+      
+      outfilename = sprintf('%s_%s_%s_%d_%d_%s', outname, behavior_name, [agegroups{:}], cellfun(@length, id_list), corrtype); %
+      disp(outfilename)
+      txtfilename = [ outfilename '_BfMRIanalysis.txt'];
+      resultfilename = [ outfilename '_BfMRIresult.mat'];
+      
+      save ages ages
+      PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
+      batch_plsgui(txtfilename)
     end
-    
-    outfilename = sprintf('%s_%s_%s_%d_%d_%s', outname, behavior_name, [agegroups{:}], cellfun(@length, id_list), corrtype); %
-    disp(outfilename)
-    txtfilename = [ outfilename '_BfMRIanalysis.txt'];
-    resultfilename = [ outfilename '_BfMRIresult.mat'];
-
-    save ages ages
-    PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
-    batch_plsgui(txtfilename)
 %%    
   case 'SDbold_vs_HMAX'
     if contains(which('plsgui'), 'rank')

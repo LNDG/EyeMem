@@ -40,11 +40,14 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 % if ismac
 %   load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat')
 % end
+% EM_plotbehavioral(behavior)
 %% run Hmax on stim pics, also save original pic and full HMAX maps
 % EM_runHmax_setup()
 
 %% eye pupil and gaze analysis
 % EM_eye_analysis_setup()   % EM_sortTrials_Marija
+
+% timelock=EM_merge_eyedata()
 
 %% fMRI ANALYSIS:
 %% set up vartbx for single-TR GLM (LEast squares, single)
