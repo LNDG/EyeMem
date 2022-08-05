@@ -8,18 +8,18 @@ function create_varTBX_model_allstimuli_5sres_fortardis()
 % run on tardis!
 
 if ismac
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem';
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem';
 else
   basepath = '/home/mpib/kloosterman/projectdata/eyemem';
 end
 
 PREIN_mri = fullfile(basepath, 'preproc', 'mri');
 
-analysis_name = 'GLM_TRwise';
-PREOUT = fullfile(basepath, analysis_name); % keep track of output folder here
+% analysis_name = 'GLM_TRwise';
+% PREOUT = fullfile(basepath, analysis_name); % keep track of output folder here
 
-% analysis_name = '5TRspertrial';
-% PREOUT = fullfile(basepath, 'variability', analysis_name); % keep track of output folder here
+analysis_name = '5TRspertrial';
+PREOUT = fullfile(basepath, 'variability2', analysis_name); % keep track of output folder here
 jobdir = fullfile(PREOUT, 'jobs');
 cd(jobdir)
  

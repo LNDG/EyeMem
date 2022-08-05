@@ -40,8 +40,8 @@ for ibin = 1:nbins+1
         %%
         %         figure; plot(squeeze(mean(sourcetrl.pow(sourcetrl.inside,:,:),2)))
         %         figure; plot(squeeze(mean(source_sel.pow(source_sel.inside,:,:))))
-        tmp = source_sel;
-%         tmp = sourcetrl;
+%         tmp = source_sel;
+        tmp = sourcetrl;
         tmp.pow = squeeze(mean(tmp.pow,2));
 %         tmp.pow = squeeze(std(tmp.pow,0,2));
         tmp.powdimord = 'pos_time';

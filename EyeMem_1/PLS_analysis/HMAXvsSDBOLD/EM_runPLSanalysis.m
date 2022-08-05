@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-%   analysisname = 'SDbold_vs_HMAX';  % task PLS
+%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+  analysisname = 'SDbold_vs_HMAX';  % task PLS
   %    analysisname = 'SDbold_OAvsYA_task' % overall BSV YA vs OA
 end
 %%
@@ -169,7 +169,7 @@ switch analysisname
 %     
 %     %%% new dir naming
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
-    
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/taskPLS/non-gazespecific';
     
     agegroups = {'young' 'old'};
 

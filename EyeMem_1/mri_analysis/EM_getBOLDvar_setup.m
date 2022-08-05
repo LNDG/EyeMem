@@ -4,7 +4,7 @@ function EM_getBOLDvar_setup()
 % in output file. Add time shift to account for HRF
 
 if ismac
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';
@@ -17,8 +17,8 @@ else
   compile = 'no';
 end
 
-% fun2run = @EM_getBOLDvar;
-fun2run = @EM_getBOLDvar_LOTO;
+fun2run = @EM_getBOLDvar;
+% fun2run = @EM_getBOLDvar_LOTO;
 
 % timreq = 60; %in minutes per run
 timreq = 700; % for LOTO
@@ -36,7 +36,7 @@ PREOUT = fullfile(basepath, 'variability', 'LOTO');
 % latency = [-2 11]; %until peak in many areas
 % latency = 'all'; 
 
-overwrite = 0;
+overwrite = 1;
 
 %make cells for each subject, to analyze in parallel
 cfg = [];
@@ -86,7 +86,7 @@ for iage = 1:2
 end
 
 % cfglist = cfglist(1)
-cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
+% cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 

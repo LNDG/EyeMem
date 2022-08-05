@@ -16,7 +16,7 @@ PREIN_mri = fullfile(basepath, 'preproc', 'mri');
 PREIN_eye = fullfile(basepath, 'preproc', 'eye');
 
 analysis_name = '5TRspertrial';
-PREOUT = fullfile(basepath, 'variability', analysis_name); % keep track of output folder here
+PREOUT = fullfile(basepath, 'variability2', analysis_name); % keep track of output folder here
 % analysis_name = 'GLM_TRwise';
 % PREOUT = fullfile(basepath, analysis_name); % keep track of output folder here
 jobdir = fullfile(PREOUT, 'jobs');
