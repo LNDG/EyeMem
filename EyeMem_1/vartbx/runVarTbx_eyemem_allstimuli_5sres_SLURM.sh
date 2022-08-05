@@ -33,7 +33,7 @@ for subj in $subjList; do
     echo "#SBATCH --partition long" >> job.slurm
     echo "#SBATCH --mem 32GB"     >> job.slurm
     echo "#SBATCH --workdir /home/mpib/kloosterman/qsub" >> job.slurm
-    echo "/home/mpib/kloosterman/MATLAB/tools/spm12/../standalone/run_spm12.sh /opt/matlab/R2016b run ${DATADIR}/GLM_TRwise/jobs/${subj}_GLM_TRwise_sdmodel.mat"  >> job.slurm
+    echo "/home/mpib/kloosterman/MATLAB/tools/spm12/../standalone/run_spm12.sh /opt/matlab/R2016b run ${DATADIR}/GLM_TRwise/jobs/${subj}_5TRspertrial_sdmodel.mat"  >> job.slurm
     sbatch job.slurm
     rm -f job.slurm
 
