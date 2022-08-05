@@ -1,7 +1,7 @@
 function EM_runvartbx_matlabbatch_setup()
 % run from runMIBmeg_analysis
-% select vols of interest from raw fMRI data, e.g. pic viewing TRs, and put
-% in output file. Add time shift to account for HRF
+
+
 
 if ismac
   basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
@@ -30,7 +30,7 @@ PREIN = fullfile(basepath, 'variability2/5TRspertrial/jobs');
 cfg = [];
 cfg.PREIN = PREIN;
 
-SUBJ = dir('sub-*sdmodel.mat');
+SUBJ = dir(fullfile(PREIN, 'sub-*sdmodel.mat'));
 
 cfglist = {};
 for isub = 1:length(SUBJ)
@@ -58,6 +58,6 @@ if strcmp(backend, 'local')
   cellfun(fun2run, cfglist);
 else
   qsubcellfun(fun2run, cfglist, 'memreq', memreq*1e6, 'timreq', timreq*60, 'stack', 1, ...
-    'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options);
+    'StopOnError', false, 'UniformOutput', true, 'backend', backend, 'options', options);
 end
 
