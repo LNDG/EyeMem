@@ -59,6 +59,8 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 % % 3 run shell script at master node
 % unix('runVarTbx_eyemem_allstimuli_5sres.sh')
 
+% EM_runvartbx_matlabbatch_setup % run with qsubcellfun!
+
 %% Put fMRI beta_series in fieldtrip source format
 % EM_mri_to_ftsource_setup()
 

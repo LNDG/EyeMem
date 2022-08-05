@@ -30,12 +30,13 @@ PREIN = fullfile(basepath, 'variability2/5TRspertrial/jobs');
 cfg = [];
 cfg.PREIN = PREIN;
 
-cfglist = {};
 SUBJ = dir('sub-*sdmodel.mat');
 
+cfglist = {};
 for isub = 1:length(SUBJ)
   disp(SUBJ(isub).name)
   cfg.batchfile = fullfile(PREIN, SUBJ(isub).name);
+  cfglist{end+1} = cfg;
 end
 
 % cfglist = cfglist(1)
