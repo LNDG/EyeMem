@@ -31,7 +31,7 @@ for subj in $subjList; do
     echo "#SBATCH --cpus-per-task 4"     >> job.slurm
     echo "#SBATCH --time 130:0:0"     >> job.slurm
     echo "#SBATCH --partition long" >> job.slurm
-    echo "#SBATCH --mem 32GB"     >> job.slurm
+    echo "#SBATCH --mem 20GB"     >> job.slurm
     echo "#SBATCH --workdir /home/mpib/kloosterman/qsub" >> job.slurm
     echo "/home/mpib/kloosterman/MATLAB/tools/spm12/../standalone/run_spm12.sh /opt/matlab/R2016b run ${DATADIR}variability2/5TRspertrial/jobs/${subj}_5TRspertrial_sdmodel.mat"  >> job.slurm
     sbatch job.slurm
