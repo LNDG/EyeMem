@@ -63,11 +63,13 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 % EM_mri_to_ftsource_setup()
 
 %% set up PLS analysis for HMAX vs SDBOLD fieldtrip source way
-EM_pls_SDbold_vs_HMAX_setup('v')
-EM_pls_SDbold_vs_HMAX_setup('a')
-EM_pls_SDbold_vs_HMAX_setup('t')
-EM_pls_SDbold_vs_HMAX_setup('z')
-EM_pls_SDbold_vs_HMAX_setup('dc')
+EM_pls_SDbold_vs_HMAX_setup() % check settings in function!!
+
+% EM_pls_SDbold_vs_HMAX_setup('v')
+% EM_pls_SDbold_vs_HMAX_setup('a')
+% EM_pls_SDbold_vs_HMAX_setup('t')
+% EM_pls_SDbold_vs_HMAX_setup('z')
+% EM_pls_SDbold_vs_HMAX_setup('dc')
 
 %%  set up PLS analysis  SDbold YA vs OA 
 % EM_pls_OAvsYA_setup()
