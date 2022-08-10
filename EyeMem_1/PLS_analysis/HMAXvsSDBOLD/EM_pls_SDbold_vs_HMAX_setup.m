@@ -33,8 +33,8 @@ PLStype = 'taskPLS';
 % PLSbehav = 'criterion';
 
 nbins = 3; % no of bins used for Hmax binning
-% gazespecificHMAX = 'gaze-specific';
-gazespecificHMAX = 'non-gazespecific'; 
+gazespecificHMAX = 'gaze-specific';
+% gazespecificHMAX = 'non-gazespecific'; 
 BOLDvar_measure = 'std'; % iqr, std
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 removeoutliers = false;
@@ -48,7 +48,7 @@ fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
 
 load participantinfo.mat % TODO make this reliable
 
-PREIN = fullfile(basepath, 'variability', 'ftsource');
+PREIN = fullfile(basepath, 'variability2', 'ftsource');
 % PREINeye = fullfile(basepath, 'preproc', 'eye');
 HMAXfolder = fullfile(basepath, 'D_paradigm', 'stimuli_640x480', 'hmax');
 
