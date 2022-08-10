@@ -98,7 +98,7 @@ if remove_artf_eegstyle
 end
 
 ntrials = size(source.trialinfo,1);
-validtrials = find(source.trialinfo(:,13));
+validtrials = find(source.trialinfo(:,end));
 
 %%
 switch gazespecificHMAX

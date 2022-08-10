@@ -63,6 +63,7 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 
 %% Put fMRI beta_series in fieldtrip source format
 % EM_mri_to_ftsource_setup()
+% EM_commoncoord_source_setup() % determine voxels present in all subjects
 
 %% set up PLS analysis for HMAX vs SDBOLD fieldtrip source way
 EM_pls_SDbold_vs_HMAX_setup() % check settings in function!!

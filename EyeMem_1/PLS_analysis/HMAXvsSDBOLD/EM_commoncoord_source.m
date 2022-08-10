@@ -23,7 +23,7 @@ common_coords = all(inside_allsubj,2);
 [source.inside] = deal(common_coords);  % cast this to all subj source, note that pow field is not updated
 
 disp 'Apply Gray matter mask'
-standardsfolder = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/A_standards/tissuepriors/';
+standardsfolder = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/A_standards/tissuepriors/';
 GMmask = ft_read_mri(fullfile(standardsfolder, 'avg152T1_gray_MNI_3mm.nii' ));
 
 source2=load(subjlist(isub).name);

@@ -2,7 +2,7 @@ function EM_commoncoord_source_setup()
 % Can just run it locally, very fast
 
 if ismac
-  basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc
+  basepath = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/'; %yesno or 2afc
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';
@@ -17,7 +17,7 @@ end
 timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
-PREIN  = fullfile(basepath, 'variability', 'ftsource');
+PREIN  = fullfile(basepath, 'variability2', 'ftsource');
 cd(PREIN)
 
 SUBJ= [9, 11:59, 61:69, 71,72, 74:101]; % TODO specify further?
