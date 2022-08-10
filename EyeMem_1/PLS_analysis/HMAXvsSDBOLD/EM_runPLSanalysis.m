@@ -171,7 +171,7 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/taskPLS/non-gazespecific';
 
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/taskPLS/non-gazespecific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/taskPLS/gaze-specific';
 
     agegroups = {'young' 'old'};
 
