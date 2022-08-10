@@ -17,10 +17,10 @@ end
 timreq = 60; %in minutes per run
 memreq = 5000; % in MB
 
-PREIN = fullfile(basepath, 'variability', '5TRspertrial');
+PREIN = fullfile(basepath, 'variability2', '5TRspertrial');
 PREINeye = fullfile(basepath, 'preproc', 'eye');
 
-PREOUT = fullfile(basepath, 'variability', 'ftsource');
+PREOUT = fullfile(basepath, 'variability2', 'ftsource');
 
 mkdir(PREOUT)
 
@@ -64,7 +64,7 @@ for isub = 1:length(SUBJ)
 end
 
 % cfglist = cfglist(2)
-% cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
+cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 

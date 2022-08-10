@@ -80,7 +80,7 @@ if ismac
   cfg=[];
   cfg.method = 'ortho'; % slice ortho glassbrain vertex
   cfg.funparameter = 'pow';
-  cfg.funcolorlim = [-300 300];
+  cfg.funcolorlim = [-1000 1000]; % [-300 300]
   ft_sourceplot(cfg, tmp)
 
 end
