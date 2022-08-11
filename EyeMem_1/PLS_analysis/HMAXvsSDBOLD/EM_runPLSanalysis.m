@@ -5,8 +5,6 @@ load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyeme
 if nargin==0
 %   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
   analysisname = 'SDbold_vs_HMAX';  % task PLS
-  
-%      analysisname = 'SDbold_OAvsYA_task' % overall BSV YA vs OA TODO REMOVE, done with 1 bin SDbold_vs_HMAX
 end
 %%
 switch analysisname
@@ -59,8 +57,8 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/taskPLS/non-gazespecific';
 
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/taskPLS/gaze-specific';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_1bins/fixednbins/taskPLS/non-gazespecific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_5bins/fixednbins/taskPLS/gaze-specific';
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_1bins/fixednbins/taskPLS/non-gazespecific';
     
     cd(PREIN)
     agegroups = {'young' 'old'};
@@ -202,35 +200,5 @@ switch analysisname
       batch_plsgui(txtfilename)
     end
 
-  case 'SDbold_OAvsYA_task'
-    if contains(which('plsgui'), 'rank')
-      warning 'PLS_rank does not work with task PLS, switching to regular PLS toolbox'
-      rmpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))
-      addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/pls'))
-    end
-
-    PREIN = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/variability/ftsource/taskPLS/OAvsYA_SD';
-        
-    disp 'Generate model txt file'    
-    txtfilename = sprintf('%s_BfMRIanalysis.txt', analysisname);
-    resultfilename = sprintf('%s_BfMRIresult.mat', analysisname);    
-    pls_option = '1';    
-    mean_type = '1';
-    num_perm = '100';
-    num_split = '0';
-    num_boot = '100';
-    boot_type = 'strat';
-    clim = '95';
-    save_data = '0';
-    cormode = '0';
-    selected_cond = []; %num2str(ones(1,5)); disp 'TODO get ncond somewhere'
-    behavior_data = {};
-    behavior_name = {};
-    
-    agegroups = {'young' 'old'};
-       
-    PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
-    batch_plsgui(txtfilename)
-    
     
 end
