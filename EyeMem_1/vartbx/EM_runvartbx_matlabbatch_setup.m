@@ -24,7 +24,7 @@ fun2run = @EM_runvartbx_matlabbatch;
 timreq = 130*60; % for LOTO
 memreq = 20000; % in MB
 
-PREIN = fullfile(basepath, 'variability2/5TRspertrial/jobs');
+PREIN = fullfile(basepath, 'variability2/1TRspertrial/jobs');
 
 %make cells for each subject, to analyze in parallel
 cfg = [];
