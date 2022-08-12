@@ -127,16 +127,16 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/criterion/linearfit_fitcoeff1';
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/RT/linearfit_fitcoeff1';
         
-    params = {'v' 'a' 't' 'dc' 'z'};
-%     params = {'v'};
+%     params = {'v' 'a' 't' 'dc' 'z'};
+    params = {'v'};
 %     gazetype = 'non-gazespecific';
     gazetype = 'gaze-specific';
     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
     
-%     agegroups = {'young' 'old'};
+    agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-        agegroups = {''};
+%         agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
