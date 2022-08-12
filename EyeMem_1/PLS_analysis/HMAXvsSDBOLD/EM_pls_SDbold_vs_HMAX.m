@@ -370,7 +370,7 @@ for ibin = 1:nbins
         
         rmboldoutliers = 1;
         if rmboldoutliers
-          [seldat_clean, TF] = rmoutliers(seldat(i,:), 'mean'); % > 3 SD's from the mean
+          [seldat_clean, TF] = rmoutliers(seldat(i,:)); % , 'mean' is > 3 SD's from the mean
           %         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
         else
           seldat_clean = seldat(i,:);

@@ -18,7 +18,7 @@ PREIN_mri = fullfile(basepath, 'preproc', 'mri');
 % analysis_name = 'GLM_TRwise';
 % PREOUT = fullfile(basepath, analysis_name); % keep track of output folder here
 
-analysis_name = '5TRspertrial';
+analysis_name = '1TRspertrial';
 PREOUT = fullfile(basepath, 'variability2', analysis_name); % keep track of output folder here
 jobdir = fullfile(PREOUT, 'jobs');
 cd(jobdir)

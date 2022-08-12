@@ -15,7 +15,7 @@ end
 PREIN_mri = fullfile(basepath, 'preproc', 'mri');
 PREIN_eye = fullfile(basepath, 'preproc', 'eye');
 
-analysis_name = '5TRspertrial';
+analysis_name = '1TRspertrial';  %1TRspertrial  5TRspertrial
 PREOUT = fullfile(basepath, 'variability2', analysis_name); % keep track of output folder here
 % analysis_name = 'GLM_TRwise';
 % PREOUT = fullfile(basepath, analysis_name); % keep track of output folder here
@@ -62,25 +62,38 @@ for iage=1:2
 %     ev = table([piconsets zeros(size(piconsets))+5 ones(size(piconsets)) ])
 %     writetable(ev, '~/Desktop/evstim.txt', 'Delimiter', ' ')
     
-    
-    % make onsets for each TR in trial
-    onsets = repmat(piconsets, 1,5);
-    onsets = onsets + [0 1 2 3 4]; % dimord: trials TR
-
+    switch analysis_name
+      case '5TRspertrial'
+        % make onsets for each TR in trial
+        onsets = repmat(piconsets, 1,5);
+        onsets = onsets + [0 1 2 3 4]; % dimord: trials TR
+        duration = ones(length(onsets),1);
+      case '1TRspertrial'
+        onsets = piconsets; % onsets as is
+        duration = zeros(length(onsets),1)+5; % 5 s duration
+    end
+        
     %% Specify conditions single trial
     removeonsets_near_run_end = true;  % remove onsets within 20 s from run end, due to modelling issues
 
     onsets = sort(onsets(:)); % order in time and put together
     if removeonsets_near_run_end
       onsets = onsets(onsets < nvols-20);
+      duration = duration(1:length(onsets));
     end
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).name = 'alltrials';
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).onset = onsets;
-    matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).duration = ones(length(onsets),1); % [5; 5; 5];
+    matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).duration = duration;
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).tmod = 0;
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).pmod = struct('name', {}, 'param', {}, 'poly', {});
     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(1).orth = 1;
     
+    switch analysis_name
+      case '1TRspertrial'
+        matlabbatch{1}.spm.stats.fmri_est.spmmat = '<UNDEFINED>';
+        matlabbatch{1}.spm.stats.fmri_est.write_residuals = 1; % set to 1 to keep residuals
+        matlabbatch{1}.spm.stats.fmri_est.method.Classical = 1;
+    end
 %     % add patch task as "condition"
 %     patchonsets = piconsets + 6.5; % patch comes 6.5 s after pic
 %     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).name = 'nuisance_patch';
@@ -90,7 +103,6 @@ for iage=1:2
 %     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).pmod = struct('name', {}, 'param', {}, 'poly', {});
 %     matlabbatch{1}.spm.stats.fmri_spec.sess.cond(2).orth = 1;
 
-    
 %     % this treats each trial as a single condition
 %     for itrial = 1:size(onsets, 1)
 %       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(itrial).name = sprintf('trial%d', itrial) ;
@@ -105,38 +117,6 @@ for iage=1:2
 %       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(itrial).pmod = struct('name', {}, 'param', {}, 'poly', {});
 %       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(itrial).orth = 1;
 %     end
-    
-%     %% HMAX BINNING BELOW:
-%     
-%     % sort onsets based on hmax
-%     [~,sortinds] = sort(data.trialinfo(:,10));  %hmax in 10, ascending
-%     onsets_sorted = onsets(sortinds);
-%     
-%     % make onsets for each TR in trial
-%     onsets_sorted = repmat(onsets_sorted, 1,5);
-%     onsets_sorted = onsets_sorted + [0 1 2 3 4]; % dimord: trials TR
-%     
-%     % make bins of trials based on hmax
-%     ntrlperbin = 5;
-%     onset_bins = reshape(onsets_sorted', ntrlperbin, 5, []); % dimord: TR trials cond
-%     
-%     % Specify conditions
-%     nTRs = numel(onset_bins(:,:,1)); % n TR's per cond
-%     removeonsets_near_run_end = 1;  % remove onsets within 20 s from run end, due to modelling issues
-%     for icond = 1:size(onset_bins, 3)
-%       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(icond).name = sprintf('hmax%d', icond) ;
-%       
-%       curonsets = sort(reshape(onset_bins(:,:,icond), nTRs, [])); % flatten matrix and sort to be sure
-%       if removeonsets_near_run_end
-%         curonsets = curonsets(curonsets < nvols-20);
-%       end
-%       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(icond).onset = curonsets;
-%       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(icond).duration = ones(length(curonsets),1); % [5; 5; 5];
-%       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(icond).tmod = 0;
-%       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(icond).pmod = struct('name', {}, 'param', {}, 'poly', {});
-%       matlabbatch{1}.spm.stats.fmri_spec.sess.cond(icond).orth = 1;
-%     end
-%     %%
     
     % is this all needed?
     matlabbatch{1}.spm.stats.fmri_spec.sess.regress = struct('name', {}, 'val', {});
