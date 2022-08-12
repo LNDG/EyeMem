@@ -368,7 +368,7 @@ for ibin = 1:nbins
         %         f=figure;  f.Position = [        1000         997        1335         341];
         %         subplot(1,2,1); plot(seldat(i,:))
         
-        rmboldoutliers = 1;
+        rmboldoutliers = 0;
         if rmboldoutliers
           [seldat_clean, TF] = rmoutliers(seldat(i,:));
           %         subplot(1,2,2); plot(seldat_clean); xlim([1 150])

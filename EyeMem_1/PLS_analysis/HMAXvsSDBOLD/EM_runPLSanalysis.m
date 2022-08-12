@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-  analysisname = 'SDbold_vs_HMAX';  % task PLS
+  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+%   analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -59,6 +59,7 @@ switch analysisname
 
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_5bins/fixednbins/taskPLS/gaze-specific';
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_1bins/fixednbins/taskPLS/non-gazespecific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_5bins/uniformbinwidth/taskPLS/gaze-specific';
     
     cd(PREIN)
     agegroups = {'young' 'old'};
@@ -112,8 +113,8 @@ switch analysisname
 
   case 'corrSDbold'
     %%
-%     corrtype = 'Pearson'; %Spearman Pearson
-    corrtype = 'Spearman'; %Spearman Pearson
+    corrtype = 'Pearson'; %Spearman Pearson
+%     corrtype = 'Spearman'; %Spearman Pearson
     
     if strcmp(corrtype, 'Spearman')
       addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))
@@ -132,10 +133,10 @@ switch analysisname
     gazetype = 'gaze-specific';
     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
     
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-%         agegroups = {''};
+        agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
