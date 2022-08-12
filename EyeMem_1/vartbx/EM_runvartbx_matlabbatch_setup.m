@@ -22,6 +22,7 @@ fun2run = @EM_runvartbx_matlabbatch;
 
 % timreq = 60; %in minutes per run
 timreq = 130*60; % for LOTO
+timreq = 50*60; % for LOTO
 memreq = 20000; % in MB
 
 PREIN = fullfile(basepath, 'variability2/1TRspertrial/jobs');
