@@ -17,10 +17,12 @@ end
 timreq = 60; %in minutes per run
 memreq = 5000; % in MB
 
-PREIN = fullfile(basepath, 'variability2', '5TRspertrial');
+nTRpertrial = 1; % 1 for classic LSS
+PREIN = fullfile(basepath, 'variability2', sprintf('%dTRspertrial', nTRpertrial));
 PREINeye = fullfile(basepath, 'preproc', 'eye');
 
-PREOUT = fullfile(basepath, 'variability2', 'ftsource');
+% PREOUT = fullfile(basepath, 'variability2', 'ftsource');
+PREOUT = fullfile(PREIN, 'ftsource');
 
 mkdir(PREOUT)
 
@@ -32,6 +34,7 @@ SUBJ= [9, 11:59, 61:69, 71,72, 74:101]; % TODO specify further?
 cfg = [];
 cfg.PREIN = PREIN;
 cfg.PREOUT = PREOUT;
+cfg.nTRpertrial = nTRpertrial;
 cfglist = {};
 
 for isub = 1:length(SUBJ)

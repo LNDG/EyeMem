@@ -29,13 +29,14 @@ mrifile = cfg.mrifile;
 outfile = cfg.outfile;
 subjno = cfg.subjno;
 eyefile = cfg.eyefile;
+nTRpertrial = cfg.nTRpertrial;
 
 disp 'read mri from file'
 mri = ft_read_mri(mrifile);
 
 % 1st the data. TR's of the last trial might be missing: add nan trial up to 150
 disp 'Fill up last trial with nans'
-nTRreq = 5*150;
+nTRreq = nTRpertrial*150;
 nTR = mri.dim(4);
 if nTR ~= nTRreq % TR's missing
   nTRmissing = nTRreq - nTR;
@@ -65,8 +66,8 @@ disp 'fix inside field: make false outside the brain'
 source.inside = true(size(source.inside,1),1);
 source.inside(mean(source.pow,2) == 0) = false;
 
-disp 'reshape to 150 trials x 5 TRs'
-source.pow = reshape(source.pow, [], 5, 150); 
+disp 'reshape to 150 trials x nTRpertrial TRs'
+source.pow = reshape(source.pow, [], nTRpertrial, 150); 
 source.pow =  permute(source.pow, [1 3 2]); % flip last 2 dims
 source.powdimord = 'pos_rpt_time';  
 source.dim = source.dim(1:3);
