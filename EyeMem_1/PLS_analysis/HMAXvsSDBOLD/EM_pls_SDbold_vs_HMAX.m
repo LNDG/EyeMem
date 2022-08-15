@@ -26,6 +26,7 @@ PREOUT = cfg.PREOUT;
 gazespecificHMAX= cfg.gazespecificHMAX;
 fitcoeff = cfg.fitcoeff;
 bintype = cfg.bintype;
+nTRpertrial = cfg.nTRpertrial;
 
 disp(sourcefile)
 source = load(sourcefile); % source comes out
@@ -35,7 +36,7 @@ load(fullfile(PREIN, 'common_coords.mat'), 'common_coords');
 source.inside = common_coords;
 source.pow(~source.inside,:,:) = 0;
 % source.pow = source.pow(source.inside,:,:);
-source.time = 1:5;
+source.time = 1:nTRpertrial;
 source.cfg = [];
 source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
@@ -55,7 +56,7 @@ if ismac && plotit
   figure; imagesc(plotdat); colorbar
   figure; plot(plotdat)
   figure
-  for i=1:5
+  for i=1:nTRpertrial
     subplot(2,3,i)
     plot(plotdat(:,i))
     % figure; plot(mean(plotdat,2))

@@ -25,8 +25,8 @@ timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
 % analysis settings
-% PLStype = 'taskPLS'; 
-PLStype = 'behavPLSvsDDM';
+PLStype = 'taskPLS'; 
+% PLStype = 'behavPLSvsDDM';
 
 % PLStype = 'behavPLSvsSDT';
 % PLSbehav = 'dprime';
@@ -49,7 +49,9 @@ fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
 
 load participantinfo.mat % TODO make this reliable
 
-PREIN = fullfile(basepath, 'variability2', 'ftsource');
+nTRpertrial = 1; % 1 for classic LSS
+PREIN = fullfile(basepath, 'variability2', sprintf('%dTRspertrial', nTRpertrial), 'ftsource');
+% PREIN = fullfile(basepath, 'variability2', 'ftsource');
 % PREINeye = fullfile(basepath, 'preproc', 'eye');
 HMAXfolder = fullfile(basepath, 'D_paradigm', 'stimuli_640x480', 'hmax');
 
@@ -74,6 +76,7 @@ cfg.BOLDvar_measure = BOLDvar_measure;
 cfg.gazespecificHMAX = gazespecificHMAX;
 cfg.fitcoeff = fitcoeff;
 cfg.bintype = bintype;
+cfg.nTRpertrial = nTRpertrial;
 
 cfglist = {};
 
