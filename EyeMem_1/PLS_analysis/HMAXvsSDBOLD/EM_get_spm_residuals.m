@@ -24,6 +24,7 @@ for itrial = 1:ntrials
   
   %select VOIS of interest, load them;
   onset = round(SPM.Sess.U(1).ons); % interest
+  onset=onset+5; % shift due to hrf
   volsoi = onset:onset+(nvoi-1);
   
   res_vols = dir('Res_*.nii');
