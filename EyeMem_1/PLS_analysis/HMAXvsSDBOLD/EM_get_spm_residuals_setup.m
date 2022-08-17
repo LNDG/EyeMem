@@ -14,7 +14,7 @@ else
   %   backend = 'local';
   compile = 'no';
 end
-timreq = 600; %in minutes per run
+timreq = 2500; %in minutes per run
 memreq = 10000; % in MB
 
 nTRpertrial = 1; % 1 for classic LSS

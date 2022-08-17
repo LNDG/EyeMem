@@ -3,6 +3,7 @@ function EM_get_spm_residuals(cfg)
 nvoi = 5;
 
 mripath = cfg.mripath;
+disp(mripath)
 cd(mripath)
 trials = dir('*alltrials_*');
 ntrials = length(trials);
