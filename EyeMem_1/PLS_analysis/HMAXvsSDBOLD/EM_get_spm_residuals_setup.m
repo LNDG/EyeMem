@@ -64,7 +64,7 @@ end
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 
 if strcmp(backend, 'slurm')
-  options = '-D. -c1'; % --gres=gpu:1
+  options = '-D. -c1 -partition long' ; % --gres=gpu:1
 else
   options =  '-l nodes=1:ppn=2'; % torque %-q testing or gpu
 end
