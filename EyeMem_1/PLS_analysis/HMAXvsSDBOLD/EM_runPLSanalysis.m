@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-  analysisname = 'SDbold_vs_HMAX';  % task PLS
+  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+%   analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -74,9 +74,9 @@ switch analysisname
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
-    num_perm = '1000';
+    num_perm = '10000';
     num_split = '0';
-    num_boot = '1000';
+    num_boot = '10000';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
@@ -114,8 +114,8 @@ switch analysisname
 
   case 'corrSDbold'
     %%
-    corrtype = 'Pearson'; %Spearman Pearson
-%     corrtype = 'Spearman'; %Spearman Pearson
+%     corrtype = 'Pearson'; %Spearman Pearson
+    corrtype = 'Spearman'; %Spearman Pearson
     
     if strcmp(corrtype, 'Spearman')
       addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))
@@ -129,10 +129,13 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/RT/linearfit_fitcoeff1';
         
 %     params = {'v' 'a' 't' 'dc' 'z'};
-    params = {'v'};
+    params = {'z'};
 %     gazetype = 'non-gazespecific';
     gazetype = 'gaze-specific';
     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
+    
+%     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM/v/gaze-specific/linearfit_fitcoeff1'
+    PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM'
     
     agegroups = {'young' 'old'};
 %     agegroups = {'young'};

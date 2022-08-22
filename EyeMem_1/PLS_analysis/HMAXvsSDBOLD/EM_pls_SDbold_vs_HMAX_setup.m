@@ -33,8 +33,8 @@ PLStype = 'behavPLSvsDDM';
 % PLSbehav = 'criterion';
 
 nbins = 3; % no of bins used for Hmax binning
-gazespecificHMAX = 'gaze-specific';
-% gazespecificHMAX = 'non-gazespecific'; 
+% gazespecificHMAX = 'gaze-specific';
+gazespecificHMAX = 'non-gazespecific'; 
 BOLDvar_measure = 'std'; % iqr, std
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 % bintype = 'uniformbinwidth';   %fixednbins   uniformbinwidth
