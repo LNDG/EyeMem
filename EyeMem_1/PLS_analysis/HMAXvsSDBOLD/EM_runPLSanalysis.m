@@ -74,9 +74,9 @@ switch analysisname
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
-    num_perm = '10000';
+    num_perm = '1000';
     num_split = '0';
-    num_boot = '10000';
+    num_boot = '1000';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
@@ -129,7 +129,7 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/RT/linearfit_fitcoeff1';
         
 %     params = {'v' 'a' 't' 'dc' 'z'};
-    params = {'z'};
+    params = {'a' };
 %     gazetype = 'non-gazespecific';
     gazetype = 'gaze-specific';
     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
