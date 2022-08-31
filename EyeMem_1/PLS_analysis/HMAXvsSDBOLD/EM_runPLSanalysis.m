@@ -61,11 +61,12 @@ switch analysisname
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_1bins/fixednbins/taskPLS/non-gazespecific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_5bins/uniformbinwidth/taskPLS/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/gaze-specific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/non-gazespecific';
     
     cd(PREIN)
-%     agegroups = {'young' 'old'};
+    agegroups = {'young' 'old'};
 %     agegroups = {'young'};
-    agegroups = {'old'};
+%     agegroups = {'old'};
 %     agegroups = {''};
 
     disp 'Generate model txt file'

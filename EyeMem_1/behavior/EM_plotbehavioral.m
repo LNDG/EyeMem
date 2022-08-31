@@ -29,7 +29,7 @@ end
 %% get data into structure with cells for age groups
 
 % find out which SUBJ are still in the mix in fMRI
-PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/criterion/linearfit_fitcoeff1';;
+PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM/v/gaze-specific/linearfit_fitcoeff1';;
 cd(fullfile(PREIN))
 SUBJ = [];
 subjlist = dir('sub*_BfMRIsessiondata.mat');
@@ -81,13 +81,17 @@ f.Position =[   680   467   85*ncol   150*nrow];
 Fontsize = 6;
 
 for iphase = 1:2
+  disp(iphase)
   for im = 1:length(behavnames)
+    disp(behavnames{im})
     iplot=iplot+1;
     subplot(nrow,ncol,iplot); hold on; % axis tight
     %     handle = plotSpread_incmarkersz( data{im,iphase}, 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );
     handle = plotSpread_incmarkersz( data.(phase_names{iphase}).(behavnames{im}), 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );
     
-    br = bar(transpose(cellfun(@mean, data.(phase_names{iphase}).(behavnames{im}) )));
+    bardat = cellfun(@mean, data.(phase_names{iphase}).(behavnames{im}) )
+    barSD = cellfun(@std, data.(phase_names{iphase}).(behavnames{im}) )
+    br = bar(transpose(bardat));
     br.FaceColor = 'flat';
     br.CData(1,:) = [255 0 0];
     br.CData(2,:) = [0 0 255];
@@ -97,7 +101,7 @@ for iphase = 1:2
     ax=gca; ax.XTickLabel = age_groups; ax.XTickLabelRotation = 45;
     ax.FontSize = 8;
     
-    [h,p] = ttest2(data.(phase_names{iphase}).(behavnames{im}){1}, data.(phase_names{iphase}).(behavnames{im}){2});
+    [~,p] = ttest2(data.(phase_names{iphase}).(behavnames{im}){1}, data.(phase_names{iphase}).(behavnames{im}){2})
     if p < 0.05
       sigstar({[1,2]},p);
     end
@@ -220,14 +224,17 @@ f = figure; iplot=0;
 f.Position =[   680   467   75*ncol   150*nrow];
 Fontsize = 6;
 
-for iphase = 1:2
+for iphase = 2
+  disp(phase_names{iphase})
   for im = 1:length(behavnames)
+    disp(behavnames{im})
     iplot=iplot+1;
     subplot(nrow,ncol,iplot); hold on; % axis tight
     %     handle = plotSpread_incmarkersz( data{im,iphase}, 'distributionColors', [1 0.5 0.5; 0.5 0.5 1] );
     handle = plotSpread_incmarkersz( data.(phase_names{iphase}).(behavnames{im}), 'distributionColors', [1 0 0; 0 0 1] );
     
-    br = bar(transpose(cellfun(@mean, data.(phase_names{iphase}).(behavnames{im}) )));
+    bardat = cellfun(@mean, data.(phase_names{iphase}).(behavnames{im}) )
+    br = bar(transpose(bardat));
     br.FaceColor = 'flat';
     br.CData(1,:) = [255 0 0];
     br.CData(2,:) = [0 0 255];
@@ -248,7 +255,7 @@ for iphase = 1:2
     if strcmp( behavnames{im}, 'z')
       ax.YTick = [0.4 0.5 0.6];
     end
-    [h,p] = ttest2(data.(phase_names{iphase}).(behavnames{im}){1}, data.(phase_names{iphase}).(behavnames{im}){2});
+    [~,p] = ttest2(data.(phase_names{iphase}).(behavnames{im}){1}, data.(phase_names{iphase}).(behavnames{im}){2})
     if p>0.05; p=NaN; end
     sigstar({[1,2]},p);
   end
@@ -288,6 +295,38 @@ if SAV
   saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior_corrSDT.png')))
   cd(b.PREOUT)
 end
+
+%% correlate behavior with each other study vs test
+%TODO FIX, run this in spearman
+SAV=1;
+corrmeas = {'propcorrect', 'RT', 'propNo'};
+
+f=figure;iplot=0;
+f.Position =        [1000         498         961         840];
+for iage = 1:2
+  for im = 1:length(corrmeas)
+    iplot=iplot+1;
+    subplot(4,3,iplot)
+    
+    corrdat = [data.(phase_names{1}).(corrmeas{im}){iage} data.(phase_names{iphase}).(corrmeas{im}){iage}];
+    
+    [r,p]=corr( corrdat(:,1), corrdat(:,2), 'type', corrtype );
+    scatter( corrdat(:,1), corrdat(:,2), 'filled', 'MarkerFaceColor', 'k' , 'MarkerEdgeColor', 'w', 'sizedata', 50, 'LineWidth', 1)
+    title(sprintf('%s %s %s\nr=%1.2f, p=%1.3f', corrmeas{im}, age_groups{iage}, corrtype, r,p))
+    if p<0.05
+      lsline
+    end
+    ylabel('test')
+    xlabel('study')
+    box on; axis square
+  end
+end
+if SAV
+  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior_corr_studyvstest.pdf' )))
+  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior_corr_studyvstest.png')))
+  cd(b.PREOUT)
+end
+
 
 %% correlate behavior with each other: DDM params
 
@@ -369,32 +408,6 @@ end
   if SAV
   saveas(gcf, fullfile(b.PREOUT, sprintf('EM_RTdistributions.pdf' )))
   saveas(gcf, fullfile(b.PREOUT, sprintf('EM_RTdistributions.png')))
-  cd(b.PREOUT)
-end
-
-%% correlate behavior with each other study vs test
-%TODO FIX, run this in spearman
-
-f=figure;iplot=0;
-f.Position =        [1000         498         961         840];
-for iage = 1:2
-  for im = 1:size(data,1)
-    iplot=iplot+1;
-    subplot(4,4,iplot)
-    [r,p]=corr( data{im,1}{iage},  data{im,2}{iage} );
-    scatter( data{im,1}{iage},  data{im,2}{iage}, 'filled', 'MarkerFaceColor', 'k' , 'MarkerEdgeColor', 'w', 'sizedata', 50, 'LineWidth', 1)
-    title(sprintf('%s\n%s r=%1.2f', behavnames{im}{:}, age_groups{iage}, r))
-    if p<0.05
-      lsline
-    end
-    ylabel('test')
-    xlabel('study')
-    box on; axis square
-  end
-end
-if SAV
-  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior_corr_studyvstest.pdf' )))
-  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_behavior_corr_studyvstest.png')))
   cd(b.PREOUT)
 end
 
