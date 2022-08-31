@@ -6,7 +6,7 @@ else
   basepath = '/home/mpib/kloosterman/projectdata/eyemem/'; %yesno or 2afc
 end
 
-dir2rem = fullfile(basepath, 'variability2/1TRspertrial')
+dir2rem = fullfile(basepath, 'variability2/5TRspertrial')
 cd(dir2rem)
 dirlist= dir('sub-*');
 
