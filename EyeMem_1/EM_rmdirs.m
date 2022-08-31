@@ -28,5 +28,6 @@ for idir = 1:length(dirlist)
     cd(dirlist(idir).name)
 %     rmdir('spm', 's')
     disp('deleted')
+    cd ..
   end
 end
