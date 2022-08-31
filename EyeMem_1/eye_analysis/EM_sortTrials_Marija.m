@@ -257,6 +257,7 @@ trl(:,12) = trl(:,1)/1000 - scanstartsmp/1000 + 3 - 12 + 5;
 % see EMcheckfMRItimings()
 
 % load Hmax
+% also in: /Users/kloosterman/gridmaster2012/projectdata/eyemem/D_paradigm/stimuli_640x480/hmax
 if ismac
   load(fullfile('/Users/kloosterman/gridmaster2012/LNDG/EyeMem/study_information/D_paradigm/stimuli_640x480/hmax', ['hmax_' runinfo.category]))
 else

@@ -345,16 +345,17 @@ corrTable{3} = [corrTable{1}; corrTable{2}];
 age_groups{3} = 'All ages';
 
 f=figure;iplot=0;
-f.Position =        [779         870        1275         350];
-for iage = 1:3
-  subplot(1,3,iage)
-  corrplot( corrTable{iage}, 'type', corrtype )
+f.Position =        [779         870        850         350];
+for iage = 1:2
+  subplot(1,2,iage)
+  corrplot( corrTable{iage}, 'type', corrtype,'testR','on' )
   title(sprintf('%s, %s correlation matrix', age_groups{iage}, corrtype))
 end
 
 if SAV
   orient landscape
-  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_corrDDMbehav_%s.pdf', corrtype )))
+%   saveas(gcf, fullfile(b.PREOUT, sprintf('EM_corrDDMbehav_%s.pdf', corrtype )))
+  saveas(gcf, fullfile(b.PREOUT, sprintf('EM_corrDDMbehav_%s.eps', corrtype )), 'epsc')
   saveas(gcf, fullfile(b.PREOUT, sprintf('EM_corrDDMbehav_%s.png', corrtype )))
   cd(b.PREOUT)
 end

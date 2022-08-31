@@ -86,6 +86,21 @@ plt.savefig('plot_posteriors_conditions.pdf')
 m.plot_posteriors(['a', 't', 'v', 'dc', 'z'])
 m.plot_posterior_predictive(figsize=(100, 50), ) # bins=1000
 # m.plot_posterior_quantiles(samples=3, columns=3, figsize=(100, 50))
+SMALL_SIZE = 7
+MEDIUM_SIZE = 7
+BIGGER_SIZE = 12
+
+plt.rc('font', size=SMALL_SIZE)          # controls default text sizes
+plt.rc('axes', titlesize=SMALL_SIZE)     # fontsize of the axes title
+plt.rc('axes', labelsize=MEDIUM_SIZE)    # fontsize of the x and y labels
+plt.rc('xtick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('ytick', labelsize=SMALL_SIZE)    # fontsize of the tick labels
+plt.rc('legend', fontsize=SMALL_SIZE)    # legend fontsize
+plt.rc('figure', titlesize=BIGGER_SIZE)  # fontsize of the figure title
+
+# m.plot_posterior_predictive(figsize=(100, 50), value_range= np.linspace(-1.5, 1.5, 10)) # bins=1000
+m.plot_posterior_predictive(figsize=(100, 50), value_range= np.linspace(-2, 2, 50), columns=4, bins=50) # bins=1000
+
 plt.show()
 plt.savefig('modelfitsHDDMbias.pdf')
 
