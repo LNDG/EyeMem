@@ -21,12 +21,12 @@ dirlist= dir('sub-*');
 for idir = 1:length(dirlist)
   if contains(dirlist(idir).name, 'temp')
     disp(dirlist(idir).name)
-    rmdir(dirlist(idir).name)
+%     rmdir(dirlist(idir).name)
     disp('deleted')
   else
     disp(dirlist(idir).name)
     cd(dirlist(idir).name)
-    rmdir('spm', 's')
+%     rmdir('spm', 's')
     disp('deleted')
   end
 end
