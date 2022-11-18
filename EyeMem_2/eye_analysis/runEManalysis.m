@@ -1,12 +1,13 @@
-restoredefaultpath
+%restoredefaultpath
 if ismac
   %   basepath = '/Users/kloosterman/gridmaster2012/kloosterman/';
   basepath = '/Users/terlau/';
 else
   %   basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
   %basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
-  basepath = '/mnt/beegfs/home/LNDG/EyeMem/'; %'/home/mpib/LNDG/EyeMem/'; % to avoid ft path problems
+  basepath = '/home/mpib/LNDG/EyeMem/'; % to avoid ft path problems '/mnt/beegfs/home/LNDG/EyeMem/'
 end
+
 
 %addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 %addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
@@ -31,7 +32,9 @@ addpath(fullfile(basepath,'tools', 'fieldtrip'))
 
 addpath(fullfile(basepath,'tools', 'custom_tools'))% interpolateblinks
 addpath(fullfile(basepath, 'LNDG', 'EyeMem', 'EyeMem_2', 'eye_analysis'))
-addpath(fullfile(basepath, 'LNDG', 'EyeMem', 'EyeMem_2', 'participantinfo'))
+addpath(fullfile(basepath, 'LNDG'))
+
+
 
 ft_defaults
 

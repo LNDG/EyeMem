@@ -3,9 +3,10 @@ function [data, datainfo] = EM_eye_analysis(cfg)
 plotit = 0;
 
 if ismac
-  edf2asc = '';
+    disp("MAC")
+    edf2asc = 'edf2asc';
 else
-  edf2asc = '/mnt/beegfs/home/LNDG/EyeMem/tools/custom_tools/eyelink/linux/edf2asc'; %'/home/mpib/LNDG/EyeMem/tools/custom_tools/eyelink/linux/edf2asc';
+    edf2asc = '/home/mpib/LNDG/EyeMem/tools/custom_tools/eyelink/linux/edf2asc';
 end
 
 PREIN =   cfg.PREIN;
@@ -27,6 +28,7 @@ for irun = 1:length(edflist)
   filename_eye = sprintf('%s.asc', eyename);
   disp(filename_eye)
   if ~exist(filename_eye)
+     %issue with this line! 
     system(sprintf('%s -y %s', edf2asc, edflist(irun).name )); %% convert edf to asc, overwrite
   end
   disp('preprocess eye data')
@@ -213,7 +215,7 @@ runinfo.sex = Participants.gender(subjno);
 runinfo.weight = Participants.weight(subjno);
 % load study and test data and add
 if ismac
-  load /Users/terlau/Eyemem_behavior.mat
+  load /Users/terlau/LNDG/EyeMem/EyeMem_1/Eyemem_behavior.mat
   %/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 else
   load /mnt/beegfs/home/LNDG/EyeMem/data/behavior/Eyemem_behavior.mat

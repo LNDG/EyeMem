@@ -2,12 +2,12 @@
 % run from runMIBmeg_analysis
 
 if ismac
-  basepath = '/Users/terlau/eye'; %yesno or 2afc %path for where the data is
+  basepath = '/Volumes/LNDG/Projects/EyeMem/eyemem2/data/eye/preproc'; %yesno or 2afc %path for where the data is
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';
   compile = 'no';
-  load('participantinfo_2.mat')
+  load('participantinfo2.mat')
 else
   basepath = '/mnt/beegfs/home/LNDG/EyeMem/data/'; %'/home/mpib/LNDG/EyeMem/data/'; %yesno or 2afc
   backend = 'slurm';
@@ -24,13 +24,15 @@ PREIN = fullfile(basepath);
 
 disp(PREIN)
 
-PREOUT = fullfile(basepath, 'preproc', 'eye');
-mkdir(fullfile(PREOUT, 'YA'))
-mkdir(fullfile(PREOUT, 'OA'))
+PREOUT = '/Users/terlau/preproc_eye2';
+%mkdir(fullfile(PREOUT, 'YA'))
+%mkdir(fullfile(PREOUT, 'OA'))
 
 overwrite = 1;
 
-SUBJ= [1:95]; % TODO specify further?
+%SUBJ= [1:95]; % TODO specify further?
+
+participants2.group = categorical(participants2.group);
 
 %make cells for each subject, to analyze in parallel
 cfg = [];
@@ -38,26 +40,56 @@ cfg.PREIN = PREIN;
 cfg.PREOUT = PREOUT;
 cfglist = {};
 
-for isub = 1:length(SUBJ)
-  disp(SUBJ(isub))
+cd(PREIN)
+dirinfo = dir();
+dirinfo(~[dirinfo.isdir]) = [];%remove non-directories
+disp(dirinfo)
+% - 1 because of the after preproc folder, change this later
+dirall = dirinfo(3:end-1)
+disp(dirall)
+
+for isub = 3%length(dirall)
+  
+  subdir = dirall(isub).name;
+  disp(subdir)
+  % 120,11031, 12034, 21072, 21104, 22103, 22021 has missing data 
+  % 21026 has asc and edf files --> find out what to do with this
+  % for the other subIDs no age etc. info exists
+  not_included = {'21026', '11002','11003', '12001', '11102', '120', '11031', '12034', '21104', '22103', '21072', '22021'};
+  if any(strcmp(not_included, subdir))
+      disp(subdir)
+      continue
+  end
+  edflist = dir(fullfile(subdir, '*.edf'))
+  subjname = extractfield(edflist,'name')
+  subjname = subjname'
+  subjname = string(subjname)
+  sID = sscanf(subjname(1),'S%d')
+  sdir = sscanf(subdir, '%d')
+
+%for isub = 1:length(SUBJ)
+ % disp(SUBJ(isub))
   % p can either be 1 or 2 for eyemem 2 data
-  edflist = dir(fullfile(PREIN, sprintf('S%dp1*.edf', SUBJ(isub))));
+ % edflist = dir(fullfile(PREIN, sprintf('S%dp1*.edf', SUBJ(isub))));
   if isempty(edflist)
-    fprintf('S%dp1*.edf not found\n', SUBJ(isub))
+    fprintf('S%dp1*.edf not found\n', sID)
     continue
   end
-  cfg.subjno = SUBJ(isub);
+  cfg.subjno = sID %SUBJ(isub);
   cfg.edflist = edflist;
-  if Participants.group(SUBJ(isub)) == 'young'
-    agegroup = 'YA';
+  if participants2.group(participants2.participant_id == sdir, :) == 'Y'
+      %if Participants.group(SUBJ(isub)) == 'young' 
+      disp(sdir)
+      agegroup = 'YA';
   else
-    agegroup = 'OA';
-  end    
-  if SUBJ(isub) < 10
-    cfg.outfile = fullfile(PREOUT, agegroup, sprintf('eye_sub-0%d.mat', SUBJ(isub)));
-  else
-    cfg.outfile = fullfile(PREOUT, agegroup, sprintf('eye_sub-%d.mat', SUBJ(isub)));
-  end
+      agegroup = 'OA';
+  end  
+  % can I just leave htis if else out??
+  %if SUBJ(isub) < 10
+  cfg.outfile = fullfile(PREOUT, agegroup, sprintf('eye_sub-0%d.mat', sID));
+  %else
+%    cfg.outfile = fullfile(PREOUT, agegroup, sprintf('eye_sub-%d.mat', SUBJ(isub)));
+ % end
   if ~exist(cfg.outfile, 'file') || overwrite
     cfglist{end+1} = cfg;
   end
@@ -75,8 +107,8 @@ else
 end
 
 %setenv('TORQUEHOME', 'yes')
-mkdir('~/qsub'); cd('~/qsub');
-if strcmp(compile, 'yes')
+%mkdir('~/qsub'); cd('~/qsub');
+if strcmp(compile, 'yes') %this loop is not entered when running on my local machine
   % this appenrently not used on slurm
   ft_hastoolbox('ctf', 1); % for loading ctf data
   ft_hastoolbox('eeglab', 1); % for ica
@@ -84,11 +116,13 @@ if strcmp(compile, 'yes')
   %   fun2run = qsubcompile({@EM_eye_analysis @sortTrials_MEGhh_2afc @interpolate_blinks}, ...
   %       'executable', 'run_kloosterman_master_p10908_b18.sh'); % compiled function
 else
-  % this is used on slurm!
+  
   fun2run = @EM_eye_analysis;
 end
-
-if strcmp(backend, 'local')
+%this runs when calling it on my local machine
+if strcmp(backend, 'local') 
+   % EM_eye_analysis is called here and runs
+   % Apply function to each cell in cell array
   [data, datainfo] = cellfun(fun2run, cfglist);
   
   if ismac

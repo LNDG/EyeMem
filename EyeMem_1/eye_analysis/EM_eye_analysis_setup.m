@@ -2,12 +2,12 @@
 % run from runMIBmeg_analysis
 
 if ismac
-  basepath = '/Volumes/LNDG/Projects/EyeMem/Laura/data'; %yesno or 2afc %path for where the data is
+  basepath = '/Volumes/LNDG/Projects/EyeMem/Laura/'; %yesno or 2afc %path for where the data is
   %     backend = 'parfor';
   backend = 'local';
   %   backend = 'qsublocal';
   compile = 'no';
-  load('/Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat')
+  load('/Users/terlau/LNDG/participantinfo.mat')
 else
   basepath = '/mnt/beegfs/home/LNDG/EyeMem/data/'; %'/home/mpib/LNDG/EyeMem/data/'; %yesno or 2afc
   backend = 'slurm';
@@ -22,8 +22,8 @@ memreq = 5000; % in MB
 
 PREIN = fullfile(basepath, 'data'); 
 PREOUT = fullfile(basepath, 'preproc', 'eye');
-mkdir(fullfile(PREOUT, 'YA'))
-mkdir(fullfile(PREOUT, 'OA'))
+%mkdir(fullfile(PREOUT, 'YA'))
+%mkdir(fullfile(PREOUT, 'OA'))
 
 overwrite = 1;
 

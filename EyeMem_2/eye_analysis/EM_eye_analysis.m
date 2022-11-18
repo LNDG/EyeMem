@@ -3,7 +3,7 @@ function [data, datainfo] = EM_eye_analysis(cfg)
 plotit = 0;
 
 if ismac
-  edf2asc = '';
+  edf2asc = '/Users/terlau/edf2asc';
 else
   edf2asc = '/mnt/beegfs/home/LNDG/EyeMem/tools/custom_tools/eyelink/linux/edf2asc'; %'/home/mpib/LNDG/EyeMem/tools/custom_tools/eyelink/linux/edf2asc';
 end
@@ -26,6 +26,7 @@ for irun = 1:length(edflist)
   [~,eyename] = fileparts( edflist(irun).name );
   filename_eye = sprintf('%s.asc', eyename);
   disp(filename_eye)
+  cd(edflist(irun).folder)
   if ~exist(filename_eye)
     system(sprintf('%s -y %s', edf2asc, edflist(irun).name )); %% convert edf to asc, overwrite
   end
@@ -187,6 +188,9 @@ function [runinfo] = get_runinfo(event, subjno)
 
 % get the subj14 string to extract info
 %temp = tokenize(char( {event( find(strfind(['Subj' cfg.subjno] ,{event.value})) ).value} ));
+% eg. MSG	8271479 Subj9 Hand2 studyph fractals Run1 Start is extracted by
+% the find(...).value from the event
+% 
 temp =tokenize(char({event( find(strcmp(sprintf('Subj%d', subjno),{event.type})) ).value}));
 if any(cellfun(@(x) strcmp(x, 'RestingState'), temp ))
   disp 'TODO: make trl resting state'
@@ -202,18 +206,18 @@ runinfo.runno = str2num(temp{7}(4));
 runinfo.category = temp{6};
 % get subject info from file
 if ismac
-  load('participantinfo_2.mat') % /Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat
+  load('/Users/terlau/LNDG/participantinfo2.mat') % /Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat
 else
   load('/mnt/beegfs/home/LNDG/EyeMem/analysis_scripts/participantinfo/participantinfo.mat') % 
 end
-runinfo.subjID = Participants.participant_id(subjno);
-runinfo.age = Participants.age(subjno);
-runinfo.agegroup = Participants.group(subjno);
-runinfo.sex = Participants.gender(subjno);
-runinfo.weight = Participants.weight(subjno);
+runinfo.subjID = participants2.participant_id(subjno);
+runinfo.age = participants2.age(subjno);
+runinfo.agegroup = participants2.group(subjno);
+runinfo.sex = participants2.gender(subjno);
+%runinfo.weight = participants2.weight(subjno);
 % load study and test data and add
 if ismac
-  load /Users/terlau/Eyemem_behavior.mat
+  load /Users/terlau/preproc/behavior_2/Eyemem_behavior.mat
   %/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 else
   load /mnt/beegfs/home/LNDG/EyeMem/data/behavior/Eyemem_behavior.mat

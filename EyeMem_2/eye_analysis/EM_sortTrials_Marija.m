@@ -30,11 +30,12 @@ trgval = {event( find(strcmp('Trial',{event.type})) ).value};
 trgsmp = [event( find(strcmp('Trial',{event.type})) ).sample];
 
 abortedrun = 0;
-if runinfo.subjno == 10 && runinfo.runno == 5
-  trgval = trgval(1:144); % end of file exception, recovered with -failsafe
-  trgsmp = trgsmp(1:144);
-  abortedrun = 1;
-end
+%leave this bit out? seems to be specific for eyemem1?
+%if runinfo.subjno == 10 && runinfo.runno == 5
+%  trgval = trgval(1:144); % end of file exception, recovered with -failsafe
+%  trgsmp = trgsmp(1:144);
+%  abortedrun = 1;
+%end
 
 disp(runinfo.hand)
 
@@ -155,14 +156,16 @@ temp = regexp(trgval(trig_ind_quiz)', pat, 'tokens');
 %   temp = regexp(trgval(trig_ind_quiz)', pat, 'tokens');
 % end
 temp = [temp{:}];
-temp = [temp{:}];
+%temp = [temp{:}];
 
 
 if trl(1,4) == 1 % study phase
-    trl(:,7) = cellfun(@str2num, temp)'; 
+    % error here, temp must be string, added string
+    trl(:,7) = cellfun(@str2num, string(temp))'; 
+    %trl(:,7) = cellfun(@str2double, temp);
 else
     trl(:,7) = NaN; % no quiz pic in test phase
-    pic_resps = cellfun(@str2num, temp)'; % but check for omissions (max 10 s RT for test)    
+    pic_resps = cellfun(@str2num, string(temp))'; % but check for omissions (max 10 s RT for test)    
     omissions = ismember(trl(:,6), pic_resps); % 0 for omissions; is the value in trl column 6 found somewhere in pics_resp
 end
 
@@ -280,7 +283,7 @@ trl(:,15) = runinfo.runno;
 
 % load behavior
 if ismac
-  load('/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat');
+  load /Users/terlau/preproc/behavior_2/Eyemem_behavior.mat;
 else
   load('/home/mpib/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat');
 end

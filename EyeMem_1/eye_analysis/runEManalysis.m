@@ -1,36 +1,43 @@
 restoredefaultpath
 if ismac
   %   basepath = '/Users/kloosterman/gridmaster2012/kloosterman/';
-  basepath = '/Users/kloosterman/Dropbox/tardis_code/';
+  basepath = '/Users/terlau/';
 else
   %   basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
-  basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
+  basepath = '/mnt/beegfs/home/terlau/'; % to avoid ft path problems
 end
 
-addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
+addpath(fullfile(basepath, 'tools', 'fieldtrip')) % cloned on 13 09 19
+%addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
-addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
+%addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
 % only when running Spearman corr behavior PLS
 
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls_mat_in')))
 % addpath(genpath('/Volumes/FB-LIP/Projects/StateSwitch/dynamic/data/mri/task/analyses/B4_PLS_preproc2/T_tools/pls'))
-addpath(genpath(fullfile(basepath, 'MATLAB', 'tools/custom_tools/plotting')))
+addpath(genpath(fullfile(basepath, 'tools/custom_tools/plotting')))
 
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'custom_tools')) % interpolateblinks
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'NIFTI_toolbox'))
-ft_defaults
+%addpath(fullfile(basepath, 'MATLAB', 'tools', 'NIFTI_toolbox'))
 % addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis')) % qsub_tardis_slurmpreview
 addpath(fullfile(basepath, 'tools', 'qsub_tardis_slurmpreview'))% qsub_tardis_slurmpreview
 % addpath(genpath('/Volumes/LNDG/Programs_Tools_Scripts/data_processing_repo/PLS_repo/PLS_toolbox_modifications/LNDG2018_OnlyTXT/Pls'))
 
+
+%addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
+addpath(fullfile(basepath,'tools', 'fieldtrip')) 
+
+addpath(fullfile(basepath,'tools', 'custom_tools'))% interpolateblinks
+addpath(fullfile(basepath, 'LNDG', 'EyeMem', 'EyeMem_1', 'eye_analysis'))
+addpath(fullfile(basepath, 'LNDG'))
+
+
+
+ft_defaults
 %% run Hmax on stim pics
 % EM_runHmax_setup()
 
 %% eye pupil and gaze analysis
-% EM_eye_analysis_setup()
+EM_eye_analysis_setup()
 % %% behavioral analysis (txt files)
 % % behav = EM_analysebehavioral()
 %
@@ -51,7 +58,7 @@ addpath(fullfile(basepath, 'tools', 'qsub_tardis_slurmpreview'))% qsub_tardis_sl
 % EM_pls_SDbold_vs_HMAX_setup()
 
 %%  set up PLS analysis  SDbold YA vs OA 
-EM_pls_OAvsYA_setup()
+%EM_pls_OAvsYA_setup()
 
 % % make model specification txt file and run the PLS analysis
 % EM_runPLSanalysis(PLSfolder)

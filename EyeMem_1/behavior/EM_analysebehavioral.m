@@ -274,10 +274,10 @@ for iphase = 1:2 % study, test
   
   ddm_dat{iphase} = ddm_dat{iphase}(~isnan(ddm_dat{iphase}(:,5)),:);
   % save ddm_dat to csv:             % For HDDM: Put subjid, category, stim, ac, rt
-  %csv_file = sprintf('/Users/terlau/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
-  %fid = fopen(csv_file, 'w');
-  %fprintf(fid, 'subj_idx,category,stim,response,accuracy,rt,age\n');
-  %dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
+  csv_file = sprintf('/Users/terlau/HDDM/EyeMem_hddm_%s.csv', exp_phases{iphase});
+  fid = fopen(csv_file, 'w');
+  fprintf(fid, 'subj_idx,category,stim,response,accuracy,rt,age\n');
+  dlmwrite(csv_file , ddm_dat{iphase},'delimiter',',','-append');
 end
 
 % % TODO Fit EZ DDM and get drift rate, boundary sep and non dec time

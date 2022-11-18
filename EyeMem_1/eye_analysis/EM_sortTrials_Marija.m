@@ -255,7 +255,7 @@ trl(:,12) = trl(:,1)/1000 - scanstartsmp/1000 + 3 - 12; % -3 for prestim, 12 s r
 
 % load Hmax
 if ismac
-  load(fullfile('/Users/kloosterman/gridmaster2012/LNDG/EyeMem/study_information/D_paradigm/stimuli_640x480/hmax', ['hmax_' runinfo.category]))
+  load(fullfile('/home/mpib/LNDG/EyeMem/study_information/D_paradigm/stimuli_640x480/hmax', ['hmax_' runinfo.category]))
 else
   load(fullfile('/home/mpib/LNDG/EyeMem/study_information/D_paradigm/stimuli_640x480/hmax', ['hmax_' runinfo.category]))
 end
@@ -280,7 +280,7 @@ trl(:,15) = runinfo.runno;
 
 % load behavior
 if ismac
-  load('/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat');
+  load('/Users/terlau/LNDG/EyeMem/EyeMem_1/Eyemem_behavior.mat');
 else
   load('/home/mpib/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat');
 end
