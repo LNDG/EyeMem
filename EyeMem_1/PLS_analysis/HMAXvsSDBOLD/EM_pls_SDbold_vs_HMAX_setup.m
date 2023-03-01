@@ -33,14 +33,15 @@ PLStype = 'taskPLS';
 % PLSbehav = 'criterion';
 
 nbins = 3; % no of bins used for Hmax binning
-% gazespecificHMAX = 'gaze-specific';
-gazespecificHMAX = 'non-gazespecific'; 
+gazespecificHMAX = 'gaze-specific';
+% gazespecificHMAX = 'non-gazespecific'; 
 BOLDvar_measure = 'std'; % iqr, std
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 % bintype = 'uniformbinwidth';   %fixednbins   uniformbinwidth
 removeoutliers = false;
 Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
+inducedortotalSD = 'induced';
 
 % binsubtract = [2 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 % binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
@@ -49,7 +50,7 @@ fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
 
 load participantinfo.mat % TODO make this reliable
 
-nTRpertrial = 1; % 1 for classic LSS
+nTRpertrial = 5; % 1 for classic LSS
 PREIN = fullfile(basepath, 'variability2', sprintf('%dTRspertrial', nTRpertrial), 'ftsource');
 % PREIN = fullfile(basepath, 'variability2', 'ftsource');
 % PREINeye = fullfile(basepath, 'preproc', 'eye');
@@ -77,6 +78,7 @@ cfg.gazespecificHMAX = gazespecificHMAX;
 cfg.fitcoeff = fitcoeff;
 cfg.bintype = bintype;
 cfg.nTRpertrial = nTRpertrial;
+cfg.inducedortotalSD = inducedortotalSD;
 
 cfglist = {};
 
@@ -98,7 +100,7 @@ for isub = 1:length(subjlist)
     if contains(PLStype, 'behav')
       PREOUT = fullfile(PREIN, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
     else
-      PREOUT = fullfile(PREIN, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
+      PREOUT = fullfile(PREIN,  inducedortotalSD,  BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
     end
     mkdir(PREOUT)
     mkdir(fullfile( PREOUT, 'source' ))

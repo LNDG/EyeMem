@@ -27,6 +27,7 @@ gazespecificHMAX= cfg.gazespecificHMAX;
 fitcoeff = cfg.fitcoeff;
 bintype = cfg.bintype;
 nTRpertrial = cfg.nTRpertrial;
+inducedortotalSD = cfg.inducedortotalSD;
 
 disp(sourcefile)
 source = load(sourcefile); % source comes out
@@ -39,6 +40,31 @@ source.pow(~source.inside,:,:) = 0;
 source.time = 1:nTRpertrial;
 source.cfg = [];
 source.trialinfo(:,end+1) = 1:150; % number trials to keep track
+
+source_ori = source;
+% remove evoked response: subtract within trial mean beta weight per trial
+switch inducedortotalSD
+  case 'induced'
+    
+    source.pow = source.pow - mean(source.pow,3);
+    
+    plotit = 0;
+    if ismac && plotit
+      %   source.pow = mean(source.pow(:,5:5:end),2);
+      source.pow = std(source.pow(:,:),0,2);
+      source_ori.pow = std(source_ori.pow(:,:),0,2);
+      source.powdimord = 'pos';
+      source_ori.powdimord = 'pos';
+      
+      cfg=[];
+      cfg.funparameter = 'pow';
+      cfg.method = 'ortho'; % slice ortho glassbrain vertex
+      load colormap_jetlightgray.mat
+      cfg.funcolormap = cmap;
+      ft_sourceplot(cfg, source)
+      ft_sourceplot(cfg, source_ori)
+    end
+end
 
 %% inspection of fMRI, not used in further processing
 plotit = 0;

@@ -1,4 +1,4 @@
-function EM_pls_SDbold_vs_HMAX(cfg)
+function EM_pls_OAvsYA(cfg)
 % run task PLS on 5-trial binned SDbold vs Hmax. 30 conditions
 % TODO turn into data format that PLS toolbox likes:
 % examples:

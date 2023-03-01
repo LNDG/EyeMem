@@ -49,6 +49,9 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub
 
 % timelock=EM_merge_eyedata()
 
+% Convince yourself that timing is ok
+% EMcheckfMRItimings
+
 %% fMRI ANALYSIS:
 %% set up vartbx for single-TR GLM (LEast squares, single)
 % % run 1 and 2 on tardis!
@@ -78,7 +81,8 @@ EM_pls_SDbold_vs_HMAX_setup('z')
 EM_pls_SDbold_vs_HMAX_setup('dc')
 
 %%  set up PLS analysis  SDbold YA vs OA 
-% EM_pls_OAvsYA_setup()
+
+% EM_pls_OAvsYA_setup() % not used?
 
 % % make model specification txt file and run the PLS analysis
 % EM_runPLSanalysis(PLSfolder)
