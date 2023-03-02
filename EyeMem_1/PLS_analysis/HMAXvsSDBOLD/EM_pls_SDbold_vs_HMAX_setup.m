@@ -25,14 +25,14 @@ timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
 % analysis settings
-% PLStype = 'taskPLS'; 
-PLStype = 'behavPLSvsDDM';
+PLStype = 'taskPLS'; 
+% PLStype = 'behavPLSvsDDM';
 
 % PLStype = 'behavPLSvsSDT';
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 
-nbins = 5; % no of bins used for Hmax binning
+nbins = 9; % no of bins used for Hmax binning
 gazespecificHMAX = 'gaze-specific';
 % gazespecificHMAX = 'non-gazespecific'; 
 BOLDvar_measure = 'std'; % iqr, std
