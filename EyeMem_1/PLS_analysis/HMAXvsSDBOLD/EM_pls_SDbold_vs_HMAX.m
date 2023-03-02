@@ -288,7 +288,7 @@ switch gazespecificHMAX
       return
     end
 
-    dropoutliers=1;
+    dropoutliers=0;
     if dropoutliers
       disp 'drop HMAX outlier trials'
       %         figure; histogram(hmax_at_fix_trl, 100)
