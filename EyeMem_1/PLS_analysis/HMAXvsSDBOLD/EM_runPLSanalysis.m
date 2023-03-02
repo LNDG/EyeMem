@@ -136,11 +136,11 @@ switch analysisname
     params = {'v' };
 %     gazetype = 'non-gazespecific';
     gazetype = 'gaze-specific';
-    PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
+%     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
     
-%     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM/v/gaze-specific/linearfit_fitcoeff1'
-    PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
-    
+    PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM'
+%     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
+%     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/totalSD/std_3bins/fixednbins/behavPLSvsDDM/';
 %     % induced power: correlation gone
 %     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/behavPLSvsDDM'
     agegroups = {'young' 'old'};
