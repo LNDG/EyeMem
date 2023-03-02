@@ -267,7 +267,7 @@ switch gazespecificHMAX
         fixdur = fixdur / sum(fixdur);
         hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
       else
-        hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);
+        hmax_at_fix_trl(itrial,:) = median(hmax_at_fix);
       end
       
       % keep hmax and fix dur values to correlate: YA better track
