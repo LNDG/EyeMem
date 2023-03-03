@@ -33,10 +33,10 @@ PLStype = 'taskPLS';
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 
-nbins = 7; % no of bins used for Hmax binning
+nbins = 5; % no of bins used for Hmax binning
 gazespecificHMAX = 'gaze-specific';
 % gazespecificHMAX = 'non-gazespecific'; 
-BOLDvar_measure = 'std'; % iqr, std mse
+BOLDvar_measure = 'mse'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 % bintype = 'uniformbinwidth';   %fixednbins   uniformbinwidth
 removeoutliers = false;
