@@ -408,8 +408,32 @@ for ibin = 1:nbins
       end
     case 'iqr'
       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
+    case 'mse'
+      disp 'compute MSE'
+      data = [];   % make data struct  % Required fields:  %   - time, trial, label
+      for itrial = 1:size(source.pow, 2)
+        data.time{itrial} = source.time;
+        data.trial{itrial} = squeeze(source.pow(source.inside,itrial,:));
+      end
+      data.label = [];
+      for ichan = 1:length(data.trial{1})
+        data.label{ichan,1} = sprintf('%d', ichan);
+      end
+      
+      cfg=[];
+      cfg.trials = bininds==ibin;
+      cfg.toi = 2.5;
+      cfg.timwin = 5;
+      cfg.timescales = 1;
+      cfg.filtmethod = 'no';
+      cfg.recompute_r = 'perscale_toi_sp';
+      cfg.coarsegrainmethod = 'pointavg';
+      mse = ft_entropyanalysis(cfg, data);
+      
+      inside_ind = find(source_bin.inside);
+      source_bin.pow(inside_ind,ibin) = mse.sampen;
   end
-%   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
+  %   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
   source_bin.freq(ibin) = nanmean(binedges(ibin:ibin+1)); % use freq field for HMAX bin_No
   source_bin.perc_BOLDremoved = (TFkeep / numel(seldat)) * 100;
 end

@@ -33,9 +33,9 @@ PLStype = 'taskPLS';
 % PLSbehav = 'criterion';
 
 nbins = 5; % no of bins used for Hmax binning
-% gazespecificHMAX = 'gaze-specific';
-gazespecificHMAX = 'non-gazespecific'; 
-BOLDvar_measure = 'std'; % iqr, std
+gazespecificHMAX = 'gaze-specific';
+% gazespecificHMAX = 'non-gazespecific'; 
+BOLDvar_measure = 'mse'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 % bintype = 'uniformbinwidth';   %fixednbins   uniformbinwidth
 removeoutliers = false;
@@ -139,7 +139,7 @@ else
 end
 
 setenv('TORQUEHOME', 'yes')
-mkdir('~/qsub'); cd('~/qsub');
+mkdir('~/qsub'); if ~ismac; cd('~/qsub'); end
 
 if strcmp(backend, 'local')
   cellfun(fun2run, cfglist);
