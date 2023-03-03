@@ -395,7 +395,7 @@ for ibin = 1:nbins
         %         f=figure;  f.Position = [        1000         997        1335         341];
         %         subplot(1,2,1); plot(seldat(i,:))
         
-        rmboldoutliers = 0;
+        rmboldoutliers = 1;
         if rmboldoutliers
           [seldat_clean, TF] = rmoutliers(seldat(i,:)); % , 'mean' is > 3 SD's from the mean
           %         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
