@@ -62,8 +62,10 @@ switch analysisname
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_5bins/uniformbinwidth/taskPLS/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/non-gazespecific';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/taskPLS/non-gazespecific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/taskPLS/gaze-specific';
     
+    %mse!
+%     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/mse_5bins/fixednbins/taskPLS/gaze-specific';
 %     % look at induced power, by subtracting mean per 5TR trial
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/gaze-specific'
     cd(PREIN)
@@ -88,7 +90,6 @@ switch analysisname
     behavior_data = {};
     behavior_name = {};
     
-    %     agegroups = {'young'};
     id_list = cell(length(agegroups),1);
     % %     id_list = cell(1,1);
     for iage = 1:length(agegroups)

@@ -69,14 +69,14 @@ end
 %% inspection of fMRI, not used in further processing
 plotit = 0;
 if ismac && plotit
-  %   cfg = [];
-  %   cfg.funparameter  = 'pow';
-  %   cfg.maskparameter = cfg.funparameter;
-  % %   cfg.maskparameter = ;
-  % %   cfg.colorlim      = [-3 3]; % or 'maxabs'
-  % %   cfg.opacitymap    = 'vdown';
-  % %   cfg.opacitylim    = [-3 3]; % or 'maxabs'
-  %   ft_sourceplot(cfg, source)
+    cfg = [];
+    cfg.funparameter  = 'pow';
+    cfg.maskparameter = cfg.funparameter;
+  %   cfg.maskparameter = ;
+  %   cfg.colorlim      = [-3 3]; % or 'maxabs'
+  %   cfg.opacitymap    = 'vdown';
+  %   cfg.opacitylim    = [-3 3]; % or 'maxabs'
+    ft_sourceplot(cfg, source)
 %   plotdat = squeeze(mean(source.pow(source.inside, :,1)));
   plotdat = source.pow(source.inside, :,1);
   figure; imagesc(plotdat); colorbar
