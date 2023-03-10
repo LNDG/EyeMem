@@ -479,6 +479,16 @@ switch PLStype
     load(behavfile); % behav comes out
     subjind = behavior.participants.participant_id == subj;
     tmp.behavdata = behavior.(PLSbehav)(subjind,2); % 2 is test phase
+  case 'behavPLS_sdboldvsHmaxbins'
+    dat = transpose(source.pow(tmp.st_coords, :));
+    binvals = [binedges(1:end-1) binedges(2:end)];
+    binvals = mean(binvals,2); % the mean val in each bin. TODO take median of trials in each bin?
+    tmp.st_datamat(1,:) = corr(dat, binvals, 'type', 'Spearman'); % spearman accounts for nonlinearities in hmax vals
+    tmp.behavname = {PLSbehav};%no behav names or data just yet, but set up the %field anyway...
+    load(behavfile); % behav comes out
+    subjind = behavior.participants.participant_id == subj;
+    tmp.behavdata = behavior.(PLSbehav)(subjind,2); % 2 is test phase, Add memory performance
+    
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];
@@ -548,8 +558,8 @@ if strcmp(gazespecificHMAX, 'gaze-specific')
   tmp.hmax_at_fix_keep = hmax_at_fix_keep;
 end
 
-% disp(outfile_source)
-% save(outfile_source, 'source')
+disp(outfile_source)
+save(outfile_source, 'source')
 
 % save PLS sesdat
 disp(outfile_sesdat)
