@@ -467,7 +467,8 @@ switch PLStype
     tmp.behavdata = mean(behavior.(PLSbehav)(subjind,2,6)); % 2 is test, 6 is cond average
   case 'behavPLSvsDDM'
     if isnumeric(binsubtract)
-      tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
+      tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))) ./ ...
+        transpose(source.pow(tmp.st_coords, binsubtract(2))) .* 100; % highest - lowest BOLD variability
     else
       dat = transpose(source.pow(tmp.st_coords, :));
       for i = 1:length(dat)

@@ -27,8 +27,8 @@ memreq = 10000; % in MB
 
 % analysis settings
 % PLStype = 'taskPLS'; 
-% PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
-PLStype = 'behavPLS_sdboldvsHmaxbins'; % 
+PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
+% PLStype = 'behavPLS_sdboldvsHmaxbins'; % 
 
 % PLStype = 'behavPLSvsSDT';
 % PLSbehav = 'dprime';
@@ -45,9 +45,9 @@ Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
 inducedortotalSD = 'totalSD';
 
-% binsubtract = [2 1]; % which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
+binsubtract = [5 1]; % in psc  which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 % binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
-binsubtract = 'linearfit';
+% binsubtract = 'linearfit';
 fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
 
 load participantinfo.mat % TODO make this reliable
