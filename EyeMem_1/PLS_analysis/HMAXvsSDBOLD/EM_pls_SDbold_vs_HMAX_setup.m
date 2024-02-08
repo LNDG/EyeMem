@@ -34,7 +34,7 @@ PLStype = 'taskPLS';
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 
-nbins = 9; % no of bins used for Hmax binning
+nbins = 5; % no of bins used for Hmax binning
 gazespecificHMAX = 'gaze-specific';
 % gazespecificHMAX = 'non-gazespecific'; 
 BOLDvar_measure = 'std'; % iqr, std mse
@@ -100,8 +100,8 @@ for isub = 1:length(subjlist)
     agefolder = Participants(Participants.participant_id == subj, :);     % give different outfolder for OA and YA
     
     if contains(PLStype, 'behav')
-      PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
-%       PREOUT = fullfile(PREIN, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
+%       PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
+      PREOUT = fullfile(PREIN, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
     else
       PREOUT = fullfile(PREIN, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
     end
