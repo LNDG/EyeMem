@@ -17,7 +17,7 @@ end
 timreq = 10; %in minutes per run
 memreq = 2000; % in MB
 
-nTRpertrial = 1; % 1 for classic LSS
+nTRpertrial = 5; % 1 for classic LSS
 PREIN = fullfile(basepath, 'variability2', sprintf('%dTRspertrial', nTRpertrial), 'ftsource');
 % PREIN  = fullfile(basepath, 'variability2', 'ftsource');
 cd(PREIN)

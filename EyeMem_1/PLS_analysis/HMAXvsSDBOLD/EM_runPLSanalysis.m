@@ -62,17 +62,17 @@ switch analysisname
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_5bins/uniformbinwidth/taskPLS/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/non-gazespecific';
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/taskPLS/gaze-specific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/gaze-specific';
     
     %mse!
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/mse_5bins/fixednbins/taskPLS/gaze-specific';
 %     % look at induced power, by subtracting mean per 5TR trial
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/gaze-specific'
     cd(PREIN)
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-%     agegroups = {''};
+    agegroups = {''};
 
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
@@ -145,12 +145,12 @@ switch analysisname
 %     % induced power: correlation gone
 %     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/behavPLSvsDDM'
 
-PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/behavPLSvsDDM'
+PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM'
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/behavPLS_sdboldvsHmaxbins/'
     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-        agegroups = {''};
+%         agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -173,8 +173,8 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
     selected_cond = []; %num2str(ones(1,5)); disp 'TODO get ncond somewhere'
     
     for iparam = 1:length(params)
-%       PREIN = fullfile(PRE, params{iparam}, gazetype, 'linearfit_fitcoeff1');
-      PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin1_fitcoeff1');
+      PREIN = fullfile(PRE, params{iparam}, gazetype, 'linearfit_fitcoeff1');
+%       PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin1_fitcoeff1');
       cd(PREIN)
       behavior_data =  cell(length(agegroups),1);
       id_list = cell(length(agegroups),1);

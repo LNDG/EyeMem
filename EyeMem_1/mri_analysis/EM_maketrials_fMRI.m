@@ -52,7 +52,8 @@ source = renameStructField(source , 'anatomy', 'pow');
 
 disp 'only include voxels common to all subjects'
 if ismac
-  load /Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/common_coords.mat
+%   load /Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/common_coords.mat
+  load /Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/common_coords.mat
 else
   load /home/mpib/kloosterman/projectdata/eyemem/variability/ftsource/common_coords.mat
 end  
@@ -67,7 +68,7 @@ source.inside = common_coords; % pow not yet updated
 % source.dim = source.dim(1:3);
 %%
 if ismac
-  standardsfolder = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/A_standards';
+  standardsfolder = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/Standards';
   anat = ft_read_mri(fullfile(standardsfolder, 'MNI152_T1_3mm_brain.nii.gz' ));
   
 %   disp 'stick stats to anatomy'

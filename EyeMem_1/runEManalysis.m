@@ -112,6 +112,10 @@ EM_pls_SDbold_vs_HMAX_setup('v')
 % load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/eye/maps_gaze_vs_hmax.mat', 'maps')
 % EM_FDM2deepgaze_plot(maps);
 
+
+
+
+
 %% OLD remove soon
 % %% set up PLS analysis for HMAX vs SDBOLD Julian way
 % % 1 make model txt file for for pls toolbox
