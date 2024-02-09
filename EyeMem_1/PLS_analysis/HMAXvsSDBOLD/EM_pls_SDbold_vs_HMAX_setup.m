@@ -23,7 +23,7 @@ end
 
 timreq = 10; %in minutes per run
 memreq = 2000; % in MB
-memreq = 10000; % in MB
+memreq = 25000; % in MB
 
 % analysis settings
 PLStype = 'taskPLS'; 
