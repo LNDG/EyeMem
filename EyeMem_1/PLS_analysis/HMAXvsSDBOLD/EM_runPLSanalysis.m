@@ -153,10 +153,10 @@ switch analysisname
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM'
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/behavPLS_sdboldvsHmaxbins/'
 PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_15bins/fixednbins/behavPLSvsDDM/'
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-%         agegroups = {''};
+        agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -179,8 +179,8 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
     selected_cond = []; %num2str(ones(1,5)); disp 'TODO get ncond somewhere'
     
     for iparam = 1:length(params)
-      PREIN = fullfile(PRE, params{iparam}, gazetype, 'linearfit_fitcoeff1');
-%       PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin1_fitcoeff1');
+%       PREIN = fullfile(PRE, params{iparam}, gazetype, 'linearfit_fitcoeff1');
+      PREIN = fullfile(PRE, params{iparam}, gazetype, 'corrHmaxoverbins_fitcoeff1');
       cd(PREIN)
       behavior_data =  cell(length(agegroups),1);
       id_list = cell(length(agegroups),1);

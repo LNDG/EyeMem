@@ -477,7 +477,7 @@ switch PLStype
       disp 'get hmax_at_fix_trl per bin and correlate'
       dat = transpose(source.pow(tmp.st_coords, :));
       for i = 1:length(dat)
-        tmp.st_datamat(1,i) = corr(hmaxperbin, dat(:,i), 'type', 'Spearman'); %figure; scatter(hmaxperbin, dat(:,i))
+        tmp.st_datamat(1,i) = corr(hmaxperbin, dat(:,i), 'type', 'Pearson'); %figure; scatter(hmaxperbin, dat(:,i))
       end
     else
       dat = transpose(source.pow(tmp.st_coords, :));
