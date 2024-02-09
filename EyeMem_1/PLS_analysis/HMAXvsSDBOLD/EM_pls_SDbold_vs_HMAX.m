@@ -574,18 +574,19 @@ save(out , '-struct','tmp')
 % % save([subj '_' pattern '_BfMRIdatamat.mat'], '-struct','tmp'); %,'-mat'
 
 
-%   if ismac
-%     tmp = source_bin;
-%     tmp.powdimord = 'pos';
-%     %       vol=300;
-%     %   tmp.anatomy = tmp.anatomy(:,:,:,vol);
-%     tmp.pow = nanmean(tmp.pow(:,:),2);
-%     cfg=[];
-%     cfg.method = 'ortho'; % slice ortho glassbrain vertex
-%     cfg.funparameter = 'pow';
-%     cfg.funcolorlim = 'zeromax';% [-300 300];
-%     ft_sourceplot(cfg, tmp)
-%   end
+if ismac
+  tmp = source_bin;
+  tmp.powdimord = 'pos';
+  %       vol=300;
+  %   tmp.anatomy = tmp.anatomy(:,:,:,vol);
+  %     tmp.pow = mean(tmp.pow(:,:),2);
+  tmp.pow = tmp.pow(:,3);
+  cfg=[];
+  cfg.method = 'ortho'; % slice ortho glassbrain vertex
+  cfg.funparameter = 'pow';
+  cfg.funcolorlim = 'zeromax';% [-300 300];
+  ft_sourceplot(cfg, tmp)
+end
 
 % %   source.time = 1:5;
 % %   source.freq = 1;
