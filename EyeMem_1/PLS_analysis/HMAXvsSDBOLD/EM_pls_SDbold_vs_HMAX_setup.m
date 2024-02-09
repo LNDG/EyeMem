@@ -26,8 +26,8 @@ memreq = 2000; % in MB
 memreq = 10000; % in MB
 
 % analysis settings
-PLStype = 'taskPLS'; 
-% PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
+% PLStype = 'taskPLS'; 
+PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
 % PLStype = 'behavPLS_sdboldvsHmaxbins'; % 
 
 % PLStype = 'behavPLSvsSDT';
