@@ -349,6 +349,8 @@ for ibin = 1:nbins
 %   seldat = source.pow(source.inside, cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
   seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:);   
   seldat =  seldat(:,:);
+  hmaxperbin(ibin,1) = mean(hmax_at_fix_trl(bininds==ibin));
+  
   if removeoutliers
     Z = zscore(seldat,1,2);
     %   Z = Z(Z~=0);  figure; histogram(Z(:))
@@ -471,6 +473,12 @@ switch PLStype
     if isnumeric(binsubtract)
       tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))) ./ ...
         transpose(source.pow(tmp.st_coords, binsubtract(2))) .* 100; % highest - lowest BOLD variability
+    elseif strcmp(binsubtract, 'corrHmaxoverbins')
+      disp 'get hmax_at_fix_trl per bin and correlate'
+      dat = transpose(source.pow(tmp.st_coords, :));
+      for i = 1:length(dat)
+        tmp.st_datamat(1,i) = corr(hmaxperbin, dat(:,i), 'type', 'Spearman'); %figure; scatter(hmaxperbin, dat(:,i))
+      end
     else
       dat = transpose(source.pow(tmp.st_coords, :));
       for i = 1:length(dat)
