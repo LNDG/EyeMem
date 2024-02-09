@@ -65,7 +65,7 @@ switch analysisname
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/taskPLS/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/taskPLS/v/gaze-specific';
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_9bins/fixednbins/taskPLS/v/gaze-specific'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_15bins/fixednbins/taskPLS/v/gaze-specific'
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_30bins/fixednbins/taskPLS/v/gaze-specific'
     %mse!
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/mse_5bins/fixednbins/taskPLS/gaze-specific';
 %     % look at induced power, by subtracting mean per 5TR trial

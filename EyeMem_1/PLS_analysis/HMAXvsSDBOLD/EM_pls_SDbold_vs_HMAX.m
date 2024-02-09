@@ -230,6 +230,8 @@ switch gazespecificHMAX
         %       scatter(data.trial{itrial}(2,:)-xshift, data.trial{itrial}(3,:)-yshift, 'k'); hold on
         scatter(data.trial{itrial}(2,fixations)-xshift, data.trial{itrial}(3,fixations)-yshift, 'g'); hold on
         scatter(fixloc(:,1),fixloc(:,2), 'r', 'filled'); % already shifted
+        text(fixloc(:,1),fixloc(:,2), string(1:size(fixloc,1))); % already shifted
+        
         %       xlim([0 1024]); ylim([0 768]); box on
         xlim([0 640]); ylim([0 480]); box on
         title(nfix)
@@ -267,7 +269,7 @@ switch gazespecificHMAX
         fixdur = fixdur / sum(fixdur);
         hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
       else
-        hmax_at_fix_trl(itrial,:) = median(hmax_at_fix);
+        hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);  % median
       end
       
       % keep hmax and fix dur values to correlate: YA better track
@@ -557,6 +559,7 @@ tmp.perc_BOLDremoved = source_bin.perc_BOLDremoved;
 if strcmp(gazespecificHMAX, 'gaze-specific')
   tmp.fixdur_keep = fixdur_keep;
   tmp.hmax_at_fix_keep = hmax_at_fix_keep;
+  tmp.hmax_at_fix_trl = hmax_at_fix_trl; % to plot extracted saliency per trial
 end
 
 disp(outfile_source)
