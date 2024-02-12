@@ -26,15 +26,15 @@ memreq = 2000; % in MB
 memreq = 10000; % in MB
 
 % analysis settings
-% PLStype = 'taskPLS'; 
-PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
+PLStype = 'taskPLS'; 
+% PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
 % PLStype = 'behavPLS_sdboldvsHmaxbins'; % 
 
 % PLStype = 'behavPLSvsSDT';
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 
-nbins = 5; % no of bins used for Hmax binning
+nbins = 10; % no of bins used for Hmax binning, 750 samples
 gazespecificHMAX = 'gaze-specific';
 % gazespecificHMAX = 'non-gazespecific'; 
 BOLDvar_measure = 'std'; % iqr, std mse
@@ -101,10 +101,10 @@ for isub = 1:length(subjlist)
     agefolder = Participants(Participants.participant_id == subj, :);     % give different outfolder for OA and YA
     
     if contains(PLStype, 'behav')
-      PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d_psc', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
+      PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
 %       PREOUT = fullfile(PREIN, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
     else
-      PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
+      PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
     end
     disp(PREOUT)
     mkdir(PREOUT)
