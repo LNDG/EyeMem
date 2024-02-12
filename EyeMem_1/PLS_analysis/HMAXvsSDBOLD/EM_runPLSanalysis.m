@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-%   analysisname = 'SDbold_vs_HMAX';  % task PLS
+%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+  analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -69,15 +69,18 @@ switch analysisname
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/v/gaze-specific';
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/mse_3bins/fixednbins/taskPLS/v/gaze-specific'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/taskPLS/v/gaze-specific';
-%mse!
+
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_10bins/fixednbins/taskPLS/gaze-specific';
+    
+    %mse!
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/mse_5bins/fixednbins/taskPLS/gaze-specific';
 %     % look at induced power, by subtracting mean per 5TR trial
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/gaze-specific'
     cd(PREIN)
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-%     agegroups = {''};
+    agegroups = {''};
 
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
@@ -124,8 +127,8 @@ switch analysisname
 
   case 'corrSDbold'
     %%
-%     corrtype = 'Pearson'; %Spearman Pearson
-    corrtype = 'Spearman'; %Spearman Pearson
+    corrtype = 'Pearson'; %Spearman Pearson
+%     corrtype = 'Spearman'; %Spearman Pearson
     
     if strcmp(corrtype, 'Spearman')
       addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))
@@ -182,7 +185,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
     for iparam = 1:length(params)
 %       PREIN = fullfile(PRE, params{iparam}, gazetype, 'linearfit_fitcoeff1');
 %       PREIN = fullfile(PRE, params{iparam}, gazetype, 'corrHmaxoverbins_fitcoeff1');
-      PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin1_fitcoeff1');
+      PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin1_fitcoeff1_psc');
       cd(PREIN)
       behavior_data =  cell(length(agegroups),1);
       id_list = cell(length(agegroups),1);

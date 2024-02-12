@@ -471,9 +471,13 @@ switch PLStype
     tmp.behavdata = mean(behavior.(PLSbehav)(subjind,2,6)); % 2 is test, 6 is cond average
   case 'behavPLSvsDDM'
     if isnumeric(binsubtract)
+      if numel(binsubtract) == 2
       tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))) ./ ...
         transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability
 %       tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))); % highest - lowest BOLD variability
+      elseif numel(binsubtract) == 1
+        tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1)));
+      end
     elseif strcmp(binsubtract, 'corrHmaxoverbins')
       disp 'get hmax_at_fix_trl per bin and correlate'
       dat = transpose(source.pow(tmp.st_coords, :));
