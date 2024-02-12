@@ -45,11 +45,11 @@ Z_thresh = 3; % if removeoutliers
 do_kstest = 0;
 inducedortotalSD = 'induced';
 
-% binsubtract = [5 1]; % in psc  which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
+binsubtract = [5 1]; % Also possible in psc which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 % binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
-% binsubtract = 'linearfit';  
+% % binsubtract = 'linearfit';  
 fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
-binsubtract = 'corrHmaxoverbins';  % corr across bins Hmax vs SDbold
+% binsubtract = 'corrHmaxoverbins';  % corr across bins Hmax vs SDbold
 
 load participantinfo.mat % TODO make this reliable
 
