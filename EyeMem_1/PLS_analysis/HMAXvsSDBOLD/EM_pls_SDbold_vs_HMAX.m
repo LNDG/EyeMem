@@ -44,25 +44,41 @@ source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 source_ori = source;
 % remove evoked response: subtract within trial mean beta weight per trial
 switch inducedortotalSD
-  case 'induced'
-    
+  case 'induced'   
     source.pow = source.pow - mean(source.pow,3);
-    
+
+       
     plotit = 0;
     if ismac && plotit
       %   source.pow = mean(source.pow(:,5:5:end),2);
-      source.pow = std(source.pow(:,:),0,2);
-      source_ori.pow = std(source_ori.pow(:,:),0,2);
-      source.powdimord = 'pos';
-      source_ori.powdimord = 'pos';
+      source_total = source_ori;
+      source_across = source_ori;
+      source_within = source_ori;
+%       source_across.pow = mean(source_within.pow,3); %average within trials
+      source_across.pow = mean(source_across.pow(:,:),2); %average within trials
+      source_within.pow = source_within.pow - mean(source_within.pow,3);
       
+%       source_across.pow = var(source_across.pow(:,:),0,2);
+      source_within.pow = var(source_within.pow(:,:),0,2);
+      source_total.pow = var(source_total.pow(:,:),0,2);
+      source_within.powdimord = 'pos';
+      source_across.powdimord = 'pos';
+      source_total.powdimord = 'pos';
+
       cfg=[];
       cfg.funparameter = 'pow';
       cfg.method = 'ortho'; % slice ortho glassbrain vertex
       load colormap_jetlightgray.mat
       cfg.funcolormap = cmap;
-      ft_sourceplot(cfg, source)
-      ft_sourceplot(cfg, source_ori)
+      ft_sourceplot(cfg, source_within)
+      ft_sourceplot(cfg, source_total)
+      ft_sourceplot(cfg, source_across)
+      % TODO plot timecourse
+      source_time = source_ori;
+      source_time.pow = squeeze(mean(source_time.pow,2)); %average within trials
+      source_time.powdimord = 'pos_time';
+      ft_sourceplot(cfg, source_time)
+
     end
 end
 

@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-  analysisname = 'SDbold_vs_HMAX';  % task PLS
+  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+%   analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -159,8 +159,8 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
 
 %     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
-%     agegroups = {'old'};
-        agegroups = {''};
+    agegroups = {'old'};
+%         agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
@@ -185,7 +185,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
     for iparam = 1:length(params)
 %       PREIN = fullfile(PRE, params{iparam}, gazetype, 'linearfit_fitcoeff1');
 %       PREIN = fullfile(PRE, params{iparam}, gazetype, 'corrHmaxoverbins_fitcoeff1');
-      PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin1_fitcoeff1_psc');
+      PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin_fitcoeff1');
       cd(PREIN)
       behavior_data =  cell(length(agegroups),1);
       id_list = cell(length(agegroups),1);
