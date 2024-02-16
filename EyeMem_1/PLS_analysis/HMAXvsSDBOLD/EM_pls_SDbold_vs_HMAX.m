@@ -9,8 +9,6 @@ function EM_pls_SDbold_vs_HMAX(cfg)
 sourcefile = cfg.sourcefile;
 outfile_source = cfg.outfile_source;
 outfile_sesdat = cfg.outfile_sesdat;
-removeoutliers = cfg.removeoutliers;
-Z_thresh = cfg.Z_thresh;
 nbins = cfg.nbins;
 do_kstest = cfg.do_kstest;
 behavfile = cfg.behavfile ;
@@ -37,13 +35,16 @@ load(fullfile(PREIN, 'common_coords.mat'), 'common_coords');
 source.inside = common_coords;
 source.pow(~source.inside,:,:) = 0;
 % source.pow = source.pow(source.inside,:,:);
-source.time = 1:nTRpertrial;
+source.time = [0 1 2 3 4]; % Breaks for classic LSS 1 beta per trial
 source.cfg = [];
 source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
-disp 'TODO remove last trial since it is only zeros'
-source_ori = source;
-% remove evoked response: subtract within trial mean beta weight per trial
+disp 'Remove last trial since it is only zeros'
+cfg = [];
+cfg.trials = 1:149;
+source = ft_selectdata(cfg, source);
+
+% Between or within-trial variability: subtract within trial mean beta weight per trial
 switch inducedortotalSD
   case 'induced'   
     source.pow = source.pow - mean(source.pow,3);    
