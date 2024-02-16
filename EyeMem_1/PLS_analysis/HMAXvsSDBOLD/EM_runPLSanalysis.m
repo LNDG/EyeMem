@@ -157,9 +157,9 @@ switch analysisname
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/behavPLS_sdboldvsHmaxbins/'
 PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/behavPLSvsDDM/'
 
-%     agegroups = {'young' 'old'};
+    agegroups = {'young' 'old'};
 %     agegroups = {'young'};
-    agegroups = {'old'};
+%     agegroups = {'old'};
 %         agegroups = {''};
     
     disp 'Generate model txt file'

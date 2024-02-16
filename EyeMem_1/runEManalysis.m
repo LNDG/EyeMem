@@ -27,7 +27,6 @@ addpath(genpath(fullfile(basepath, 'MATLAB', 'tools/custom_tools/plotting')))
 
 addpath(genpath(fullfile('/Users/kloosterman/Documents/GitHub/plotting-tools')))
 
-
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'custom_tools')) % interpolateblinks
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'NIFTI_toolbox'))
 ft_defaults
@@ -35,6 +34,9 @@ ft_defaults
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub_tardis_slurmpreview
 % addpath(genpath('/Volumes/LNDG/Programs_Tools_Scripts/data_processing_repo/PLS_repo/PLS_toolbox_modifications/LNDG2018_OnlyTXT/Pls'))
 
+% out folder for plots:
+global PREOUT
+PREOUT = '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots';
 %% behavioral analysis (txt files)
 % % behavior = EM_analysebehavioral()
 % if ismac
