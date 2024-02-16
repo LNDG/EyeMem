@@ -41,103 +41,12 @@ source.time = 1:nTRpertrial;
 source.cfg = [];
 source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
+disp 'TODO remove last trial since it is only zeros'
 source_ori = source;
 % remove evoked response: subtract within trial mean beta weight per trial
 switch inducedortotalSD
   case 'induced'   
-    source.pow = source.pow - mean(source.pow,3);
-
-       
-    plotit = 0;
-    if ismac && plotit
-      %   source.pow = mean(source.pow(:,5:5:end),2);
-      source_total = source_ori;
-      source_across = source_ori;
-      source_within = source_ori;
-%       source_across.pow = mean(source_within.pow,3); %average within trials
-      source_across.pow = mean(source_across.pow(:,:),2); %average within trials
-      source_within.pow = source_within.pow - mean(source_within.pow,3);
-      
-%       source_across.pow = var(source_across.pow(:,:),0,2);
-      source_within.pow = var(source_within.pow(:,:),0,2);
-      source_total.pow = var(source_total.pow(:,:),0,2);
-      source_within.powdimord = 'pos';
-      source_across.powdimord = 'pos';
-      source_total.powdimord = 'pos';
-
-      cfg=[];
-      cfg.funparameter = 'pow';
-      cfg.method = 'ortho'; % slice ortho glassbrain vertex
-      load colormap_jetlightgray.mat
-      cfg.funcolormap = cmap;
-      ft_sourceplot(cfg, source_within)
-      ft_sourceplot(cfg, source_total)
-      ft_sourceplot(cfg, source_across)
-      % TODO plot timecourse
-      source_time = source_ori;
-      source_time.pow = squeeze(mean(source_time.pow,2)); %average within trials
-      source_time.powdimord = 'pos_time';
-      ft_sourceplot(cfg, source_time)
-
-    end
-end
-
-%% inspection of fMRI, not used in further processing
-plotit = 0;
-if ismac && plotit
-    cfg = [];
-    cfg.funparameter  = 'pow';
-    cfg.maskparameter = cfg.funparameter;
-  %   cfg.maskparameter = ;
-  %   cfg.colorlim      = [-3 3]; % or 'maxabs'
-  %   cfg.opacitymap    = 'vdown';
-  %   cfg.opacitylim    = [-3 3]; % or 'maxabs'
-    ft_sourceplot(cfg, source)
-%   plotdat = squeeze(mean(source.pow(source.inside, :,1)));
-  plotdat = source.pow(source.inside, :,1);
-  figure; imagesc(plotdat); colorbar
-  figure; plot(plotdat)
-  figure
-  for i=1:nTRpertrial
-    subplot(2,3,i)
-    plot(plotdat(:,i))
-    % figure; plot(mean(plotdat,2))
-  end
-  source2plot = source;
-  source2plot.pow = source2plot.pow(source2plot.inside,:,:);
-  source2plot.pos = source2plot.pos(source2plot.inside,:);
-  cfg=[];
-  cfg.method = 'summary';
-  sourcedata = ft_rejectvisual(cfg, source2plot)
-  %% Detect outlier trials and reject: var taken per voxel, only 5 data points per trial.... still looks meaningful 
-  cfg = [];
-  cfg.cov_cut    = [0, 98]; % not used with zscorecut
-  cfg.badtrs     = [];
-  cfg.bad_trials = [];
-  cfg.method = 'maxmin_perct'; % zscorecut (abs(min)+1 threshold) or maxmin_perct (original)
-  [selecttrials, cfg] = EM_ft_varcut3(sourcedata, cfg, ismac); %https://dx.doi.org/10.1101/795799
-end
-
-remove_artf_eegstyle = 0;
-if remove_artf_eegstyle
-  disp 'Remove trials with max var taken over voxels, var computed per voxel over time1. 3 Zscores'
-  powvar = zscore(max(var(source.pow,1,3)));
-  zscorelim = 3;
-  if ismac
-    figure; scatter(1:150,powvar);
-    line([0 150], [zscorelim zscorelim])
-  end
-  cfg = [];
-  cfg.trials = find(powvar < zscorelim);
-  fprintf('%d trials removed with zscore > %d\n',  size(source.pow,2) - length(cfg.trials), zscorelim)
-  source = ft_selectdata(cfg, source);
-  
-  % disp 'remove trials with 0 (sometimes happens for last trial)'
-  examplevoxel = squeeze(source.pow(find(source.inside,1,'first'),:,:));
-  cfg=[];
-  cfg.trials = find(~any(examplevoxel==0, 2));
-  fprintf('%d trials removed with zeros in them\n', size(source.pow,2) - length(cfg.trials))
-  source = ft_selectdata(cfg, source);
+    source.pow = source.pow - mean(source.pow,3);    
 end
 
 ntrials = size(source.trialinfo,1);
@@ -224,11 +133,6 @@ switch gazespecificHMAX
         fixloc_newres(ifix,:) = round(fixloc(ifix,:) ./ cur_res .* desiredres);
       end
       disp 'Drop fixations outside picture'
-      %     validfix = NaN(size(fixloc,1),2);
-      %     validfix(:,1) = fixloc(:,1) > 0 & fixloc(:,1) < 640;
-      %     validfix(:,2) = fixloc(:,2) > 0 & fixloc(:,2) < 480;
-      %     fixloc = fixloc(all(validfix,2),:);
-      %     fixloc_newres = fixloc_newres(all(validfix,2),:); % also apply to resampled fix locations
       
       validfix = NaN(size(fixloc_newres,1),2);
       validfix(:,1) = fixloc_newres(:,1) > 0 & fixloc_newres(:,1) < desiredres(2);
@@ -299,22 +203,12 @@ switch gazespecificHMAX
 % %     dat = dat(all(~isinf(dat),2),:);
 % %     figure; scatter(dat(:,1), dat(:,2)); lsline; title(corr(dat(:,1), dat(:,2)))
 
-    
     fprintf('%d trials without fixations found: ', sum(isnan(hmax_at_fix_trl)))
     if sum(isnan(hmax_at_fix_trl)) > 25
       warning('More than 50: skipping subject')
       return
     end
-
-    dropoutliers=0;
-    if dropoutliers
-      disp 'drop HMAX outlier trials'
-      %         figure; histogram(hmax_at_fix_trl, 100)
-      [~,TF]=rmoutliers(hmax_at_fix_trl);
-      fprintf('%d HMAX outliers found\n', sum(TF))
-      hmax_at_fix_trl(TF) = NaN; % set outliers to nan
-    end
-    
+   
     switch bintype
       case 'fixednbins'
         % continue with sorting
@@ -334,95 +228,29 @@ switch gazespecificHMAX
         
         binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
 
-      case 'uniformbinwidth'
+      case 'uniformbinwidth' % tricky because SD depends on N trials
         [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,nbins);
     end
-    
-    disp 'TODO Does the rank change compared to using picture-averaged HMAX?'
-%     figure; hold on; axis square; box on
-%     %   scatter(sortHMAX, sortHMAXold)
-%     scatter(sortinds, sortindsold)
-%     [r,p] = corr(sortinds, sortindsold);
-%     title(sprintf('%s, r = %1.2f, p = %1.3f', subj, r, p))
-%     lsline
-%     xlabel('Gaze-specific HMAX rank')
-%     ylabel('Picture-averaged HMAX rank')
-  otherwise
-    error('Unknown gazespecificHMAX')
 end
 
-% fixed bin width, variable n trials per bin
-disp 'make bins of trials based on hmax: fixed bin width, variable n trials per bin'
-% ntrlperbin = 150 / nbins; % each subject has 150 trials
-% cond_bins = reshape(sortinds, ntrlperbin, nbins); % dimord: TR trials cond
-% hmax_bins = reshape(sortHMAX, ntrlperbin, nbins); % dimord: TR trials cond
-source_bin = source; % binned
+disp 'make bins of trials based on hmax'
+source_bin = source; 
 source_bin.pow = nan(size(source_bin.pow,1), nbins);
 source_bin.powdimord = 'pos_freq'; % freq is hmax condition
 if do_kstest; f = figure; f.Position = [  744          -9        1654        1059]; end
 TFkeep=0;
 for ibin = 1:nbins
-%   seldat = source.pow(source.inside, cond_bins(:,ibin),:); %seldat = source.pow(:,cond_bins(:,ibin),:); 
   seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:);   
   seldat =  seldat(:,:);
   hmaxperbin(ibin,1) = mean(hmax_at_fix_trl(bininds==ibin));
   
-  if removeoutliers
-    Z = zscore(seldat,1,2);
-    %   Z = Z(Z~=0);  figure; histogram(Z(:))
-    seldat_outliers = seldat(Z < -Z_thresh | Z > Z_thresh);
-    source_bin.perc_outliers(ibin,1) = (numel(seldat_outliers) / numel(seldat(seldat~=0)))*100;
-    seldat(Z < -Z_thresh | Z > Z_thresh) = NaN;
-  end
-  if do_kstest
-    disp 'Kolmogorov-Smirnov test for normality'
-    load(fullfile(PREIN, 'common_coords.mat'));
-    
-    % zscore each voxel
-    %     ksdat = zscore(seldat(source.inside,:), 0, 2 );    % kstest tests for a standard normal distribution by default
-    ksdat = seldat(common_coords,:);    % kstest tests for a standard normal distribution by default
-    for ivox = 1:10
-      ksdatsel = ksdat(ivox,:);
-      %     ksdat = ksdat(:);    %ksdat = ksdat(1e5:2e5);
-      %     [~,p] = kstest(ksdat);
-      subplot(3,4,ivox);
-      histogram(ksdatsel,15); %, 'Normalization', 'probability'
-      %     cdfplot(ksdat);
-      %     hold on
-      %     x_values = linspace(min(ksdat),max(ksdat));
-      %     plot(x_values,normcdf(x_values,0,1),'r-')
-      %     legend('Empirical CDF','Standard Normal CDF','Location','best')
-      %     xlim([-3 3])
-      %     xlabel('GLM beta weight (Z-score)');
-      %     ylabel('Cumulative frequency')
-      %     title(sprintf('bin %d, kstest p = %g', ibin, p))
-      %       xlim([-2.5e3 2.5e3])
-      title(sprintf('bin %d', ibin))
-      xlabel('GLM beta weight');
-      ylabel('Frequency')
-    end
-  end
   switch BOLDvar_measure
     case 'std'
-      disp 'removing outliers and taking SD'
-      %       source_bin.pow(source_bin.inside,ibin) = std(seldat,1,2); % take SD across 5 trials, 5 TR's each
-      
+      disp 'Taking SD'      
       inside_ind = find(source_bin.inside);
-      %       seldat = source.pow(source.inside, :, :); %seldat = source.pow(:,cond_bins(:,ibin),:);
-      %       seldat = seldat(:,:);
-      for i = 1:size(seldat,1)  % 1:5000:size(seldat,1)
-        %         close all
-        %         f=figure;  f.Position = [        1000         997        1335         341];
-        %         subplot(1,2,1); plot(seldat(i,:))
-        
-        rmboldoutliers = 0;
-        if rmboldoutliers
-          [seldat_clean, TF] = rmoutliers(seldat(i,:)); % , 'mean' is > 3 SD's from the mean
-          %         subplot(1,2,2); plot(seldat_clean); xlim([1 150])
-        else
-          seldat_clean = seldat(i,:);
-          TF=0;
-        end
+      for i = 1:size(seldat,1)
+        seldat_clean = seldat(i,:);
+        TF=0;
         source_bin.pow(inside_ind(i),ibin) = std(seldat_clean); % take SD across 5 trials, 5 TR's each
         TFkeep = TFkeep + length(find(TF));
       end
@@ -453,7 +281,6 @@ for ibin = 1:nbins
       inside_ind = find(source_bin.inside);
       source_bin.pow(inside_ind,ibin) = mse.sampen;
   end
-  %   source_bin.freq(ibin) = nanmean(hmax_bins(:,ibin)); % use freq field for HMAX bin_No
   source_bin.freq(ibin) = nanmean(binedges(ibin:ibin+1)); % use freq field for HMAX bin_No
   source_bin.perc_BOLDremoved = (TFkeep / numel(seldat)) * 100;
 end
@@ -520,7 +347,6 @@ switch PLStype
     load(behavfile); % behav comes out
     subjind = behavior.participants.participant_id == subj;
     tmp.behavdata = behavior.(PLSbehav)(subjind,2); % 2 is test phase, Add memory performance
-    
 end
 tmp.st_evt_list = 1:size(tmp.st_datamat,1);%how many conditions?
 % tmp.st_sessionFile = [pls_dir subj '_' pattern '_BfMRIsession.mat'];
@@ -617,7 +443,3 @@ if ismac
   ft_sourceplot(cfg, tmp)
 end
 
-% %   source.time = 1:5;
-% %   source.freq = 1;
-% allsource(isub) = source_bin;
-% % end

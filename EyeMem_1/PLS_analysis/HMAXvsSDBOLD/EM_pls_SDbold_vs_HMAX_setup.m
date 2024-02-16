@@ -26,8 +26,8 @@ memreq = 2000; % in MB
 memreq = 10000; % in MB
 
 % analysis settings
-% PLStype = 'taskPLS'; 
-PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
+PLStype = 'taskPLS'; 
+% PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
 % PLStype = 'behavPLS_sdboldvsHmaxbins'; % 
 
 % PLStype = 'behavPLSvsSDT';
@@ -41,8 +41,8 @@ BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 % bintype = 'uniformbinwidth';   %fixednbins   uniformbinwidth
 removeoutliers = false;
-Z_thresh = 3; % if removeoutliers
-do_kstest = 0;
+Z_thresh = 3; % if removeoutliers NOT USED
+do_kstest = 0; % NOT USED
 inducedortotalSD = 'induced';
 
 % binsubtract = [5 1]; % Also possible in psc which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
@@ -63,7 +63,7 @@ HMAXfolder = fullfile(basepath, 'D_paradigm', 'stimuli_640x480', 'hmax');
 overwrite = 1;
     
 cd(PREIN);
-subjlist = dir('source*.mat');
+subjlist = dir('source_sub*.mat');
 
 % SUBJ= [9, 11:59, 61:69, 71,72, 74:101]; % TODO specify further?
 
