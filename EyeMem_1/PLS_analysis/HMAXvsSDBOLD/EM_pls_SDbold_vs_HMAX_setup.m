@@ -34,15 +34,10 @@ PLStype = 'taskPLS';
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 
-nbins = 5; % no of bins used for Hmax binning, 750 samples
-% gazespecificHMAX = 'gaze-specific';
-gazespecificHMAX = 'non-gazespecific'; 
+nbins = 1; % no of bins used for Hmax binning, 750 samples
+gazespecificHMAX = 'non-gazespecific'; % gaze-specific   non-gazespecific
 BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
-% bintype = 'uniformbinwidth';   %fixednbins   uniformbinwidth
-removeoutliers = false;
-Z_thresh = 3; % if removeoutliers NOT USED
-do_kstest = 0; % NOT USED
 inducedortotalSD = 'induced';
 
 % binsubtract = [5 1]; % Also possible in psc which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
@@ -74,9 +69,6 @@ cfg.behavfile =  fullfile(basepath, 'preproc/behavior', 'Eyemem_behavior.mat');
 cfg.PLStype = PLStype;
 cfg.PLSbehav = PLSbehav;
 cfg.nbins = nbins;
-cfg.removeoutliers = removeoutliers;
-cfg.Z_thresh = Z_thresh;
-cfg.do_kstest = do_kstest;
 cfg.BOLDvar_measure = BOLDvar_measure;
 cfg.gazespecificHMAX = gazespecificHMAX;
 cfg.fitcoeff = fitcoeff;
