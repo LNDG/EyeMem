@@ -40,9 +40,9 @@ source.cfg = [];
 source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
 disp 'Remove last trial since it is only zeros FIXME for non-gazespecific'
-% cfg = [];
-% cfg.trials = 1:149;
-% source = ft_selectdata(cfg, source);
+cfg = [];
+cfg.trials = 1:149;
+source = ft_selectdata(cfg, source);
 
 % Between or within-trial variability: subtract within trial mean beta weight per trial
 switch inducedortotalSD
@@ -60,14 +60,18 @@ switch gazespecificHMAX
     [sortHMAX, sortinds] = sort(source.trialinfo(validtrials,10));  %hmax in 10, ascending, trial inds - 10 is c1median
     ntrlperbin = ntrials / nbins; % each subject has 150 trials
     
-    bininds = repmat(1:nbins, ntrlperbin, 1);
-    %         bininds = bininds(:);
-    %         bininds = bininds(sortinds); % does this reorder? NO just indexing
-    bininds = sortrows([sortinds, bininds(:)]);
+    [bininds, binedges] = discretize(1:ntrials, nbins);
+    
+%     bininds = repmat(1:nbins, ntrlperbin, 1);
+%     %         bininds = bininds(:);
+%     %         bininds = bininds(sortinds); % does this reorder? NO just indexing
+%     bininds = sortrows([sortinds, bininds(:)]);
+    bininds = sortrows([sortinds, bininds']);
     bininds = bininds(:,2);
     bininds(isnan(sortHMAX)) = NaN; % set outliers to nan
     
-    binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
+%     binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
+    binedges = [sortHMAX(1); sortHMAX(binedges(2:end-1)); sortHMAX(end)];
     
   case 'gaze-specific'
     % load HMAX file
@@ -238,12 +242,11 @@ disp 'make bins of trials based on hmax'
 source_bin = source; 
 source_bin.pow = nan(size(source_bin.pow,1), nbins);
 source_bin.powdimord = 'pos_freq'; % freq is hmax condition
-if do_kstest; f = figure; f.Position = [  744          -9        1654        1059]; end
 TFkeep=0;
 for ibin = 1:nbins
   seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:);   
   seldat =  seldat(:,:);
-  hmaxperbin(ibin,1) = mean(hmax_at_fix_trl(bininds==ibin));
+%   hmaxperbin(ibin,1) = mean(hmax_at_fix_trl(bininds==ibin));
   
   switch BOLDvar_measure
     case 'std'
