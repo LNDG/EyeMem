@@ -39,10 +39,10 @@ source.time = [0 1 2 3 4]; % Breaks for classic LSS 1 beta per trial
 source.cfg = [];
 source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
-disp 'Remove last trial since it is only zeros'
-cfg = [];
-cfg.trials = 1:149;
-source = ft_selectdata(cfg, source);
+disp 'Remove last trial since it is only zeros FIXME for non-gazespecific'
+% cfg = [];
+% cfg.trials = 1:149;
+% source = ft_selectdata(cfg, source);
 
 % Between or within-trial variability: subtract within trial mean beta weight per trial
 switch inducedortotalSD
