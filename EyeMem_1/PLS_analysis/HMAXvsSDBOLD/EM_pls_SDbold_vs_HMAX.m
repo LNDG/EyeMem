@@ -10,7 +10,6 @@ sourcefile = cfg.sourcefile;
 outfile_source = cfg.outfile_source;
 outfile_sesdat = cfg.outfile_sesdat;
 nbins = cfg.nbins;
-do_kstest = cfg.do_kstest;
 behavfile = cfg.behavfile ;
 PLStype = cfg.PLStype;
 PLSbehav = cfg.PLSbehav;
