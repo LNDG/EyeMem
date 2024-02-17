@@ -35,7 +35,7 @@ PLStype = 'taskPLS';
 % PLSbehav = 'criterion';
 
 nbins = 5; % no of bins used for Hmax binning, 750 samples
-gazespecificHMAX = 'non-gazespecific'; % gaze-specific   non-gazespecific
+gazespecificHMAX = 'gaze-specific'; % gaze-specific   non-gazespecific
 BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 inducedortotalSD = 'evoked'; % evoked   induced   total_pow
