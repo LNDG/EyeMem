@@ -68,7 +68,7 @@ switch analysisname
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_30bins/fixednbins/taskPLS/v/gaze-specific'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/v/gaze-specific';
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/mse_3bins/fixednbins/taskPLS/v/gaze-specific'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/taskPLS/non-gazespecific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_1bins/fixednbins/taskPLS/non-gazespecific';
 
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_10bins/fixednbins/taskPLS/gaze-specific';
     
@@ -77,10 +77,10 @@ switch analysisname
 %     % look at induced power, by subtracting mean per 5TR trial
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/gaze-specific'
     cd(PREIN)
-%     agegroups = {'young' 'old'};
+    agegroups = {'young' 'old'};
 %     agegroups = {'young'};
-%     agegroups = {'old'}plsgui;
-    agegroups = {''};
+%     agegroups = {'old'};
+%     agegroups = {''};
 
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';

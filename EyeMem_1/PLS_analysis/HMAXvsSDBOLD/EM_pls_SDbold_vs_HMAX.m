@@ -45,8 +45,13 @@ source = ft_selectdata(cfg, source);
 
 % Between or within-trial variability: subtract within trial mean beta weight per trial
 switch inducedortotalSD
-  case 'induced'   
+  case 'induced' % aka within trial variability   
     source.pow = source.pow - mean(source.pow,3);    
+  case 'evoked' % aka between trial variability   
+    source.pow = mean(source.pow,3); % average within each trial to isolate across trl var
+    source.pow = repmat(source.pow, [1 1 5]); % tile it, strictly not necessary
+  case 'total_pow' 
+    disp 'All power considered'
 end
 
 ntrials = size(source.trialinfo,1);
