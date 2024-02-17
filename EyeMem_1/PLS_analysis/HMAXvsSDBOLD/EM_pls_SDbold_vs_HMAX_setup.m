@@ -35,8 +35,8 @@ PLStype = 'taskPLS';
 % PLSbehav = 'criterion';
 
 nbins = 5; % no of bins used for Hmax binning, 750 samples
-gazespecificHMAX = 'gaze-specific';
-% gazespecificHMAX = 'non-gazespecific'; 
+% gazespecificHMAX = 'gaze-specific';
+gazespecificHMAX = 'non-gazespecific'; 
 BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 % bintype = 'uniformbinwidth';   %fixednbins   uniformbinwidth
