@@ -49,7 +49,9 @@ switch inducedortotalSD
     source.pow = source.pow - mean(source.pow,3);    
   case 'within_trial' % within trial variability   
     source.pow = source.pow - source.pow(:,:,1);    
-  case 'evoked' % aka between trial variability   
+  case 'between_trial' % between trial variability     
+    source.pow = repmat(source.pow(:,:,1), [1 1 5]);    
+  case 'evoked' % aka  
     source.pow = mean(source.pow,3); % average within each trial to isolate across trl var
     source.pow = repmat(source.pow, [1 1 5]); % tile it, strictly not necessary
   case 'total_pow' 
