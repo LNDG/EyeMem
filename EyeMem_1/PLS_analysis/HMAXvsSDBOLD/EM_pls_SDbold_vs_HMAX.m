@@ -51,7 +51,7 @@ switch inducedortotalSD
     source.pow = source.pow - source.pow(:,:,1);    
   case 'between_trial' % between trial variability     
     source.pow = repmat(source.pow(:,:,1), [1 1 5]);    
-  case 'evoked' % aka  
+  case 'evoked'   
     source.pow = mean(source.pow,3); % average within each trial to isolate across trl var
     source.pow = repmat(source.pow, [1 1 5]); % tile it, strictly not necessary
   case 'total_pow' 
@@ -197,7 +197,7 @@ switch gazespecificHMAX
       end
       
       disp 'average over HMAX vals to get 1 val per trial'
-      weightedmean = 0;
+      weightedmean = 1;
       if weightedmean == 1
         fixdur = fixdur / sum(fixdur);
         hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
