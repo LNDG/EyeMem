@@ -197,12 +197,12 @@ switch gazespecificHMAX
       end
       
       disp 'average over HMAX vals to get 1 val per trial'
-      weightedmean = 1;
+      weightedmean = 0;
       if weightedmean == 1
         fixdur = fixdur / sum(fixdur);
         hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
       else
-        hmax_at_fix_trl(itrial,:) = median(hmax_at_fix);   
+        hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);   
       end
       
       % keep hmax and fix dur values to correlate: YA better track
