@@ -45,8 +45,10 @@ source = ft_selectdata(cfg, source);
 
 % Between or within-trial variability: subtract within trial mean beta weight per trial
 switch inducedortotalSD
-  case 'induced' % aka within trial variability   
+  case 'induced' % 
     source.pow = source.pow - mean(source.pow,3);    
+  case 'within_trial' % within trial variability   
+    source.pow = source.pow - source.pow(:,:,1);    
   case 'evoked' % aka between trial variability   
     source.pow = mean(source.pow,3); % average within each trial to isolate across trl var
     source.pow = repmat(source.pow, [1 1 5]); % tile it, strictly not necessary
