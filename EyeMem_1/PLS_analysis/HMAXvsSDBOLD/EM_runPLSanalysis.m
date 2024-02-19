@@ -99,22 +99,15 @@ switch analysisname
     behavior_name = {};
     
     id_list = cell(length(agegroups),1);
-    % %     id_list = cell(1,1);
     for iage = 1:length(agegroups)
       cd(fullfile(PREIN, agegroups{iage}))
       subjlist = dir('sub*_BfMRIsessiondata.mat');
-      outlier_perc_BOLDremoved = zeros(length(subjlist),1);
       for isub=1:length(subjlist)
         tmp = tokenize(subjlist(isub).name, '_');
         id_list{iage}{end+1} = tmp{1};
-%         load(subjlist(isub).name, 'perc_BOLDremoved');
-%         outlier_perc_BOLDremoved(isub) = perc_BOLDremoved;
       end
-      %     disp 'avg BOLD removed in outlier removal:'
-      %     mean(perc_BOLDremoved)
     end
     outname = analysisname;
-%         outfilename = sprintf('%s_%s_%s_%d_%s', outname, [behavnames{:}{:}], [agegroups{:}], cellfun(@length, id_list), corrtype); %
 
     outfilename = sprintf('%s_%s_%d_%d', outname, [agegroups{:}], cellfun(@length, id_list)'); %
     disp(outfilename)

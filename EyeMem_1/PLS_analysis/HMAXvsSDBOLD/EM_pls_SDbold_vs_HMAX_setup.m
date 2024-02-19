@@ -26,8 +26,8 @@ memreq = 2000; % in MB
 % memreq = 10000; % in MB
 
 % analysis settings
-PLStype = 'taskPLS'; 
-% PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
+% PLStype = 'taskPLS'; 
+PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
 % PLStype = 'behavPLS_sdboldvsHmaxbins'; % 
 
 % PLStype = 'behavPLSvsSDT';
@@ -40,7 +40,7 @@ BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 inducedortotalSD = 'total_pow'; % within_trial   evoked   induced   total_pow
 
-binsubtract = [5 1]; % Also possible in psc which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
+binsubtract = [5 1]; % Also possible in psc which bins to subtract
 % binsubtract = nbins; % just 1 number at binno = no subtraction
 % % binsubtract = 'linearfit';  
 fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
@@ -50,8 +50,6 @@ load participantinfo.mat % TODO make this reliable
 
 nTRpertrial = 5; % 1 for classic LSS
 PREIN = fullfile(basepath, 'variability2', sprintf('%dTRspertrial', nTRpertrial), 'ftsource');
-% PREIN = fullfile(basepath, 'variability2', 'ftsource');
-% PREINeye = fullfile(basepath, 'preproc', 'eye');
 HMAXfolder = fullfile(basepath, 'D_paradigm', 'stimuli_640x480', 'hmax');
 
 overwrite = 1;
@@ -93,7 +91,7 @@ for isub = 1:length(subjlist)
     agefolder = Participants(Participants.participant_id == subj, :);     % give different outfolder for OA and YA
     
     if contains(PLStype, 'behav')
-      PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
+      PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_psc%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
 %       PREOUT = fullfile(PREIN, BOLDvar_binsfolder, bintype, PLStype, PLSbehav, gazespecificHMAX, sprintf('%s_fitcoeff%d', binsubtractfolder, fitcoeff), char(agefolder.group)); % 'SDbold_vs_HMAX'
     else
       PREOUT = fullfile(PREIN, inducedortotalSD, BOLDvar_binsfolder, bintype, PLStype, gazespecificHMAX, char(agefolder.group)); % 'SDbold_vs_HMAX'
