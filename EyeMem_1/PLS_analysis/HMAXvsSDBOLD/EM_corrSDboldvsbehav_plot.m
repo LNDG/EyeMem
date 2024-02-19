@@ -1,5 +1,6 @@
 function EM_corrSDboldvsbehav_plot(result)
-% TODO, plot nice scatters YA and OA with the group PLS model
+% DO NOT USE! use EM_plsgroupeffectANOVA
+
 if nargin==0
 %   load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsSDT/dprime/linearfit_fitcoeff1/corrSDbold_dprime_youngold_45_41_Pearson_BfMRIresult.mat')
   result = load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v_youngold_45_42_Pearson_BfMRIresult.mat')
