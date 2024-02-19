@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-%   analysisname = 'SDbold_vs_HMAX';  % task PLS
+%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+  analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -68,7 +68,7 @@ switch analysisname
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_30bins/fixednbins/taskPLS/v/gaze-specific'
     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/v/gaze-specific';
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/mse_3bins/fixednbins/taskPLS/v/gaze-specific'
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/taskPLS/non-gazespecific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/taskPLS/gaze-specific';
 
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_10bins/fixednbins/taskPLS/gaze-specific';
     
@@ -143,8 +143,8 @@ switch analysisname
         
 %     params = {'v' 'a' 't' 'dc' 'z'};
     params = {'v' };
-%     gazetype = 'non-gazespecific';
-    gazetype = 'gaze-specific';
+    gazetype = 'non-gazespecific';
+%     gazetype = 'gaze-specific';
 %     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/ftsource/std_3bins/fixednbins/behavPLSvsDDM';
     
 %     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/1TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM'
@@ -158,9 +158,9 @@ switch analysisname
 PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/'
 
 %     agegroups = {'young' 'old'};
-    agegroups = {'young'};
+%     agegroups = {'young'};
 %     agegroups = {'old'};
-%         agegroups = {''};
+        agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';

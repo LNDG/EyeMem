@@ -250,7 +250,6 @@ disp 'make bins of trials based on hmax'
 source_bin = source; 
 source_bin.pow = nan(size(source_bin.pow,1), nbins);
 source_bin.powdimord = 'pos_freq'; % freq is hmax condition
-TFkeep=0;
 for ibin = 1:nbins
   seldat = source.pow(source.inside, bininds==ibin, :); %seldat = source.pow(:,cond_bins(:,ibin),:);   
   seldat =  seldat(:,:);
@@ -258,18 +257,10 @@ for ibin = 1:nbins
   
   switch BOLDvar_measure
     case 'std'
-      disp 'Taking SD'      
-      inside_ind = find(source_bin.inside);
-      for i = 1:size(seldat,1)
-        seldat_clean = seldat(i,:);
-        TF=0;
-        source_bin.pow(inside_ind(i),ibin) = std(seldat_clean); % take SD across 5 trials, 5 TR's each
-        TFkeep = TFkeep + length(find(TF));
-      end
+      source_bin.pow(source_bin.inside,ibin) = std(seldat,0,2);
     case 'iqr'
       source_bin.pow(source_bin.inside,ibin) = iqr(seldat,2); % take IQR across 5 trials, 5 TR's each
     case 'mse'
-      disp 'compute MSE'
       data = [];   % make data struct  % Required fields:  %   - time, trial, label
       for itrial = 1:size(source.pow, 2)
         data.time{itrial} = source.time;
@@ -288,13 +279,10 @@ for ibin = 1:nbins
       cfg.filtmethod = 'no';
       cfg.recompute_r = 'perscale_toi_sp';
       cfg.coarsegrainmethod = 'pointavg';
-      mse = ft_entropyanalysis(cfg, data);
-      
-      inside_ind = find(source_bin.inside);
-      source_bin.pow(inside_ind,ibin) = mse.sampen;
+      mse = ft_entropyanalysis(cfg, data);      
+      source_bin.pow(source_bin.inside,ibin) = mse.sampen;
   end
   source_bin.freq(ibin) = nanmean(binedges(ibin:ibin+1)); % use freq field for HMAX bin_No
-  source_bin.perc_BOLDremoved = (TFkeep / numel(seldat)) * 100;
 end
 source = source_bin;
 
@@ -421,7 +409,6 @@ tmp.create_datamat_info.normalize_with_baseline = 0;%yes, normalize %to baseline
 % tmp.create_datamat_info.merge_across_runs = 1;%says to merge across %runs, but we don't do this below anyway...is overridden...??
 tmp.create_datamat_info.merge_across_runs = 0;%says to merge across %runs, but we don't do this below anyway...is overridden...??
 tmp.create_datamat_info.single_subject_analysis = 0;%not single subj
-tmp.perc_BOLDremoved = source_bin.perc_BOLDremoved;
 
 if strcmp(gazespecificHMAX, 'gaze-specific')
   tmp.fixdur_keep = fixdur_keep;
