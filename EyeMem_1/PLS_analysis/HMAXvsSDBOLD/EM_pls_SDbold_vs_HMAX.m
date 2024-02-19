@@ -414,6 +414,7 @@ if strcmp(gazespecificHMAX, 'gaze-specific')
   tmp.fixdur_keep = fixdur_keep;
   tmp.hmax_at_fix_keep = hmax_at_fix_keep;
   tmp.hmax_at_fix_trl = hmax_at_fix_trl; % to plot extracted saliency per trial
+  tmp.hmax_meanperbin = source_bin.freq;
 end
 
 disp(outfile_source)
