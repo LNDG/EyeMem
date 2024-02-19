@@ -38,7 +38,7 @@ nbins = 5; % no of bins used for Hmax binning, 750 samples
 gazespecificHMAX = 'non-gazespecific'; % gaze-specific   non-gazespecific
 BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
-inducedortotalSD = 'between_trial'; % within_trial   evoked   induced   total_pow
+inducedortotalSD = 'total_pow'; % within_trial   evoked   induced   total_pow
 
 % binsubtract = [5 1]; % Also possible in psc which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
 binsubtract = nbins; % just 1 number at binno = no subtraction
