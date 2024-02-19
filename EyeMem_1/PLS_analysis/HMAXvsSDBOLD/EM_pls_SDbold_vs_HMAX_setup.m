@@ -40,9 +40,8 @@ BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 inducedortotalSD = 'total_pow'; % within_trial   evoked   induced   total_pow
 
-% binsubtract = [5 1]; % Also possible in psc which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
-binsubtract = nbins; % just 1 number at binno = no subtraction
-% binsubtract = [5 1; 4 1; 3 1; 5 3; 4 3]; % which bins to subtract: % [5 1] is bin5-bin1
+binsubtract = [5 1]; % Also possible in psc which bins to subtract: % [5 1] is bin5-bin1 ONLY behavPLSvsdprime
+% binsubtract = nbins; % just 1 number at binno = no subtraction
 % % binsubtract = 'linearfit';  
 fitcoeff = 1; % fit in descending powers: 1 = slope, 2 = intercept, for behavpls
 % binsubtract = 'corrHmaxoverbins';  % corr across bins Hmax vs SDbold
