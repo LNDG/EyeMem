@@ -315,9 +315,9 @@ switch PLStype
   case 'behavPLSvsDDM'
     if isnumeric(binsubtract)
       if numel(binsubtract) == 2
-      tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))) ./ ...
-        transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability psc
-%       tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))); % highest - lowest BOLD variability
+%       tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))) ./ ...
+%         transpose(source.pow(tmp.st_coords, binsubtract(2))); % highest - lowest BOLD variability psc
+      tmp.st_datamat = (transpose(source.pow(tmp.st_coords, binsubtract(1))) - transpose(source.pow(tmp.st_coords, binsubtract(2)))); % highest - lowest BOLD variability
       elseif numel(binsubtract) == 1
         tmp.st_datamat = transpose(source.pow(tmp.st_coords, binsubtract(1)));
       end
