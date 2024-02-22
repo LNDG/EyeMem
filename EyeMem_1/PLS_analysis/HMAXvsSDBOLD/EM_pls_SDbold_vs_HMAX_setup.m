@@ -26,15 +26,15 @@ memreq = 2000; % in MB
 % memreq = 10000; % in MB
 
 % analysis settings
-% PLStype = 'taskPLS'; 
-PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
+PLStype = 'taskPLS'; 
+% PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
 % PLStype = 'behavPLS_sdboldvsHmaxbins'; % 
 
 % PLStype = 'behavPLSvsSDT';
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 
-nbins = 5; % no of bins used for Hmax binning, 750 samples
+nbins = 10; % no of bins used for Hmax binning, 750 samples
 gazespecificHMAX = 'gaze-specific'; % gaze-specific   non-gazespecific
 BOLDvar_measure = 'std'; % iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth

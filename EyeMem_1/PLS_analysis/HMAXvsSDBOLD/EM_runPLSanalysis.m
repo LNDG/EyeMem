@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-%   analysisname = 'SDbold_vs_HMAX';  % task PLS
+%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+  analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -88,9 +88,9 @@ switch analysisname
     pls_option = '1';
     mean_type = '0';
     cormode = '0';
-    num_perm = '100';
+    num_perm = '1000';
     num_split = '0';
-    num_boot = '100';
+    num_boot = '1000';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
@@ -169,7 +169,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
     
     num_perm = '1000';
     num_split = '0';
-    num_boot = '100';
+    num_boot = '1000';
     boot_type = 'strat';
     clim = '95';
     save_data = '0';
@@ -216,6 +216,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
       resultfilename = [ outfilename '_BfMRIresult.mat'];
       
       save ages ages
+      save id_list id_list
       PLSmodeltxtfilegenerator(txtfilename,resultfilename,id_list,pls_option,mean_type,cormode,num_perm,num_split,num_boot,boot_type,clim,save_data,selected_cond,behavior_data,behavior_name)
       batch_plsgui(txtfilename)
     end
