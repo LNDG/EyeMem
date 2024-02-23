@@ -21,9 +21,9 @@ else
   compile = 'no';
 end
 
-timreq = 10; %in minutes per run
+timreq = 20; %in minutes per run
 memreq = 2000; % in MB
-% memreq = 10000; % in MB
+memreq = 10000; % in MB
 
 % analysis settings
 PLStype = 'taskPLS'; 
