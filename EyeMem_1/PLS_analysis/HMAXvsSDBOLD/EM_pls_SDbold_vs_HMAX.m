@@ -275,7 +275,7 @@ for ibin = 1:nbins
       
       cfg=[];
       cfg.trials = bininds==ibin;
-      cfg.toi = 2.5;
+      cfg.toi = 2;
       cfg.timwin = 5;
       cfg.timescales = 1;
       cfg.filtmethod = 'no';
