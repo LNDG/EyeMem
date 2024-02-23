@@ -90,10 +90,5 @@ subplot(1,2,1); scatter(usc_YA_demean(:), hmax_YA_demean(:)); axis square; box o
 subplot(1,2,2); scatter(usc_OA_demean(:), hmax_OA_demean(:)); axis square; box on; lsline
 
 %%
-
-% % t = table(subjlist', hmax_meanperbin, 'VariableNames', {'Subjno', '1', '2', '3', '4', '5'})
-% t = table(string(subjlist), hmax_meanperbin);
-% t(t.Var1 == 'sub-68', :) = [];
-% addvars(t, reshape(result.usc(:,1),  ))
-
-
+mri = ft_read_mri('SDbold_vs_HMAX_youngold_44_41_BfMRIbsr_lv1.hdr');
+ft_write_

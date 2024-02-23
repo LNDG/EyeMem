@@ -256,6 +256,8 @@ for ibin = 1:nbins
 %   hmaxperbin(ibin,1) = mean(hmax_at_fix_trl(bininds==ibin));
   
   switch BOLDvar_measure
+    case 'mean'
+      source_bin.pow(source_bin.inside,ibin) = mean(seldat,2);
     case 'std'
       source_bin.pow(source_bin.inside,ibin) = std(seldat,0,2);
     case 'iqr'
@@ -427,7 +429,6 @@ save(outfile_sesdat, '-struct','tmp')
 out = fullfile(fileparts(fileparts(outfile_sesdat)), [subj '_BfMRIsessiondata.mat']);
 save(out , '-struct','tmp')
 % % save([subj '_' pattern '_BfMRIdatamat.mat'], '-struct','tmp'); %,'-mat'
-
 
 if ismac
   tmp = source_bin;

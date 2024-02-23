@@ -1,5 +1,6 @@
 
-file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRIbsr_lv1_Z>3.hdr';
+% file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRIbsr_lv1_Z>3.hdr';
+file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_44_41_BfMRIbsr_lv1.hdr';
 mri_BSratio = ft_read_mri(file);
 % mri_BSratio.mask = double(mri_BSratio.anatomy < 2.33 | mri_BSratio.anatomy > -2.33);
 mri_BSratio.functional = mri_BSratio.anatomy;
@@ -23,5 +24,7 @@ cfg.opacitymap    = 'rampup';
 % cfg.atlas = '/Users/kloosterman/Library/CloudStorage/Dropbox/tardis_code/MATLAB/tools/fieldtrip/template/atlas/spm_anatomy/AllAreas_v18.mat'
 ft_sourceplot(cfg, mri_BSratio, mri_standard)
 
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.pdf')
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.png')
+% saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.pdf')
+% saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.png')
+saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskPLS.pdf')
+saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskPLS.png')
