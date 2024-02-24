@@ -47,19 +47,6 @@ vsc_OA = vsc(result.num_subj_lst(1)+1:end,:);
 figure; subplot(2,1,1)
 plot(mean(vsc_YA)); hold on; plot(mean(vsc_OA));  title('vsc (Designscores)')
 
-% nsub = sum(result.num_subj_lst);
-% % usc = reshape(result.usc(:,1), nsub, [] );
-% % usc = reshape(result.boot_result.usc2(:,1), nsub, [] );
-% % usc = reshape(result.boot_result.usc2(:,1), 5, [] )';
-% usc = reshape(result.usc(:,1), nsub, [] );
-% nbins = size(usc,2);
-% usc_YA = usc(1:result.num_subj_lst(1),:);
-% usc_OA = usc(result.num_subj_lst(1)+1:end,:);   
-% subplot(2,1,2);
-% plot(mean(usc_YA)); hold on; 
-% plot(mean(usc_OA));  
-% title('usc (Brainscores)')
-
 nsub = sum(result.num_subj_lst);
 % usc = reshape(result.usc(:,1), nsub, [] );
 % usc = reshape(result.boot_result.usc2(:,1), nsub, [] );
@@ -91,4 +78,4 @@ subplot(1,2,2); scatter(usc_OA_demean(:), hmax_OA_demean(:)); axis square; box o
 
 %%
 mri = ft_read_mri('SDbold_vs_HMAX_youngold_44_41_BfMRIbsr_lv1.hdr');
-ft_write_
+% ft_write_

@@ -3,6 +3,7 @@ if ismac
   %   basepath = '/Users/kloosterman/gridmaster2012/kloosterman/';
   basepath = '/Users/kloosterman/Dropbox/tardis_code/';
   addpath(genpath('/Users/kloosterman/Documents/GitHub/EyeMem/EyeMem_1'));
+  addpath(genpath('/Users/kloosterman/Documents/GitHub/BrainSlicer'))
 else
 %     basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
   basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
