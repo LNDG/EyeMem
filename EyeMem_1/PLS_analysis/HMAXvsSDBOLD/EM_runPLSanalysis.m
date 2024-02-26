@@ -3,8 +3,8 @@ function EM_runPLSanalysis(analysisname)
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
 
 if nargin==0
-  analysisname = 'corrSDbold'; % behav PLS vs DDM drift
-%   analysisname = 'SDbold_vs_HMAX';  % task PLS
+%   analysisname = 'corrSDbold'; % behav PLS vs DDM drift
+  analysisname = 'SDbold_vs_HMAX';  % task PLS
 end
 %%
 switch analysisname
@@ -16,7 +16,7 @@ switch analysisname
     end
     %     warning 'PLS_rank does not work with task PLS'
     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc    
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/mse_5bins/fixednbins/taskPLS/gaze-specific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_1bins/fixednbins/taskPLS/non-gazespecific';
     
     %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_10bins/fixednbins/taskPLS/gaze-specific';
     

@@ -81,7 +81,8 @@ saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plo
 %% TaskPLS MeanBold.
 close all
 
-file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRIbsr_lv1.hdr';
+% file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRIbsr_lv1.hdr';
+file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_1bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRIbsr_lv1.hdr';
 mri_BSratio = ft_read_mri(file);
 mri_BSratio.functional = mri_BSratio.anatomy;
 removefields(mri_BSratio, 'anatomy');
@@ -89,15 +90,18 @@ removefields(mri_BSratio, 'anatomy');
 cfg = [];
 cfg.parameter = 'functional';
 mri_BSratio = ft_sourceinterpolate(cfg, mri_BSratio, mri_standard);
+
 mri_BSratio.mask = (mri_BSratio.functional > 3 | mri_BSratio.functional < -3);
 
-ft_write_cifti('/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/mean_5bins', mri_BSratio, 'parameter', 'functional')
+% ft_write_cifti('/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/mean_5bins', mri_BSratio, 'parameter', 'functional')
 
 %%
 cfg = [];
 % cfg.method        = 'slice';   % slice ortho
 cfg.method        = 'surface';   % slice ortho
-cfg.surffile      = 'surface_inflated_right_caret.mat';
+% cfg.surffile      = 'surface_inflated_right_caret.mat';
+cfg.surffile      = 'surface_white_right.mat';
+cfg.surfinflated      = 'surface_inflated_right.mat';
 
 cfg.nslices = 10;
 cfg.slicerange = [100 250];
@@ -116,10 +120,16 @@ cfg.funcolormap = cmap;
 
 cfg.opacitymap    = 'auto';
 cfg.opacitylim    = 'auto';
+  cfg.sphereradius = 10;
+  cfg.camlight = 'no';
 % cfg.atlas = '/Users/kloosterman/Library/CloudStorage/Dropbox/tardis_code/MATLAB/tools/fieldtrip/template/atlas/spm_anatomy/AllAreas_v18.mat'
+cfg.figure = 'gcf';
+subplot(2,2,1)
 ft_sourceplot(cfg, mri_BSratio, mri_standard); %  hack in ft_sourceplot in 833: always 2 rows
+% lt = light;
 
-view ([90 0])
+
+view ([270 0])
 saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskpls_meanBOLD.pdf')
 saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskpls_meanBOLD.png')
 
