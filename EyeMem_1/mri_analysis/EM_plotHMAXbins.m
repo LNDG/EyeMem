@@ -28,6 +28,20 @@ for iage = 1:2
   cd ..
 end
 
+% plot hmax per bin
+figure; subplot(2,2,1); hold on
+plot(mean(hmax_meanperbin{1}))
+plot(mean(hmax_meanperbin{2}))
+legend({'YA' 'OA'})
+subplot(2,2,2); hold on
+plot(std(hmax_meanperbin{1}))
+plot(std(hmax_meanperbin{2}))
+legend({'YA' 'OA'})
+subplot(2,2,3); hold on
+plot(hmax_meanperbin{1}')
+plot(hmax_meanperbin{2}')
+legend({'YA' 'OA'})
+
 % dirlist = dir('sub-*.mat');
 % hmax_meanperbin=[];  subjlist={};
 % for i = 1:length(dirlist)
@@ -76,6 +90,4 @@ f=figure;
 subplot(1,2,1); scatter(usc_YA_demean(:), hmax_YA_demean(:)); axis square; box on; lsline
 subplot(1,2,2); scatter(usc_OA_demean(:), hmax_OA_demean(:)); axis square; box on; lsline
 
-%%
-mri = ft_read_mri('SDbold_vs_HMAX_youngold_44_41_BfMRIbsr_lv1.hdr');
-% ft_write_
+

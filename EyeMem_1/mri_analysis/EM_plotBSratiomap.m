@@ -1,135 +1,229 @@
 %% plot BS ratio maps for paper
-
 % file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/MNI152_T1_3mm_brain.nii.gz';
 file = '/Volumes/LNDG/Standards/MNI152_T1_0.5mm_brain.nii.gz';
 % file = '/Volumes/LNDG/Standards/MNI152_T1_3mm_brain.nii.gz';
 mri_standard = ft_read_mri(file);
 
 
-%% TaskPLS SDBold.
-% TODO atlas?
+%% TaskPLS SDbold YA vs OA, no binning.
+% TODO look into surface
+% close all
+PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/';
+files = {
+  'std_1bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
+  'mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRI'
+  'mean_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
+  'std_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_44_43_BfMRI'
+  'std_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_44_41_BfMRI'
+  'std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRI'
+  };
 
-% file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRIbsr_lv1_Z>3.hdr';
-file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_44_41_BfMRIbsr_lv1.hdr';
-mri_BSratio = ft_read_mri(file);
-% ft_write_mri('/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/SDbold_vs_HMAX_youngold_44_41_BfMRIbsr_lv1.nii', mri_BSratio.anatomy,  'dataformat', 'nifti')
-mri_BSratio.functional = mri_BSratio.anatomy;
+flip_lv_sign = [1 -1 -1 1 1 1]; % -1 means flip it
+method = {'slice'}; % slice  surface
+BSthresh = [-2.33 2.33];
+% BSthresh = [0 0];
+minclustersize = 25; % nvoxels in func space
 
-cfg = [];
-cfg.parameter = 'functional';
-mri_BSratio = ft_sourceinterpolate(cfg, mri_BSratio, mri_standard);
-% mri_BSratio.mask = mri_BSratio.functional; %double(mri_BSratio.functional > -3 | mri_BSratio.functional < 3);
-mri_BSratio.mask = (mri_BSratio.functional > 3 | mri_BSratio.functional < -3);
+mkdir(fullfile(PREOUTplot, 'pdf'))
+mkdir(fullfile(PREOUTplot, 'png'))
+mkdir(fullfile(PREOUTplot, 'epsc2'))
+for ifile = 1:length(files)
+  mri_BSratio = ft_read_mri( fullfile(PREIN, [files{ifile} 'bsr_lv1.hdr']));
+  mri_BSratio.functional = mri_BSratio.anatomy .* flip_lv_sign(ifile);   removefields(mri_BSratio, 'anatomy');
+  % remove clusters smaller than minclustersize
+  t=bwlabeln((mri_BSratio.functional > BSthresh(2) | mri_BSratio.functional < BSthresh(1))); % remove clusters < 25 voxels
+  props=regionprops(t, 'PixelIdxList');
+  clus_sizes = arrayfun(@(x) length(x.PixelIdxList), props);
+  voxels_inds = vertcat(props(clus_sizes < minclustersize).PixelIdxList);
+  mri_BSratio.functional(voxels_inds) = 0;
+  
+  for im = 1:length(method)
+    % plotting
+    hemi = {'left' 'right'};
+    for ih= 1:2
+      if strcmp(method, 'slice')
+        cfg = [];
+        cfg.parameter = 'functional';
+        mri_BSratio = ft_sourceinterpolate(cfg, mri_BSratio, mri_standard);
+        mri_BSratio.mask = (mri_BSratio.functional > BSthresh(2) | mri_BSratio.functional < BSthresh(1));
+      elseif strcmp(method, 'surface')
+        cfg = [];
+        cfg.parameter = 'functional';
+        %         cfg.interpmethod = 'smudge'; % sphere_avg takes long
+        %         cfg.sphereradius = 1;
+        %         load('surface_inflated_left.mat')
+        mri_BSratio = ft_sourceinterpolate(cfg, mri_BSratio, mri_standard);
+        mri_BSratio.mask = (mri_BSratio.functional > BSthresh(2) | mri_BSratio.functional < BSthresh(1));
+      end
+      
+      cfg = [];
+      cfg.method        = method{im};   % slice ortho
+      cfg.surffile      = sprintf('surface_white_%s.mat', hemi{ih});
+      %   cfg.surffile      = sprintf('surface_pial_%s.mat', hemi{ih});
+      cfg.surfinflated      = sprintf('surface_inflated_%s.mat', hemi{ih});
+      %   cfg.surfinflated      = sprintf('surface_inflated_%s_caret.mat', hemi{ih});
+      
+      cfg.nslices = 10;
+      if max(mri_standard.dim) == 72;        cfg.slicerange = [17 40];      else; cfg.slicerange = [100 250];      end
+      cfg.funparameter  = 'functional';
+      cfg.funcolorlim   = [-8 8];
+      cfg.maskparameter = 'mask';
+      cfg.maskstyle     = 'opacity';  % colormix
+      
+      cmap_cool = flipud(colormaps(3));
+      cmap_hot = colormaps(2);
+      range_nonwhite = cfg.funcolorlim(2) - BSthresh(2);
+      range_white = BSthresh(2);
+      cmap_middle = ones(floor(length(cmap_hot)/range_nonwhite * range_white) * 2, 3); %*2 to make symmetrical towards blue
+      cfg.funcolormap = [cmap_cool; cmap_middle; cmap_hot];
+      
+      cfg.opacitymap    = 'auto';
+      cfg.opacitylim    = 'auto';
+      %     cfg.sphereradius = 100;
+      cfg.camlight = 'no';
+      % cfg.atlas = '/Users/kloosterman/Library/CloudStorage/Dropbox/tardis_code/MATLAB/tools/fieldtrip/template/atlas/spm_anatomy/AllAreas_v18.mat'
+      tok = tokenize(files{ifile}, '/');
+      cfg.title = sprintf('%s_', tok{1:end-1});
+      ft_sourceplot(cfg, mri_BSratio, mri_standard); %  hack in ft_sourceplot for slice in 833: always 2 rows
+      % lt = light;
+      if strcmp(cfg.method, 'surface')
+        view ([270 0])
+        saveas(gcf, fullfile(PREOUTplot, 'pdf', sprintf('surf_%s%s_270.pdf', cfg.title, hemi{ih})))
+        saveas(gcf, fullfile(PREOUTplot, 'png', sprintf('surf_%s%s_270.png', cfg.title, hemi{ih})))
+        view ([90 0])
+        saveas(gcf, fullfile(PREOUTplot, 'pdf', sprintf('surf_%s%s_90.pdf', cfg.title, hemi{ih})))
+        saveas(gcf, fullfile(PREOUTplot, 'png', sprintf('surf_%s%s_90.png', cfg.title, hemi{ih})))
+      elseif strcmp(cfg.method, 'slice')
+        title(cfg.title);
+        f=gcf;
+        f.Position = [   680   703   600   300 ];
+        saveas(gcf, fullfile(PREOUTplot, 'pdf', sprintf('slice_%s.pdf', cfg.title)))
+        saveas(gcf, fullfile(PREOUTplot, 'png', sprintf('slice_%s.png', cfg.title)))
+        %         saveas(gcf, fullfile(PREOUTplot, 'epsc2', sprintf('slice_%s.eps', cfg.title)), 'epsc2')
+      end
+      if strcmp(method, 'slice'); break; end
+    end
+  end
+  
+end
 
-cfg = [];
-cfg.method        = 'slice';   % slice ortho
-cfg.nslices = 10;
-cfg.slicerange = [100 250];
-% cfg.slicerange = [17 40];
-cfg.funparameter  = 'functional';
-cfg.maskparameter = 'mask';
-cfg.opacitymap    = 'rampup';
-cfg.funcolormap = colormaps(2);
-cfg.title = 'TaskPLS SDbold 5 bins';
-cfg.funcolorlim   = [3 5];
-% cfg.atlas = '/Users/kloosterman/Library/CloudStorage/Dropbox/tardis_code/MATLAB/tools/fieldtrip/template/atlas/spm_anatomy/AllAreas_v18.mat'
-ft_sourceplot(cfg, mri_BSratio, mri_standard); % hack in ft_sourceplot in 833: always 2 rows
 
-% saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.pdf')
-% saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.png')
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskPLS.pdf')
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskPLS.png')
+%% plot Brain scores
+PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/';
+% files = {
+%   'std_1bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
+%   'mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRI'
+%   'mean_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
+%   'std_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_44_43_BfMRI'
+%   'std_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_44_41_BfMRI'
+% %   'std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRI'
+%   };
 
-%% BehavPLS SDBold.
 close all
+f = figure; f.Position =  [ 680   506   5*300   500 ]; iplot=0;
+for ifile = 1:5 %length(files)
+  disp( fullfile(PREIN, [files{ifile} 'result.mat']));
+  load( fullfile(PREIN, [files{ifile} 'result.mat']));
+  nsub = sum(result.num_subj_lst);
+  ncond = length(cond_name);
+%   vsc = reshape(result.vsc(:,1), nsub, [] );
+%   nbins = size(vsc,2);
+%   vsc_YA = vsc(1:result.num_subj_lst(1),:);
+%   vsc_OA = vsc(result.num_subj_lst(1)+1:end,:);
+%   figure; subplot(2,1,1)
+%   plot(mean(vsc_YA)); hold on; plot(mean(vsc_OA));  title('vsc (Designscores)')
+  
+  idx = 1:result.num_subj_lst(1)*result.num_conditions;
+  usc={};
+  usc{1} = reshape(result.usc(idx,1), [], ncond ) / 10000 .* flip_lv_sign(ifile);
+  usc{2} = reshape(result.usc(idx(end)+1:end,1), [], ncond )/ 10000 .* flip_lv_sign(ifile);
+  
+  %   usc_YA = reshape(result.usc(idx,1), [], 5 ) .*-1;
+  %   usc_OA = reshape(result.usc(idx(end)+1:end,1), [], 5 ) .*-1;
+  
+  %psc
+  %   usc_YA = (usc_YA-mean(usc_YA,2))./mean(usc_YA,2)*100;
+  %   usc_OA = (usc_OA-mean(usc_OA,2))./mean(usc_OA,2)*100;
+  
+  %   %1 as baseline
+  %   usc_YA = (usc_YA-usc_YA(:,1))./usc_YA(:,1);
+  %   usc_OA = (usc_OA-usc_OA(:,1))./usc_OA(:,1);
+  
+  
+  agecolors = [1 0.5 0.5; 0.5 0.5 1]; agenames = {'Younger' 'Older'};
+  clear p
+  for iage = 1:2
+    iplot=iplot+1;
+    subplot(1, 5*2,iplot); hold on;
+    plotSpread_incmarkersz( usc{iage}, 'distributionColors', repmat(agecolors(iage,:), ncond, 1) );
+    p(iage) = plot(mean(usc{iage}), 'Color', agecolors(iage,:), 'Linewidth', 3);
+    xlabel('HMAX bin');    ylabel('Brainscore (a.u.*10000)');    % legend(p, agenames); legend boxoff
+    if iage==2;   title(sprintf('%s ', tok{[3,1,4]}), 'HorizontalAlignment', 'right'); end
+  end
+  tok = tokenize(fileparts(files{ifile}), '/');
+  
+% %   f = figure; f.Position =  [ 680   506   310   471 ];
+%   f = figure; f.Position =  [ 680   506   5*300   500 ];
+%   tok = tokenize(fileparts(files{ifile}), '/');
+%   suptitle(sprintf('%s ', tok{[3,1,4]}));
+%   clear p
+%   for iage = 1:2
+%     subplot(1,2,iage); hold on;
+%     plotSpread_incmarkersz( usc{iage}, 'distributionColors', repmat(agecolors(iage,:), ncond, 1) );
+%     p(iage) = plot(mean(usc{iage}), 'Color', agecolors(iage,:), 'Linewidth', 3);
+%     xlabel('HMAX bin');    ylabel('Brainscore (a.u.)');    % legend(p, agenames); legend boxoff
+%   end
+%   
+end
 
-file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRIbsr_lv1.hdr';
-mri_BSratio = ft_read_mri(file);
-mri_BSratio.functional = mri_BSratio.anatomy;
-removefields(mri_BSratio, 'anatomy');
 
-cfg = [];
-cfg.parameter = 'functional';
-mri_BSratio = ft_sourceinterpolate(cfg, mri_BSratio, mri_standard);
-mri_BSratio.mask = (mri_BSratio.functional > 3 | mri_BSratio.functional < -3);
 
-cfg = [];
-cfg.method        = 'slice';   % slice ortho
-cfg.nslices = 10;
-cfg.slicerange = [100 250];
-% cfg.slicerange = [17 40];
-cfg.funparameter  = 'functional';
-cfg.funcolorlim   = [-6 6];
-cfg.maskparameter = 'mask';
-% cfg.maskstyle = 'colormix';
-cfg.maskstyle     = 'opacity';
 
-cmap_cool = flipud(colormaps(3));
-cmap_hot = colormaps(2);
-cmap_black = zeros(round(length(cmap_hot)*2),3) + 1;
-cmap = [cmap_cool; cmap_black; cmap_hot];
-cfg.funcolormap = cmap;
 
-cfg.opacitymap    = 'auto';
-cfg.opacitylim    = 'auto';
-% cfg.atlas = '/Users/kloosterman/Library/CloudStorage/Dropbox/tardis_code/MATLAB/tools/fieldtrip/template/atlas/spm_anatomy/AllAreas_v18.mat'
-ft_sourceplot(cfg, mri_BSratio, mri_standard); %  hack in ft_sourceplot in 833: always 2 rows
+%% load hmax per bin values for each subject
+PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/taskPLS/gaze-specific/';
+cd(PREIN)
+load SDbold_vs_HMAX_youngold_44_41_BfMRIresult.mat
 
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.pdf')
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/behavpls_Z3.png')
+ages = {'young', 'old'}; hmax_meanperbin=[];  subjlist={};
+for iage = 1:2
+  cd(ages{iage})
+  dirlist = dir('sub-*.mat');
+  for i = 1:length(dirlist)
+    disp(dirlist(i).name);
+    tmp = load(dirlist(i).name);
+    hmax_meanperbin{iage}(i,:) = tmp.hmax_meanperbin;
+    tok = tokenize(dirlist(i).name, '_');
+    subjlist{iage}{i} = tok{1};
+  end
+  cd ..
+end
+%%
+% plot hmax per bin
+figure; subplot(2,2,1); hold on
+plot(mean(hmax_meanperbin{1}))
+plot(mean(hmax_meanperbin{2}))
+legend({'YA' 'OA'})
+subplot(2,2,2); hold on
+plot(std(hmax_meanperbin{1}))
+plot(std(hmax_meanperbin{2}))
+legend({'YA' 'OA'})
+subplot(2,2,3); hold on
+plot(hmax_meanperbin{1}')
+plot(hmax_meanperbin{2}')
+legend({'YA' 'OA'})
 
-%% TaskPLS MeanBold.
-close all
-
-% file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRIbsr_lv1.hdr';
-file = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_1bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRIbsr_lv1.hdr';
-mri_BSratio = ft_read_mri(file);
-mri_BSratio.functional = mri_BSratio.anatomy;
-removefields(mri_BSratio, 'anatomy');
-
-cfg = [];
-cfg.parameter = 'functional';
-mri_BSratio = ft_sourceinterpolate(cfg, mri_BSratio, mri_standard);
-
-mri_BSratio.mask = (mri_BSratio.functional > 3 | mri_BSratio.functional < -3);
-
-% ft_write_cifti('/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/mean_5bins', mri_BSratio, 'parameter', 'functional')
 
 %%
-cfg = [];
-% cfg.method        = 'slice';   % slice ortho
-cfg.method        = 'surface';   % slice ortho
-% cfg.surffile      = 'surface_inflated_right_caret.mat';
-cfg.surffile      = 'surface_white_right.mat';
-cfg.surfinflated      = 'surface_inflated_right.mat';
+disp 'rmcorr hmax vs brain scores'
+usc_YA_demean = usc_YA - mean(usc_YA,2);
+usc_OA_demean = usc_OA - mean(usc_OA,2);
+hmax_YA_demean = hmax_meanperbin{1} - mean(hmax_meanperbin{1},2);
+hmax_OA_demean = hmax_meanperbin{2} - mean(hmax_meanperbin{2},2);
+[r_YA, p_YA] = corr(usc_YA_demean(:), hmax_YA_demean(:), 'type', 'Spearman')
+[r_OA, p_OA] = corr(usc_OA_demean(:), hmax_OA_demean(:), 'type', 'Spearman')
+f=figure;
+subplot(1,2,1); scatter(usc_YA_demean(:), hmax_YA_demean(:)); axis square; box on; lsline
+subplot(1,2,2); scatter(usc_OA_demean(:), hmax_OA_demean(:)); axis square; box on; lsline
 
-cfg.nslices = 10;
-cfg.slicerange = [100 250];
-% cfg.slicerange = [17 40];
-cfg.funparameter  = 'functional';
-cfg.funcolorlim   = [-8 8];
-cfg.maskparameter = 'mask';
-% cfg.maskstyle = 'colormix';
-cfg.maskstyle     = 'opacity';
-
-cmap_cool = flipud(colormaps(3));
-cmap_hot = colormaps(2);
-cmap_black = zeros(round(length(cmap_hot)*1.25),3) + 1;
-cmap = [cmap_cool; cmap_black; cmap_hot];
-cfg.funcolormap = cmap;
-
-cfg.opacitymap    = 'auto';
-cfg.opacitylim    = 'auto';
-  cfg.sphereradius = 10;
-  cfg.camlight = 'no';
-% cfg.atlas = '/Users/kloosterman/Library/CloudStorage/Dropbox/tardis_code/MATLAB/tools/fieldtrip/template/atlas/spm_anatomy/AllAreas_v18.mat'
-cfg.figure = 'gcf';
-subplot(2,2,1)
-ft_sourceplot(cfg, mri_BSratio, mri_standard); %  hack in ft_sourceplot in 833: always 2 rows
-% lt = light;
-
-
-view ([270 0])
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskpls_meanBOLD.pdf')
-saveas(gcf, '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots/taskpls_meanBOLD.png')
 

@@ -16,7 +16,7 @@ switch analysisname
     end
     %     warning 'PLS_rank does not work with task PLS'
     basepath = '/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/'; %yesno or 2afc    
-    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_1bins/fixednbins/taskPLS/non-gazespecific';
+    PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/mean_5bins/fixednbins/taskPLS/non-gazespecific';
     
     %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_10bins/fixednbins/taskPLS/gaze-specific';
     
