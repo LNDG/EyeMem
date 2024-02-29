@@ -11,14 +11,14 @@ mri_standard = ft_read_mri(file);
 PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/';
 files = {
   'std_1bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
-  'mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRI'
-  'mean_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
+  'mean_1bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI' % flip
   'std_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_44_43_BfMRI'
   'std_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_44_41_BfMRI'
+  'mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRI'     % flip
+  'mean_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'  % flip
   'std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRI'
   };
-
-flip_lv_sign = [1 -1 -1 1 1 1]; % -1 means flip it
+flip_lv_sign = [1 -1 1 1 -1 -1 1]; % -1 means flip it
 method = {'slice'}; % slice  surface
 BSthresh = [-2.33 2.33];
 % BSthresh = [0 0];
@@ -110,71 +110,65 @@ end
 
 %% plot Brain scores
 PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/';
-% files = {
-%   'std_1bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
-%   'mean_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_45_42_BfMRI'
-%   'mean_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_45_43_BfMRI'
-%   'std_5bins/fixednbins/taskPLS/non-gazespecific/SDbold_vs_HMAX_youngold_44_43_BfMRI'
-%   'std_5bins/fixednbins/taskPLS/gaze-specific/SDbold_vs_HMAX_youngold_44_41_BfMRI'
-% %   'std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRI'
-%   };
-
-close all
-f = figure; f.Position =  [ 680   506   5*300   500 ]; iplot=0;
-for ifile = 1:5 %length(files)
+demean_subj = 1;
+% close all
+f = figure; f.Position =  [ 680   506   6*300   500 ]; iplot=0;
+for ifile = 1:6 %length(files)
   disp( fullfile(PREIN, [files{ifile} 'result.mat']));
   load( fullfile(PREIN, [files{ifile} 'result.mat']));
   nsub = sum(result.num_subj_lst);
   ncond = length(cond_name);
-%   vsc = reshape(result.vsc(:,1), nsub, [] );
-%   nbins = size(vsc,2);
-%   vsc_YA = vsc(1:result.num_subj_lst(1),:);
-%   vsc_OA = vsc(result.num_subj_lst(1)+1:end,:);
-%   figure; subplot(2,1,1)
-%   plot(mean(vsc_YA)); hold on; plot(mean(vsc_OA));  title('vsc (Designscores)')
   
   idx = 1:result.num_subj_lst(1)*result.num_conditions;
   usc={};
   usc{1} = reshape(result.usc(idx,1), [], ncond ) / 10000 .* flip_lv_sign(ifile);
   usc{2} = reshape(result.usc(idx(end)+1:end,1), [], ncond )/ 10000 .* flip_lv_sign(ifile);
   
-  %   usc_YA = reshape(result.usc(idx,1), [], 5 ) .*-1;
-  %   usc_OA = reshape(result.usc(idx(end)+1:end,1), [], 5 ) .*-1;
-  
-  %psc
-  %   usc_YA = (usc_YA-mean(usc_YA,2))./mean(usc_YA,2)*100;
-  %   usc_OA = (usc_OA-mean(usc_OA,2))./mean(usc_OA,2)*100;
-  
-  %   %1 as baseline
-  %   usc_YA = (usc_YA-usc_YA(:,1))./usc_YA(:,1);
-  %   usc_OA = (usc_OA-usc_OA(:,1))./usc_OA(:,1);
-  
+  if demean_subj
+    usc{1} = usc{1} - mean(usc{1},2);
+    usc{2} = usc{2} - mean(usc{2},2);
+  end
   
   agecolors = [1 0.5 0.5; 0.5 0.5 1]; agenames = {'Younger' 'Older'};
-  clear p
+  clear p ylims
   for iage = 1:2
     iplot=iplot+1;
-    subplot(1, 5*2,iplot); hold on;
+    subplot(1, 6*2,iplot); hold on;
+    tiledlayout(2,2,'TileSpacing','compact'); nexttile
     plotSpread_incmarkersz( usc{iage}, 'distributionColors', repmat(agecolors(iage,:), ncond, 1) );
     p(iage) = plot(mean(usc{iage}), 'Color', agecolors(iage,:), 'Linewidth', 3);
     xlabel('HMAX bin');    ylabel('Brainscore (a.u.*10000)');    % legend(p, agenames); legend boxoff
-    if iage==2;   title(sprintf('%s ', tok{[3,1,4]}), 'HorizontalAlignment', 'right'); end
+    ax = gca;
+    ylims(iage,:) = ax.YLim;
+    if iage==2
+      tok = tokenize(fileparts(files{ifile}), '/');
+      title(sprintf('%s ', tok{[3,1,4]}), 'HorizontalAlignment', 'right'); 
+      ax.YLim = [min(ylims(:)) max(ylims(:))];
+      ax.YAxis.Visible = 0;
+      subplot(1, 6*2,iplot-1); ax=gca; ax.YLim = [min(ylims(:)) max(ylims(:))];
+    end
   end
-  tok = tokenize(fileparts(files{ifile}), '/');
-  
-% %   f = figure; f.Position =  [ 680   506   310   471 ];
-%   f = figure; f.Position =  [ 680   506   5*300   500 ];
-%   tok = tokenize(fileparts(files{ifile}), '/');
-%   suptitle(sprintf('%s ', tok{[3,1,4]}));
+
+%   agecolors = [1 0.5 0.5; 0.5 0.5 1]; agenames = {'Younger' 'Older'};
 %   clear p
-%   for iage = 1:2
-%     subplot(1,2,iage); hold on;
-%     plotSpread_incmarkersz( usc{iage}, 'distributionColors', repmat(agecolors(iage,:), ncond, 1) );
-%     p(iage) = plot(mean(usc{iage}), 'Color', agecolors(iage,:), 'Linewidth', 3);
-%     xlabel('HMAX bin');    ylabel('Brainscore (a.u.)');    % legend(p, agenames); legend boxoff
-%   end
-%   
+% %   for iage = 1:2
+%     iplot=iplot+1;
+%     subplot(1, 5,iplot); hold on;
+%     plotSpread_incmarkersz(  [usc{1} usc{2}], 'distributionIdx',  distr_idx, 'distributionColors', agecolors ); % repmat(agecolors(iage,:), ncond, 1)
+% %     plotSpread_incmarkersz( usc )
+%     %     p(iage) = plot(mean(usc{iage}), 'Color', agecolors(iage,:), 'Linewidth', 3);
+%     xlabel('HMAX bin');    ylabel('Brainscore (a.u.*10000)');    % legend(p, agenames); legend boxoff
+%     if iage==2;   title(sprintf('%s ', tok{[3,1,4]}), 'HorizontalAlignment', 'right'); end
+% %   end
+%   tok = tokenize(fileparts(files{ifile}), '/');
+
+
 end
+%   name = sprintf('%s_', tok{1:end-1});
+%   saveas(gcf, fullfile(PREOUTplot, 'pdf', sprintf('Brainscores_%s.pdf', name)))
+%   saveas(gcf, fullfile(PREOUTplot, 'png', sprintf('Brainscores_%s.png', name)))
+  saveas(gcf, fullfile(PREOUTplot, 'pdf', sprintf('Brainscores_demean.pdf')))
+  saveas(gcf, fullfile(PREOUTplot, 'png', sprintf('Brainscores_demean.png')))
 
 
 
