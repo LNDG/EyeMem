@@ -216,11 +216,11 @@ switch gazespecificHMAX
 % %     dat = dat(all(~isinf(dat),2),:);
 % %     figure; scatter(dat(:,1), dat(:,2)); lsline; title(corr(dat(:,1), dat(:,2)))
 
-    fprintf('%d trials without fixations found: ', sum(isnan(hmax_at_fix_trl)))
-    if sum(isnan(hmax_at_fix_trl)) > 25
-      warning('More than 50: skipping subject')
-      return
-    end
+%     fprintf('%d trials without fixations found: ', sum(isnan(hmax_at_fix_trl)))
+%     if sum(isnan(hmax_at_fix_trl)) > 25
+%       warning('More than 50: skipping subject')
+%       return
+%     end
    
     switch bintype
       case 'fixednbins'

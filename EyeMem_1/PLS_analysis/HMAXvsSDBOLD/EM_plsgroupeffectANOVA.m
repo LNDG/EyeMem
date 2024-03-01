@@ -15,8 +15,11 @@ if nargin==0
 % load '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM/v/linearfit_fitcoeff1/corrSDbold_v__86_83_pearman_BfMRIresult.mat'
 % load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__85_80_earson_BfMRIresult.mat')
 % load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1_psc/corrSDbold_v__86_80_earson_BfMRIresult.mat')
-load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__86_80_earson_BfMRIresult.mat')
-% load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__87_83_pearman_BfMRIresult.mat')
+
+% load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__87_80_earson_BfMRIresult.mat')
+% load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__85_80_earson_BfMRIresult.mat')
+
+load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__87_83_pearman_BfMRIresult.mat')
 
 end
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
@@ -40,19 +43,18 @@ t = table(brainscores, behav, ages.Var1);
 agegroups= {'young' 'old'};
 % agecolors = {'b' 'r'};
 agecolors = [1 0 0; 0 0 1; 0 0 0];
-% corrtype = 'Pearson'; % 'Spearman'; Pearson
-corrtype = 'Spearman'; % ''; Pearson
+corrtype = 'Pearson'; % 'Spearman'; Pearson
+% corrtype = 'Spearman'; % ''; Pearson
 f=figure; f.Position = [1000        1130         200         220];
 hold on;
 clear l
 for iage=1:2%:2
-%   sc(iage)=scatter(t.brainscores(t.Var3 == agegroups{iage}), t.behav(t.Var3 == agegroups{iage}), 'MarkerFaceColor', agecolors(iage,:));
-%   [r(iage),p(iage)]=corr(t.brainscores(t.Var3 == agegroups{iage}), t.behav(t.Var3 == agegroups{iage}), 'type', corrtype);
   sc(iage) = scatter(t.behav(t.Var3 == agegroups{iage}), t.brainscores(t.Var3 == agegroups{iage}), 'MarkerFaceColor', agecolors(iage,:), 'MarkerEdgeColor', 'w', 'sizedata', 50);
   [r(iage),p(iage)] = corr(t.brainscores(t.Var3 == agegroups{iage}), t.behav(t.Var3 == agegroups{iage}), 'type', corrtype);
 end
 % sc(3) = scatter(t.behav, t.brainscores, 'MarkerFaceColor', 'k', 'MarkerEdgeColor', 'w', 'sizedata', 1);
 [r(3),p(3)] = corr(t.brainscores, t.behav, 'type', corrtype);
+% [rho, pval]=partialcorr(result.usc(:,1), behavdata_lst{1}, agegroup)
 
 l = lsline;
 
@@ -78,10 +80,10 @@ if ranked
 else
   ylabel('bin 5-1 SDbold')
   xlabel('DDM drift')
-  xlim([0 1.3])
-  saveas(f, fullfile(PREOUT, 'group_behavpls_youngold.pdf'))
-  saveas(f, fullfile(PREOUT, 'group_behavpls_youngold.eps'), 'epsc')
-  saveas(f, fullfile(PREOUT, 'group_behavpls_youngold.png'))
+%   xlim([0 1.3])
+  saveas(f, fullfile(PREOUT, sprintf('group_behavpls_youngold_%s.pdf', corrtype )))
+  saveas(f, fullfile(PREOUT, sprintf('group_behavpls_youngold_%s.eps', corrtype )), 'epsc')
+  saveas(f, fullfile(PREOUT, sprintf('group_behavpls_youngold_%s.png', corrtype )))
 %     saveas(f, '/Users/kloosterman/gridmaster2012/projectdata/eyemem/plots/group_behavpls_youngold.png')
 end
 
@@ -89,4 +91,12 @@ end
 %% ANOVA
 
 anovan(brainscores, {ages.Var1 behav},'model',2, 'continuous', 2, 'varnames',{'age','drift rate'})
+
+% %% Doug meeting 29022024: Order not correct, file not stacked
+% load('corrSDbold_v__86_80_earson_BfMRIresult.mat')
+% agegroup = [zeros(44,1); ones(42,1)];
+% [rho, pval]=partialcorr(result.usc(:,1), behavdata_lst{1}, agegroup)
+% [rho, pval]=corr(result.usc(1:44,1), behavdata_lst{1}(1:44,:), 'type', 'Spearman')
+% [rho, pval]=corr(result.usc(1:44,1), behavdata_lst{1}(1:44,:), 'type', 'Pearson')
+% [rho, pval]=corr(result.usc(45:end,1), behavdata_lst{1}(45:end,:), 'type', 'Pearson')
 
