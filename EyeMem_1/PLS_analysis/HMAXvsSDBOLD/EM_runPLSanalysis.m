@@ -68,8 +68,8 @@ switch analysisname
 
   case 'corrSDbold'
     %%
-%      corrtype = 'Pearson'; %Spearman Pearson
-    corrtype = 'Spearman'; %Spearman Pearson
+    corrtype = 'Pearson'; %Spearman Pearson
+%     corrtype = 'Spearman'; %Spearman Pearson
     
     if strcmp(corrtype, 'Spearman')
       addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))
@@ -96,12 +96,12 @@ switch analysisname
 
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM'
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/behavPLS_sdboldvsHmaxbins/'
-PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/behavPLSvsDDM/'
+PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/'
 
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-%         agegroups = {''};
+        agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';

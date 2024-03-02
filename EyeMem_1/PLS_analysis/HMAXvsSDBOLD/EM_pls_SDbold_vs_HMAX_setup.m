@@ -34,11 +34,11 @@ PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
 % PLSbehav = 'dprime';
 % PLSbehav = 'criterion';
 
-nbins = 5; % no of bins used for Hmax binning, 750 samples
+nbins = 3; % no of bins used for Hmax binning, 750 samples
 gazespecificHMAX = 'gaze-specific'; % gaze-specific   non-gazespecific
 BOLDvar_measure = 'std'; % mean, iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
-inducedortotalSD = 'evoked'; % within_trial   evoked   induced   total_pow
+inducedortotalSD = 'total_pow'; % within_trial   evoked   induced   total_pow
 
 binsubtract = [5 1]; % Also possible in psc which bins to subtract
 % binsubtract = nbins; % just 1 number at binno = no subtraction
