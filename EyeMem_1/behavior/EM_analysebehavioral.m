@@ -11,17 +11,17 @@ category_labels = {'fractals'	'landscapes'	'naturals1'	'streets1'	'streets2'}; %
 exp_phases = {'study' 'test'};
 ntrials_per_run = [30 60];
 
-% SUBJ= [9:101]; % TODO specify further?
+SUBJ= [9:101]; % TODO specify further?
 % find out which SUBJ are still in the mix in fMRI
-PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsdprime/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific';
-cd(fullfile(PREIN))
-SUBJ = [];
-subjlist = dir('sub*_BfMRIsessiondata.mat');
-for isub=1:length(subjlist)
-  tmp = tokenize(subjlist(isub).name, '_');
-  SUBJ(isub,1) = find(behavior.participants.participant_id == tmp{1});
-end
-SUBJ = sort(SUBJ);
+% PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsdprime/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific';
+% cd(fullfile(PREIN))
+% SUBJ = [];
+% subjlist = dir('sub*_BfMRIsessiondata.mat');
+% for isub=1:length(subjlist)
+%   tmp = tokenize(subjlist(isub).name, '_');
+%   SUBJ(isub,1) = find(behavior.participants.participant_id == tmp{1});
+% end
+% SUBJ = sort(SUBJ);
 
 behavior.SUBJ = SUBJ;
 behavior.dimord = 'subj_phase_cond';
@@ -207,10 +207,10 @@ for isub = 1:length(SUBJ)
         
       end
     end
-%     behavior.singletrial = singletrial{iphase};
-%     behavior.singletrialleg = 'condition target_present response accuracy RT picno';
     fclose(fid);
   end
+  behavior.singletrial = singletrial{iphase};
+  behavior.singletrialleg = 'condition target_present response accuracy RT picno';
 end
 
 disp 'average over conditions'

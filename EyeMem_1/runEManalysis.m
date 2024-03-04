@@ -48,7 +48,7 @@ PREOUTplot = '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/pl
 % EM_runHmax_setup()
 
 %% eye pupil and gaze analysis
-% EM_eye_analysis_setup()   % EM_sortTrials_Marija
+EM_eye_analysis_setup()   % EM_sortTrials_Marija
 
 % timelock=EM_merge_eyedata()
 

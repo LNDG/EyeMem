@@ -19,7 +19,7 @@ if nargin==0
 % load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__87_80_earson_BfMRIresult.mat')
 % load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__85_80_earson_BfMRIresult.mat')
 
-load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/corrSDbold_v__87_83_pearman_BfMRIresult.mat')
+load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_4bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin4-bin1_fitcoeff1/corrSDbold_v__85_80_earson_BfMRIresult.mat')
 
 end
 load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
@@ -31,7 +31,7 @@ load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyeme
 % load /Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsDDM/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific/ages.mat
 % load /Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/std_3bins/fixednbins/behavPLSvsDDM/v/linearfit_fitcoeff1/ages.mat
 % load /Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1_psc/ages.mat
-load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin5-bin1_fitcoeff1/ages.mat')
+load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_4bins/fixednbins/behavPLSvsDDM/v/gaze-specific/bin4-bin1_fitcoeff1/ages.mat')
 
 % age = behavior.participants.group;
 brainscores = result.usc;
@@ -43,8 +43,8 @@ t = table(brainscores, behav, ages.Var1);
 agegroups= {'young' 'old'};
 % agecolors = {'b' 'r'};
 agecolors = [1 0 0; 0 0 1; 0 0 0];
-corrtype = 'Pearson'; % 'Spearman'; Pearson
-% corrtype = 'Spearman'; % ''; Pearson
+% corrtype = 'Pearson'; % 'Spearman'; Pearson
+corrtype = 'Spearman'; % ''; Pearson
 f=figure; f.Position = [1000        1130         200         220];
 hold on;
 clear l

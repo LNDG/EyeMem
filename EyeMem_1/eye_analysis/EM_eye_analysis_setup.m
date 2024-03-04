@@ -7,7 +7,7 @@ if ismac
   backend = 'local';
   %   backend = 'qsublocal';
   compile = 'no';
-  load('/Users/kloosterman/Dropbox/tardis_code/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat')
+  load('participantinfo.mat')
 else
   basepath = '/mnt/beegfs/home/LNDG/EyeMem/data/'; %'/home/mpib/LNDG/EyeMem/data/'; %yesno or 2afc
   backend = 'slurm';

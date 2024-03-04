@@ -96,7 +96,7 @@ switch analysisname
 
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_3bins/fixednbins/behavPLSvsDDM'
 % PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/std_5bins/fixednbins/behavPLS_sdboldvsHmaxbins/'
-PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/'
+PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_4bins/fixednbins/behavPLSvsDDM/'
 
 %     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
@@ -115,7 +115,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
       cormode = '8'; % Spearman
     end
     
-    num_perm = '1000';
+    num_perm = '100';
     num_split = '0';
     num_boot = '100';
     boot_type = 'strat';
@@ -126,7 +126,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
     for iparam = 1:length(params)
 %       PREIN = fullfile(PRE, params{iparam}, gazetype, 'linearfit_fitcoeff1');
 %       PREIN = fullfile(PRE, params{iparam}, gazetype, 'corrHmaxoverbins_fitcoeff1');
-      PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin5-bin1_fitcoeff1');
+      PREIN = fullfile(PRE, params{iparam}, gazetype, 'bin4-bin1_fitcoeff1');
       cd(PREIN)
       behavior_data =  cell(length(agegroups),1);
       id_list = cell(length(agegroups),1);

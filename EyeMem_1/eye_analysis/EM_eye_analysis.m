@@ -211,15 +211,14 @@ runinfo.age = Participants.age(subjno);
 runinfo.agegroup = Participants.group(subjno);
 runinfo.sex = Participants.gender(subjno);
 runinfo.weight = Participants.weight(subjno);
-% load study and test data and add
-if ismac
-  load /Users/terlau/Eyemem_behavior.mat
-  %/Users/kloosterman/gridmaster2012/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
-else
-  load /mnt/beegfs/home/LNDG/EyeMem/data/behavior/Eyemem_behavior.mat
-end
-runinfo.behavior.study = behav.study(subjno);
-runinfo.behavior.test = behav.test(subjno);
+% % load study and test data and add
+% if ismac
+%   load /Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat
+% else
+%   load /mnt/beegfs/home/LNDG/EyeMem/data/behavior/Eyemem_behavior.mat
+% end
+% runinfo.behavior.study = behav.study(subjno);
+% runinfo.behavior.test = behav.test(subjno);
 
 end
 
