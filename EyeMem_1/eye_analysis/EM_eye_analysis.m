@@ -126,7 +126,7 @@ for irun = 1:length(edflist)
     close all
     f = figure; f.Position =[  1          58        1920         919 ];
   end
-  microsaccades = [];
+  microsaccades = []; data_trial_cropped = {};
   for itrial = 1:length(data_viewing.trial)
     cfg=[];
     cfg.trials = itrial;
@@ -170,6 +170,9 @@ for irun = 1:length(edflist)
       microsaccades.velocity(itrial,:) = NaN; % NK edit ft_detect_movement to get peak velocity
       continue
     end
+    
+    % keep 0-5 s trials with new fixation channel
+    data_trial_cropped{end+1} = data_trial;
     
     disp 'Make "trials" from fixations'
     cfg=[]; 
@@ -221,6 +224,7 @@ for irun = 1:length(edflist)
     mkdir(fullfile(PREOUT, 'MSplots'))
     saveas(f, fullfile(PREOUT, 'MSplots', sprintf('%s', eyename)), 'png')
   end
+  
   %%
   data.trialinfo(:,15) = microsaccades.count;
   data.trialinfo(:,16) = microsaccades.velocity;
@@ -240,23 +244,11 @@ end
 cfg=[];
 cfg.keepsampleinfo = 'no';
 data = ft_appenddata(cfg, alldata{:});
+data_trial_cropped = ft_appenddata(cfg, data_trial_cropped{:});
 clear alldata
-% behav = ft_findcfg(data.cfg, 'runinfo') % for behavior etc
 
-% % change format of data to allow for exporting it to Python later
-% % should give us a 3dim array for trial 
-% cfg=[]
-% cfg.keeptrials = 'yes'
-% timelock = ft_timelockanalysis(cfg, data)
-% trial = timelock.trial
-% trial_info = timelock.trialinfo
-% 
-%save('trial.mat', 'trial')
-%save('trial_info.mat', 'trial_info')
-
-%save(outfile, 'timelock')% only task not rest for now  ,'trial', 'trial_info'
-
-save(outfile, 'data')% only task not rest for now  ,'trial', 'trial_info' 
+disp(outfile)
+save(outfile, 'data', 'data_trial_cropped')
 
 if ismac && plotit
   cfg2=[];
@@ -267,19 +259,7 @@ if ismac && plotit
   ft_databrowser(cfg2, timelock)
 end
 
-% if isempty(datainfo.sampgaps)
-%   datainfo.sampgaps= 0;
-% end
-
 end
-
-
-
-
-
-
-
-
 
 %% helper functions
 

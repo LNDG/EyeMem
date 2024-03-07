@@ -25,7 +25,7 @@ PREOUT = fullfile(basepath, 'preproc', 'eye');
 mkdir(fullfile(PREOUT, 'YA'))
 mkdir(fullfile(PREOUT, 'OA'))
 
-overwrite = 0;
+overwrite = 1;
 
 SUBJ= [9:101]; % TODO specify further?
 % SUBJ= [50]; % TODO specify further?
