@@ -9,7 +9,7 @@ if ismac
   compile = 'no';
   load('participantinfo.mat')
 else
-  basepath = '/mnt/beegfs/home/LNDG/EyeMem/data/'; %'/home/mpib/LNDG/EyeMem/data/'; %yesno or 2afc
+  basepath = '/mnt/beegfs/home/kloosterman/projectdata/eyemem/data/'; %'/home/mpib/LNDG/EyeMem/data/'; %yesno or 2afc
   backend = 'slurm';
   %     backend = 'torque';
   %backend = 'local';
