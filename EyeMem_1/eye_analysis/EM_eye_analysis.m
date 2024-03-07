@@ -1,6 +1,6 @@
 function [data, datainfo] = EM_eye_analysis(cfg)
 
-plotit = 0;
+plotit = 1;
 
 if ismac
   edf2asc = '';
@@ -37,6 +37,11 @@ for irun = 1:length(edflist)
   cfg.montage.labelnew = {'EYE_TIMESTAMP', 'EYE_HORIZONTAL', 'EYE_VERTICAL', 'EYE_DIAMETER'};
   data = ft_preprocessing(cfg); 
   
+  if ismac && plotit
+    cfg=[];    cfg.channel =[2 3]; ft_databrowser(cfg, data)
+    figure; plot(data.trial{1}(2,:), data.trial{1}(3,:))
+  end
+  
   datainfo.sampgaps = [datainfo.sampgaps unique(diff(data.trial{1}(1,:)))];
   if data.fsample ~= 1000
     disp(datainfo.sampgaps)
@@ -55,6 +60,11 @@ for irun = 1:length(edflist)
   disp('interpolate blinks, add blinks, saccades and fixations as chans')
   hdr = ft_read_header(filename_eye); %, 'headerformat', 'eyelink_asc');
   data = interpolate_blinks(hdr, data); % TODO add microsaccades? getting channel 5 and 6
+  
+  if ismac && plotit
+    cfg=[];    cfg.channel =[2 3]; ft_databrowser(cfg, data)
+    figure; plot(data.trial{1}(2,:), data.trial{1}(3,:))
+  end
   
   event = get_event(hdr); % subfunction below
   
@@ -104,6 +114,107 @@ for irun = 1:length(edflist)
     ft_databrowser(cfg2, timelock)
   end
   
+  % Select only viewing period
+  cfg=[];
+  cfg.latency = [0 5];
+  data_viewing = ft_selectdata(cfg, data);
+  
+  disp 'detect microsaccades within viewing period, per trial'
+  %% Detect fixations in each trial, detect microsaccades within each fixation
+  % TODO plot MS in fixations, also velocity?
+  if ismac && plotit
+    close all
+    f = figure; f.Position =[  1          58        1920         919 ];
+  end
+  microsaccades = [];
+  for itrial = 1:length(data_viewing.trial)
+    cfg=[];
+    cfg.trials = itrial;
+    data_trial = ft_selectdata(cfg,data_viewing);
+    data_trial.sampleinfo = [1 length(data_trial.trial{1})];
+    
+    disp 'Detect fixations'
+    fixation_detection = 'DM'; % EyeLink triggers or ft_detect_movement DM
+    switch fixation_detection % make trl matrix for fixations as trials
+      case 'EL'
+        data_trial.trial{1}(7,[1 end]) = 0; % start and end with no fix        
+        fixonsets = find(diff( data_trial.trial{1}(7,:)) == 1); % -100
+        fixoffsets = find(diff( data_trial.trial{1}(7,:)) == -1); % +100
+        trl = [fixonsets(:) fixoffsets(:) zeros(length(fixoffsets(:)),1)];
+        trl = trl(2:end,:); % remove 1st fixation because imposed above
+      case 'DM' % detect fixations using Engbert and Kliegl method
+        cfg=[];
+        cfg.method = 'velocity2D';
+        cfg.channel = { 'EYE_HORIZONTAL'  'EYE_VERTICAL' };
+        cfg.velocity2D = [];
+        cfg.velocity2D.mindur = 10; % minimum *saccade* duration, can be short
+        cfg.velocity2D.velthres = 30; % lower = lower fixation time
+        cfg.velocity2D.kernel   = [ones(1,16) zeros(1,8) -ones(1,16)].*(data_trial.fsample/6);% vector 1 x nsamples, kernel to compute velocity (default = [1 1 0 -1 -1].*(data.fsample/6);
+        [~, movement] = ft_detect_movement(cfg, data_trial);
+        fix_bool = true(5001,1);
+        for im = 1:size(movement,1)
+          fix_bool(movement(im,1):movement(im,2)) = false; % fixation is false at saccades
+        end
+        fix_bool([1 end]) = false; % to have start and end fixation
+        fixonsets = find(diff(fix_bool) == 1); % -100
+        fixoffsets = find(diff(fix_bool) == -1); % +100
+        trl = [fixonsets(:) fixoffsets(:) zeros(length(fixoffsets(:)),1)];
+        trl = trl(2:end,:); % remove 1st fixation because imposed above
+        data_trial.trial{1}(7,:) = fix_bool;
+        % TODO put fixation bool also in data?
+    end
+
+    disp 'Make "trials" from fixations'
+    cfg=[]; 
+    cfg.trl = trl;
+    data_fix = ft_redefinetrial(cfg, data_trial);
+    
+    disp 'Detect microsaccades within fixations'
+    cfg=[];
+    cfg.method = 'velocity2D';
+    cfg.channel = { 'EYE_HORIZONTAL'  'EYE_VERTICAL' };
+    cfg.velocity2D = [];
+    cfg.velocity2D.mindur = 9; % Gao et al: 12 ms, Port et al (visual search) 9 ms
+    cfg.velocity2D.velthres = 6; % SDs from median velocity? 6 default
+    cfg.velocity2D.kernel = [ones(1,8) zeros(1,4) -ones(1,8)].*(data_trial.fsample/6);% vector 1 x nsamples, kernel to compute velocity (default = [1 1 0 -1 -1].*(data.fsample/6);
+    [~, movement] = ft_detect_movement(cfg, data_fix);
+    
+    if isempty(movement); continue; end
+    microsaccades.movement{itrial} = movement;
+    microsaccades.count(itrial,:) = size(movement,1);
+    microsaccades.velocity(itrial,:) = mean(movement(:,3)); % NK edit ft_detect_movement to get peak velocity
+    if ismac && plotit
+      subplot(5,6,itrial);
+      xdat = data_trial.trial{1}(2,:); xdat(~fix_bool) = NaN;
+      ydat = data_trial.trial{1}(3,:); ydat(~fix_bool) = NaN;
+      plot(xdat, ydat); hold on
+      xdat = data_trial.trial{1}(2,:); xdat(fix_bool) = NaN;
+      ydat = data_trial.trial{1}(3,:); ydat(fix_bool) = NaN;
+      plot(xdat, ydat); hold on
+      set(gca,'Ydir','reverse'); title(itrial)
+      % plot microsaccades
+      hold on
+      plot(data_viewing.trial{itrial}(2,movement(:,1)), data_viewing.trial{itrial}(3,movement(:,1)), 'x', 'MarkerSize', 20)
+      plot(data_viewing.trial{itrial}(2,movement(:,2)), data_viewing.trial{itrial}(3,movement(:,2)), 'x', 'MarkerSize', 20)
+      if itrial==1;      legend({'Fixations', 'Saccades', 'MS start', 'MS end'}); end
+            
+%       % plot single fixations TODO add MS in red
+%       figure;
+%       for ifix = 1:length(data_fix.trial)
+%         subplot(6,6,ifix);
+%         plot(data_fix.trial{ifix}(2,:), data_fix.trial{ifix}(3,:)); hold on
+%       end
+
+    end
+  end
+  if ismac && plotit
+    mkdir(fullfile(PREOUT, 'MSplots'))
+    saveas(f, fullfile(PREOUT, 'MSplots', sprintf('%s', eyename)), 'png')
+  end
+  %%
+  data.trialinfo(:,15) = microsaccades.count;
+  data.trialinfo(:,16) = microsaccades.velocity;
+  
   disp 'down sample eye data'
   cfg=[];
   cfg.resample = 'yes';
@@ -133,7 +244,9 @@ clear alldata
 %save('trial.mat', 'trial')
 %save('trial_info.mat', 'trial_info')
 
-%save(outfile, 'timelock')% only task not rest for now  ,'trial', 'trial_info' 
+%save(outfile, 'timelock')% only task not rest for now  ,'trial', 'trial_info'
+
+save(outfile, 'data')% only task not rest for now  ,'trial', 'trial_info' 
 
 if ismac && plotit
   cfg2=[];

@@ -209,9 +209,9 @@ for isub = 1:length(SUBJ)
     end
     fclose(fid);
   end
-  behavior.singletrial = singletrial{iphase};
-  behavior.singletrialleg = 'condition target_present response accuracy RT picno';
+  behavior.singletrial{subNo,1} = singletrial;
 end
+behavior.singletrialleg = 'condition target_present response accuracy RT picno';
 
 disp 'average over conditions'
 bmeas = {'dprime' 'criterion' 'propcorrect' 'RT' 'RTsd' 'RTsd2' 'RT_misses' 'RT_hits' 'RT_fas' 'RT_crs' 'omissions' 'propNo'}; % p_repeatbalanced dim5 is LR

@@ -289,7 +289,8 @@ if ismac
 else
   load('/home/mpib/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat');
 end
-behav_test = behav.test(runinfo.subjno).singletrial; %  condition target_present response accuracy RT picno
+% behav_test = behav.test(runinfo.subjno).singletrial; %  condition target_present response accuracy RT picno
+behav_test = behavior.singletrial{runinfo.subjno}{2}; %  condition target_present response accuracy RT picno
 behav_test = behav_test(behav_test(:,1) == trl(1,5),:);
 
 trlind = ismember(behav_test(:,6) , trl(:,6)); %
