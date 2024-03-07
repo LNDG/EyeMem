@@ -202,9 +202,10 @@ for irun = 1:length(edflist)
       plot(xdat, ydat); hold on
       set(gca,'Ydir','reverse'); title(itrial)
       % plot microsaccades
-      hold on
-      plot(data_viewing.trial{itrial}(2,movement(:,1)), data_viewing.trial{itrial}(3,movement(:,1)), 'x', 'MarkerSize', 20)
-      plot(data_viewing.trial{itrial}(2,movement(:,2)), data_viewing.trial{itrial}(3,movement(:,2)), 'x', 'MarkerSize', 20)
+      if all(movement>0)
+        plot(data_viewing.trial{itrial}(2,movement(:,1)), data_viewing.trial{itrial}(3,movement(:,1)), 'x', 'MarkerSize', 20)
+        plot(data_viewing.trial{itrial}(2,movement(:,2)), data_viewing.trial{itrial}(3,movement(:,2)), 'x', 'MarkerSize', 20)
+      end
       if itrial==1;      legend({'Fixations', 'Saccades', 'MS start', 'MS end'}); end
             
 %       % plot single fixations TODO add MS in red
