@@ -12,7 +12,7 @@ else
   basepath = '/mnt/beegfs/home/kloosterman/projectdata/eyemem/'; %'/home/mpib/LNDG/EyeMem/data/'; %yesno or 2afc
   backend = 'slurm';
   %     backend = 'torque';
-  %backend = 'local';
+  backend = 'local';
   compile = 'no';
   load('/mnt/beegfs/home/kloosterman/GitHub/EyeMem/EyeMem_1/participantinfo/participantinfo.mat')
 end
@@ -28,6 +28,7 @@ mkdir(fullfile(PREOUT, 'OA'))
 overwrite = 1;
 
 SUBJ= [9:101]; % TODO specify further?
+SUBJ= [69]; % TODO specify further?
 
 %make cells for each subject, to analyze in parallel
 cfg = [];
