@@ -17,7 +17,7 @@ else
   load('/mnt/beegfs/home/kloosterman/GitHub/EyeMem/EyeMem_1/participantinfo/participantinfo.mat')
 end
 
-timreq = 60; %in minutes per run
+timreq = 180; %in minutes per run
 memreq = 5000; % in MB
 
 PREIN = fullfile(basepath, 'data'); 
@@ -66,7 +66,7 @@ cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 
 if strcmp(backend, 'slurm') 
-    options = '-D. -c1 '; % --gres=gpu:1
+    options = ' --cpus-per-task=3 '; % --gres=gpu:1  -D. -c1 
 else
     options =  '-l nodes=1:ppn=2'; % torque %-q testing or gpu
 end
