@@ -99,28 +99,7 @@ if strcmp(backend, 'local')
   end
 % if it's running on slurm
 else
-  [data, datainfo] = qsubcellfun(fun2run, cfglist, 'memreq', memreq, 'timreq', timreq*60, 'stack', 1, ...
+  qsubcellfun(fun2run, cfglist, 'memreq', memreq, 'timreq', timreq*60, 'stack', 1, ...
     'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options);
- 
-  %disp(data)
-  %save(fullfile(PREOUT, 'eyedata'), 'data', 'datainfo')
-  
-  % %     jobidarray = cellfun(@qsubfeval, repmat({@EM_eye_analysis}, size(cfglist)), cfglist, 'memreq', memreq, 'timreq', timreq*60, 'stack', 1, ... )
-  % %       'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options)
-  %   for i = 1:length(cfglist)
-  % %     jobidarray{i} = qsubfeval(@myfunction, inputarg{i});
-  %     jobidarray{i} = qsubfeval(@EM_eye_analysis, cfglist{i}, 'memreq', memreq, 'timreq', timreq*60, 'stack', 1, ... )
-  %       'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options);
-  %   end
-  %   save jobidarray.mat jobidarray
-  % exit
-  %
-  % % start MATLAB again
-  % load jobidarray.mat
-  % outputarg = cellfun(@qsubget, jobidarray, 'UniformOutput', false);
-  
-  %   jobidarray = qsubfeval(@EM_eye_analysis,  cfglist{1}, 'memreq', memreq, 'timreq', timreq*60, 'stack', 1, ... )
-  %     'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options)
-  
 end
 
