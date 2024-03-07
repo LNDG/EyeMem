@@ -12,6 +12,7 @@ exp_phases = {'study' 'test'};
 ntrials_per_run = [30 60];
 
 SUBJ= [9:101]; % TODO specify further?
+% SUBJ = [69:70];
 % find out which SUBJ are still in the mix in fMRI
 % PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability/ftsource/behavPLSvsdprime/std_3bins/fixednbins/linearfit_fitcoeff1/gaze-specific';
 % cd(fullfile(PREIN))
@@ -208,8 +209,8 @@ for isub = 1:length(SUBJ)
       end
     end
     fclose(fid);
+    behavior.singletrial{subNo,1} = singletrial;
   end
-  behavior.singletrial{subNo,1} = singletrial;
 end
 behavior.singletrialleg = 'condition target_present response accuracy RT picno';
 
