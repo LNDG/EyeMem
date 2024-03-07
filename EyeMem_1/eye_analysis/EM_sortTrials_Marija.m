@@ -287,7 +287,7 @@ trl(:,15) = runinfo.runno;
 if ismac
   load('/Users/kloosterman/gridmaster2012/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat');
 else
-  load('/home/mpib/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat');
+  load('/mnt/beegfs/home/kloosterman/projectdata/eyemem/preproc/behavior/Eyemem_behavior.mat')
 end
 % behav_test = behav.test(runinfo.subjno).singletrial; %  condition target_present response accuracy RT picno
 behav_test = behavior.singletrial{runinfo.subjno}{2}; %  condition target_present response accuracy RT picno
