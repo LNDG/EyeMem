@@ -122,7 +122,7 @@ for irun = 1:length(edflist)
   disp 'detect microsaccades within viewing period, per trial'
   %% Detect fixations in each trial, detect microsaccades within each fixation
   % TODO plot MS in fixations, also velocity?
-  if ismac && plotit
+  if  plotit
     close all
     f = figure; f.Position =[  1          58        1920         919 ];
   end
@@ -192,7 +192,7 @@ for irun = 1:length(edflist)
     microsaccades.movement{itrial} = movement;
     microsaccades.count(itrial,:) = size(movement,1);
     microsaccades.velocity(itrial,:) = mean(movement(:,3)); % NK edit ft_detect_movement to get peak velocity
-    if ismac && plotit
+    if  plotit
       subplot(5,6,itrial);
       xdat = data_trial.trial{1}(2,:); xdat(~fix_bool) = NaN;
       ydat = data_trial.trial{1}(3,:); ydat(~fix_bool) = NaN;
@@ -216,7 +216,7 @@ for irun = 1:length(edflist)
 
     end
   end
-  if ismac && plotit
+  if  plotit
     mkdir(fullfile(PREOUT, 'MSplots'))
     saveas(f, fullfile(PREOUT, 'MSplots', sprintf('%s', eyename)), 'png')
   end

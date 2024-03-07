@@ -127,7 +127,7 @@ cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 
 if strcmp(backend, 'slurm')
-  options = '-D. -c1'; % --gres=gpu:1
+  options = ' --cpus-per-task=4 '; % --gres=gpu:1      -D. -c1
 else
   options =  '-l nodes=1:ppn=1'; % torque %-q testing or gpu
 end
