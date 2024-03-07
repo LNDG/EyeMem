@@ -77,7 +77,7 @@ EM_eye_analysis_setup()   % EM_sortTrials_Marija
 %% set up PLS analysis for HMAX vs SDBOLD fieldtrip source way
 % EM_pls_SDbold_vs_HMAX_setup() % check settings in function!!
 
-EM_pls_SDbold_vs_HMAX_setup('v')
+% EM_pls_SDbold_vs_HMAX_setup('v')
 % EM_pls_SDbold_vs_HMAX_setup('a')
 % EM_pls_SDbold_vs_HMAX_setup('t')
 % EM_pls_SDbold_vs_HMAX_setup('z')
