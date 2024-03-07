@@ -164,6 +164,13 @@ for irun = 1:length(edflist)
         % TODO put fixation bool also in data?
     end
 
+    if isempty(trl)
+      microsaccades.movement{itrial} = [NaN NaN NaN];
+      microsaccades.count(itrial,:) = 0;
+      microsaccades.velocity(itrial,:) = NaN; % NK edit ft_detect_movement to get peak velocity
+      continue
+    end
+    
     disp 'Make "trials" from fixations'
     cfg=[]; 
     cfg.trl = trl;
@@ -179,7 +186,9 @@ for irun = 1:length(edflist)
     cfg.velocity2D.kernel = [ones(1,8) zeros(1,4) -ones(1,8)].*(data_trial.fsample/6);% vector 1 x nsamples, kernel to compute velocity (default = [1 1 0 -1 -1].*(data.fsample/6);
     [~, movement] = ft_detect_movement(cfg, data_fix);
     
-    if isempty(movement); continue; end
+    if isempty(movement)
+      movement = [0 0 0];
+    end
     microsaccades.movement{itrial} = movement;
     microsaccades.count(itrial,:) = size(movement,1);
     microsaccades.velocity(itrial,:) = mean(movement(:,3)); % NK edit ft_detect_movement to get peak velocity
