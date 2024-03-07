@@ -20,7 +20,7 @@ cd(PREIN)
 datainfo = [];
 datainfo.sampgaps = []; % 6 runs
 
-alldata = {};
+alldata = {}; data_trial_cropped = {};
 for irun = 1:length(edflist)
   disp 'convert edf to asc'
   [~,eyename] = fileparts( edflist(irun).name );
@@ -126,7 +126,7 @@ for irun = 1:length(edflist)
     close all
     f = figure; f.Position =[  1          58        1920         919 ];
   end
-  microsaccades = []; data_trial_cropped = {};
+  microsaccades = []; 
   for itrial = 1:length(data_viewing.trial)
     cfg=[];
     cfg.trials = itrial;
