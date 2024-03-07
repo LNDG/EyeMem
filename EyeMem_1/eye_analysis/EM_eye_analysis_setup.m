@@ -14,7 +14,7 @@ else
   %     backend = 'torque';
   %backend = 'local';
   compile = 'no';
-  load('/home/mpib/kloosterman/MATLAB/eyemem_analysis/participantinfo/participantinfo.mat')
+  load('/mnt/beegfs/home/kloosterman/GitHub/EyeMem/EyeMem_1/participantinfo/participantinfo.mat')
 end
 
 timreq = 60; %in minutes per run
