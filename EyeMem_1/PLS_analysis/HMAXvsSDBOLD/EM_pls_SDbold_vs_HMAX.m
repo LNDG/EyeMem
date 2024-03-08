@@ -66,54 +66,16 @@ switch gazespecificHMAX
   case 'non-gazespecific' % bin based on overall HMAX, take SD over 5 trials    
     % sort onsets based on hmax TODO run for HMAX C2    
     [sortHMAX, sortinds] = sort(source.trialinfo(validtrials,10));  %hmax in 10, ascending, trial inds - 10 is c1median
-    ntrlperbin = ntrials / nbins; % each subject has 150 trials
-    
-    [bininds, binedges] = discretize(1:ntrials, nbins);
-    
-%     bininds = repmat(1:nbins, ntrlperbin, 1);
-%     %         bininds = bininds(:);
-%     %         bininds = bininds(sortinds); % does this reorder? NO just indexing
-%     bininds = sortrows([sortinds, bininds(:)]);
-    bininds = sortrows([sortinds, bininds']);
-    bininds = bininds(:,2);
-    bininds(isnan(sortHMAX)) = NaN; % set outliers to nan
-    
-%     binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
-    binedges = [sortHMAX(1); sortHMAX(binedges(2:end-1)); sortHMAX(end)];
-    
   case 'gaze-specific'
-    %% TODO get hmax_at_fix trl from trialinfo here
     load(eyefile)
     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
-    
-    
-    
-    
-    %%
-    
-    switch bintype
-      case 'fixednbins'
-        % continue with sorting
-        [sortHMAX, sortinds] = sort(hmax_at_fix_trl);  % gaze-specific HMAX values
-        %         [sortHMAXold, sortindsold] = sort(source.trialinfo(:,10));
- 
-        bininds = repmat(transpose(1:nbins), ceil(ntrials/nbins), 1);
-        bininds = sort(bininds(1:ntrials));
-        
-        ntrlperbin = floor(ntrials / nbins); % each subject has 150 trials
-% 
-%         bininds = repmat(1:nbins, ntrlperbin, 1);
-% %         bininds = bininds(:);        
-        bininds = sortrows([sortinds, bininds(:)]);
-        bininds = bininds(:,2);
-        bininds(isnan(hmax_at_fix_trl)) = NaN; % set outliers to nan
-        
-        binedges = sortHMAX([1:ntrlperbin:ntrials ntrials]);
-
-      case 'uniformbinwidth' % tricky because SD depends on N trials
-        [ntrlperbin,binedges,bininds] = histcounts(hmax_at_fix_trl,nbins);
-    end
 end
+ntrlperbin = ntrials / nbins; % each subject has 150 trials
+[bininds, binedges] = discretize(1:ntrials, nbins);
+bininds = sortrows([sortinds, bininds']);
+bininds = bininds(:,2);
+bininds(isnan(sortHMAX)) = NaN; % set outliers to nan
+binedges = [sortHMAX(1); sortHMAX(binedges(2:end-1)); sortHMAX(end)];
 
 disp 'make bins of trials based on hmax'
 source_bin = source; 
