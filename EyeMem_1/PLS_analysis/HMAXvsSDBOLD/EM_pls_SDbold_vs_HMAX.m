@@ -82,8 +82,10 @@ switch gazespecificHMAX
     binedges = [sortHMAX(1); sortHMAX(binedges(2:end-1)); sortHMAX(end)];
     
   case 'gaze-specific'
-    
     %% TODO get hmax_at_fix trl from trialinfo here
+    load(eyefile)
+    [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
+    
     
     
     
