@@ -103,10 +103,10 @@ switch gazespecificHMAX
 %     data = ft_selectdata(cfg, data);
     
 %     ntrials = length(data.trial);
+%% TO: eye_analysis
     hmax_at_fix_trl = nan(ntrials,1);
     hmax_at_fix_keep = [];
     fixdur_keep = [];
-%% TO: eye_analysis
     for itrial = 1:ntrials
       % get HMAX data of pic shown
       catind = data.trialinfo(itrial, 2); %

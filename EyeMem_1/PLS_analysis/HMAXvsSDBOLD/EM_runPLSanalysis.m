@@ -100,8 +100,8 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
 
 %     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
-%     agegroups = {'old'};
-        agegroups = {''};
+    agegroups = {'old'};
+%         agegroups = {''};
     
     disp 'Generate model txt file'
     %     txtfilename = 'corrSDbold_vsRT_OA_BfMRIanalysis.txt';
