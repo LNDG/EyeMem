@@ -286,10 +286,6 @@ for irun = 1:length(edflist)
     for ifix = 1:nfix
       hmax_at_fix(ifix,1) = curhmax(fixloc_newres(ifix,2), fixloc_newres(ifix,1)); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around
     end
-    if isempty(hmax_at_fix)
-       hmax_at_fix_trl(itrial,:) = NaN;
-      continue
-    end
     
     disp 'average over HMAX vals to get 1 val per trial'
     weightedmean = 0;
