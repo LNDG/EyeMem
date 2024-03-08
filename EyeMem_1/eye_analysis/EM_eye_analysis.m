@@ -113,12 +113,7 @@ for irun = 1:length(edflist)
     timelock.avg = timelock.var; % to look at variability
     ft_databrowser(cfg2, timelock)
   end
-  
-  % Select only viewing period
-  cfg=[];
-  cfg.latency = [0 5];
-  data_viewing = ft_selectdata(cfg, data);
-  
+    
   disp 'detect microsaccades within viewing period, per trial'
   %% Detect fixations in each trial, detect microsaccades within each fixation
   % TODO plot MS in fixations, also velocity?
@@ -127,10 +122,11 @@ for irun = 1:length(edflist)
     f = figure; f.Position =[  1          58        1920         919 ];
   end
   microsaccades = []; 
-  for itrial = 1:length(data_viewing.trial)
+  for itrial = 1:length(data.trial)
     cfg=[];
-    cfg.trials = itrial;
-    data_trial = ft_selectdata(cfg,data_viewing);
+    cfg.trials = itrial; % select current trial
+    cfg.latency = [0 5]; % select only viewing period
+    data_trial = ft_selectdata(cfg, data);
     data_trial.sampleinfo = [1 length(data_trial.trial{1})];
     
     disp 'Detect fixations'
@@ -206,8 +202,8 @@ for irun = 1:length(edflist)
       set(gca,'Ydir','reverse'); title(itrial)
       % plot microsaccades
       if all(movement>0)
-        plot(data_viewing.trial{itrial}(2,movement(:,1)), data_viewing.trial{itrial}(3,movement(:,1)), 'x', 'MarkerSize', 20)
-        plot(data_viewing.trial{itrial}(2,movement(:,2)), data_viewing.trial{itrial}(3,movement(:,2)), 'x', 'MarkerSize', 20)
+        plot(data_trial.trial{1}(2,movement(:,1)), data_trial.trial{1}(3,movement(:,1)), 'x', 'MarkerSize', 20)
+        plot(data_trial.trial{1}(2,movement(:,2)), data_trial.trial{1}(3,movement(:,2)), 'x', 'MarkerSize', 20)
       end
       if itrial==1;      legend({'Fixations', 'Saccades', 'MS start', 'MS end'}); end
             
