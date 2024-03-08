@@ -106,7 +106,7 @@ switch gazespecificHMAX
     hmax_at_fix_trl = nan(ntrials,1);
     hmax_at_fix_keep = [];
     fixdur_keep = [];
-
+%% TO: eye_analysis
     for itrial = 1:ntrials
       % get HMAX data of pic shown
       catind = data.trialinfo(itrial, 2); %
@@ -155,7 +155,8 @@ switch gazespecificHMAX
       fixloc_newres = fixloc_newres(all(validfix,2),:); % also apply to resampled fix locations
       fixloc = fixloc(all(validfix,2),:);
       fixdur = fixdur(all(validfix,2));
-      
+      nfix =length(fixdur);
+
       plotit=1;
       if ismac && plotit
         figure; hold on
@@ -213,6 +214,8 @@ switch gazespecificHMAX
       fixdur_keep =      [fixdur_keep; fixdur];
       
     end
+    %% END TO: eye_analysis
+    
 %     figure; scatter(hmax_at_fix_keep, fixdur_keep); lsline; title(corr(hmax_at_fix_keep, fixdur_keep))
 % %     dat = [log(hmax_at_fix_keep) log(fixdur_keep)];
 % %     dat = dat(all(~isinf(dat),2),:);
