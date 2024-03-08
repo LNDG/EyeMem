@@ -130,14 +130,10 @@ for irun = 1:length(edflist)
     data_trial.sampleinfo = [1 length(data_trial.trial{1})];
     
     disp 'Detect fixations'
-    fixation_detection = 'DM'; % EyeLink triggers or ft_detect_movement DM
+    fixation_detection = 'EL'; % EyeLink triggers or ft_detect_movement DM
     switch fixation_detection % make trl matrix for fixations as trials
       case 'EL'
-        data_trial.trial{1}(7,[1 end]) = 0; % start and end with no fix        
-        fixonsets = find(diff( data_trial.trial{1}(7,:)) == 1); % -100
-        fixoffsets = find(diff( data_trial.trial{1}(7,:)) == -1); % +100
-        trl = [fixonsets(:) fixoffsets(:) zeros(length(fixoffsets(:)),1)];
-        trl = trl(2:end,:); % remove 1st fixation because imposed above
+        fix_bool = logical(data_trial.trial{1}(7,:));
       case 'DM' % detect fixations using Engbert and Kliegl method
         cfg=[];
         cfg.method = 'velocity2D';
@@ -151,17 +147,16 @@ for irun = 1:length(edflist)
         for im = 1:size(movement,1)
           fix_bool(movement(im,1):movement(im,2)) = false; % fixation is false at saccades
         end
-        fix_bool([1 end]) = false; % to have start and end fixation
-        fixonsets = find(diff(fix_bool) == 1); % -100
-        fixoffsets = find(diff(fix_bool) == -1); % +100
-        trl = [fixonsets(:) fixoffsets(:) zeros(length(fixoffsets(:)),1)];
-        trl = trl(2:end,:); % remove 1st fixation because imposed above
-        data_trial.trial{1}(7,:) = fix_bool;
-        % TODO put fixation bool also in data?
     end
+    fix_bool([1 end]) = false; % to have start and end fixation
+    blinksmp = logical(data_trial.trial{1}(5,:));
+    fix_bool(blinksmp) = false; % remove blink samples
+    fixonsets = find(diff(fix_bool) == 1); 
+    fixoffsets = find(diff(fix_bool) == -1); 
+    trl = [fixonsets(:) fixoffsets(:) zeros(length(fixoffsets(:)),1)];
     
-    % keep 0-5 s trials with new fixation channel
-    data_trial_cropped{end+1} = data_trial;
+    data_trial.trial{1}(7,:) = fix_bool; % put blink-cleaned fixations back    
+    data_trial_cropped{end+1} = data_trial; % keep 0-5 s trials with new fixation channel
 
     if isempty(trl)
       microsaccades.movement{itrial} = [NaN NaN NaN];
@@ -215,6 +210,204 @@ for irun = 1:length(edflist)
 %       end
 
     end
+    
+    %% fixation HMAX analysis
+    disp 'load HMAX file'
+    HMAXfolder = fullfile(fileparts(PREIN), 'D_paradigm', 'stimuli_640x480', 'hmax');
+    hmaxlist=dir(fullfile(HMAXfolder, '*.mat' ));
+    hmaxdat = {};
+    for ih = 1:length(hmaxlist)
+      load(fullfile(hmaxlist(ih).folder, hmaxlist(ih).name));
+      hmaxdat{ih} = hmaxout;
+    end
+
+    disp 'get HMAX data of pic shown'
+    catind = data.trialinfo(itrial, 2); %
+    picno = data.trialinfo(itrial, 3); %
+    picind = hmaxdat{catind}.picno == picno;
+    curhmax = hmaxdat{catind}.c1(:,:,picind); 
+    picdat = hmaxdat{catind}.picdat(:,:,picind);
+    %     figure; imagesc(curhmax);
+    
+    disp 'resample gaze to curhmax resolution'
+    xshift = (1024-640)/2;    yshift = (768-480)/2;
+    nfix = length(data_fix.trial);
+    fixloc = NaN(nfix,2);    fixdur = NaN(nfix,1);
+    cur_res = size(picdat); % resolution of the pics
+    desiredres = size(curhmax);
+    fixloc_newres = NaN(nfix,2);
+    for ifix = 1:nfix
+      fixdur(ifix,1) = size(data_fix.trial{ifix},2);
+      fixloc(ifix,:) = round(mean(data_fix.trial{ifix}(2:3,:),2)) - [xshift; yshift]; % Xgaze and Ygaze in chan2 and 3
+      fixloc_newres(ifix,:) = round(fixloc(ifix,:) ./ cur_res .* desiredres);       % convert XY coords to resolution of HMAX
+    end
+
+    disp 'Drop fixations outside picture'
+    validfix = NaN(size(fixloc_newres,1),2);
+    validfix(:,1) = fixloc_newres(:,1) > 0 & fixloc_newres(:,1) < desiredres(2);
+    validfix(:,2) = fixloc_newres(:,2) > 0 & fixloc_newres(:,2) < desiredres(1);
+    fixloc_newres = fixloc_newres(all(validfix,2),:); % also apply to resampled fix locations
+    fixloc = fixloc(all(validfix,2),:);
+    fixdur = fixdur(all(validfix,2));
+    nfix =length(fixdur);
+    
+    plotit=0;
+    if ismac && plotit
+      figure; hold on
+      % The default EyeLink coordinates are those of a 1024 by 768 VGA display, with (0, 0) at the top left.
+      imagesc(picdat) % for plotting transpose and flipud??
+      ax=gca; ax.YDir = 'reverse';
+
+      %       scatter(data.trial{itrial}(2,fixations)-xshift, data.trial{itrial}(3,fixations)-yshift, 'g'); hold on
+      
+      scatter(fixloc(:,1),fixloc(:,2), 'r', 'filled'); % already shifted
+      text(fixloc(:,1),fixloc(:,2), string(1:size(fixloc,1))); % already shifted
+      
+      %       xlim([0 1024]); ylim([0 768]); box on
+      xlim([0 640]); ylim([0 480]); box on
+      title(nfix)
+      
+      disp 'plot hmax and gaze'
+      figure;
+      imagesc(curhmax); hold on
+      scatter(fixloc_newres(:,1),fixloc_newres(:,2), 'r', 'filled'); % already shifted
+      ax=gca; ax.YDir = 'reverse';
+      
+      curhmax2 = curhmax;
+      for ifix = 1:nfix
+        curhmax2(fixloc_newres(ifix,2), fixloc_newres(ifix,1)) = 1;
+      end
+      figure; imagesc(curhmax2); hold on
+    end
+    
+    disp 'get c1 HMAX vals at fixation locations'
+    nfix = size(fixloc_newres,1);
+    hmax_at_fix=NaN(nfix,1);
+    for ifix = 1:nfix
+      hmax_at_fix(ifix,1) = curhmax(fixloc_newres(ifix,2), fixloc_newres(ifix,1)); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around
+    end
+    if isempty(hmax_at_fix)
+      continue
+    end
+    
+    disp 'average over HMAX vals to get 1 val per trial'
+    weightedmean = 0;
+    if weightedmean == 1
+      fixdur = fixdur / sum(fixdur);
+      hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
+    else
+      hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);
+    end
+
+
+    
+    %%
+%     % ORI: get fixation on and offsets: do based on non saccade episodes 
+%     fixations = data.trial{itrial}(6,:)<0.1; % makes it 1 during fixation
+%     %       fixations = logical(data.trial{itrial}(7,:)); % makes it 1 during fixation
+%     fixations(data.trial{itrial}(5,:) == 1) = 0; % blinks
+%     fixations(1) = 0; % so we get a fixation start at begin
+%     fixations(end) = 0; % so we get a fixation end at end
+%     fixtrig = [ find(diff(fixations) == 1)' find(diff(fixations) == -1)'];
+%     %       disp 'Drop first (trial starts with central fixation) and last fixation'
+%     %       fixtrig = fixtrig(2:end-1,:);
+%     
+%     % get XY coords of fixations: average XY within fixations
+%     nfix = size(fixtrig,1);
+%     fixloc = NaN(nfix,2);
+%     fixdur = NaN(nfix,1);
+%     cur_res = size(picdat); % resolution of the pics
+%     desiredres = size(curhmax);
+%     %     fixmap = zeros([size(curhmax) nfix]);
+%     fixloc_newres = NaN(nfix,2);
+%     disp 'resample gaze to curhmax resolution'
+%     xshift = (1024-640)/2;
+%     yshift = (768-480)/2;
+%     for ifix = 1:nfix
+%       fixinds = fixtrig(ifix,1):fixtrig(ifix,2);
+%       fixdur(ifix,1) = length(fixinds);
+%       fixloc(ifix,:) = round(mean(data.trial{itrial}(2:3,fixinds),2)); % Xgaze and Ygaze in chan2 and 3
+%       %       disp 'shift fixations, account for pic not fullscreen in scanner, but in the middle'
+%       fixloc(ifix,1) = fixloc(ifix,1)-xshift;
+%       fixloc(ifix,2) = fixloc(ifix,2)-yshift;
+%       % convert XY coords to resolution of HMAX
+%       fixloc_newres(ifix,:) = round(fixloc(ifix,:) ./ cur_res .* desiredres);
+%     end
+%     disp 'Drop fixations outside picture'
+%     
+%     validfix = NaN(size(fixloc_newres,1),2);
+%     validfix(:,1) = fixloc_newres(:,1) > 0 & fixloc_newres(:,1) < desiredres(2);
+%     validfix(:,2) = fixloc_newres(:,2) > 0 & fixloc_newres(:,2) < desiredres(1);
+%     fixloc_newres = fixloc_newres(all(validfix,2),:); % also apply to resampled fix locations
+%     fixloc = fixloc(all(validfix,2),:);
+%     fixdur = fixdur(all(validfix,2));
+%     nfix =length(fixdur);
+%     
+%     plotit=1;
+%     if ismac && plotit
+%       figure; hold on
+%       % The default EyeLink coordinates are those of a 1024 by 768 VGA display, with (0, 0) at the top left.
+%       imagesc(picdat) % for plotting transpose and flipud??
+%       ax=gca; ax.YDir = 'reverse';
+%       %       scatter(data.trial{itrial}(2,:)-xshift, data.trial{itrial}(3,:)-yshift, 'k'); hold on
+%       scatter(data.trial{itrial}(2,fixations)-xshift, data.trial{itrial}(3,fixations)-yshift, 'g'); hold on
+%       scatter(fixloc(:,1),fixloc(:,2), 'r', 'filled'); % already shifted
+%       text(fixloc(:,1),fixloc(:,2), string(1:size(fixloc,1))); % already shifted
+%       
+%       %       xlim([0 1024]); ylim([0 768]); box on
+%       xlim([0 640]); ylim([0 480]); box on
+%       title(nfix)
+%       
+%       disp 'plot hmax and gaze'
+%       figure;
+%       imagesc(curhmax); hold on
+%       scatter(fixloc_newres(:,1),fixloc_newres(:,2), 'r', 'filled'); % already shifted
+%       ax=gca; ax.YDir = 'reverse';
+%       
+%       curhmax2 = curhmax;
+%       for ifix = 1:nfix
+%         curhmax2(fixloc_newres(ifix,2), fixloc_newres(ifix,1)) = 1;
+%       end
+%       figure; imagesc(curhmax2); hold on
+%       
+%       %       sc = scatter(fixind_newres(:,1), fixind_newres(:,2), 'filled');
+%       %       sc.SizeData = 50;
+%       %       sc.CData = [1 0 0];
+%     end
+%     
+%     disp 'get c1 HMAX vals at fixation locations'
+%     nfix = size(fixloc_newres,1);
+%     hmax_at_fix=NaN(nfix,1);
+%     for ifix = 1:nfix
+%       hmax_at_fix(ifix,1) = curhmax(fixloc_newres(ifix,2), fixloc_newres(ifix,1)); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around
+%     end
+%     if isempty(hmax_at_fix)
+%       continue
+%     end
+%     
+%     disp 'average over HMAX vals to get 1 val per trial'
+%     weightedmean = 0;
+%     if weightedmean == 1
+%       fixdur = fixdur / sum(fixdur);
+%       hmax_at_fix_trl(itrial,:) = sum((hmax_at_fix .* fixdur)) ;
+%     else
+%       hmax_at_fix_trl(itrial,:) = mean(hmax_at_fix);
+%     end
+%     
+%     % keep hmax and fix dur values to correlate: YA better track
+%     % complexity, i.e. get it better?
+%     hmax_at_fix_keep = [hmax_at_fix_keep; hmax_at_fix];
+%     fixdur_keep =      [fixdur_keep; fixdur];
+%     
+%     %     end
+%     
+%     
+    % TODO put in trialinfo
+    %% END TO: eye_analysis
+    
+    
+    
+    
   end
   if  plotit
     mkdir(fullfile(PREOUT, 'MSplots'))
@@ -224,6 +417,7 @@ for irun = 1:length(edflist)
   %%
   data.trialinfo(:,15) = microsaccades.count;
   data.trialinfo(:,16) = microsaccades.velocity;
+  data.trialinfo(:,17) = hmax_at_fix_trl;
   
   disp 'down sample eye data'
   cfg=[];
