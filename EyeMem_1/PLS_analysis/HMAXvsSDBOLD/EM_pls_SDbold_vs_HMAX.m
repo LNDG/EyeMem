@@ -124,7 +124,7 @@ switch gazespecificHMAX
       fixations(end) = 0; % so we get a fixation end at end
       fixtrig = [ find(diff(fixations) == 1)' find(diff(fixations) == -1)'];
       %       disp 'Drop first (trial starts with central fixation) and last fixation'
-      %       fixtrig = fixtrig(2:end-1,:);
+      fixtrig = fixtrig(2:end-1,:);
       
       % get XY coords of fixations: average XY within fixations
       nfix = size(fixtrig,1);
