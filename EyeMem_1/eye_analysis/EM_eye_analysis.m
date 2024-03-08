@@ -163,6 +163,9 @@ for irun = 1:length(edflist)
         data_trial.trial{1}(7,:) = fix_bool;
         % TODO put fixation bool also in data?
     end
+    
+    % keep 0-5 s trials with new fixation channel
+    data_trial_cropped{end+1} = data_trial;
 
     if isempty(trl)
       microsaccades.movement{itrial} = [NaN NaN NaN];
@@ -170,10 +173,7 @@ for irun = 1:length(edflist)
       microsaccades.velocity(itrial,:) = NaN; % NK edit ft_detect_movement to get peak velocity
       continue
     end
-    
-    % keep 0-5 s trials with new fixation channel
-    data_trial_cropped{end+1} = data_trial;
-    
+        
     disp 'Make "trials" from fixations'
     cfg=[]; 
     cfg.trl = trl;
@@ -246,6 +246,8 @@ cfg.keepsampleinfo = 'no';
 data = ft_appenddata(cfg, alldata{:});
 data_trial_cropped = ft_appenddata(cfg, data_trial_cropped{:});
 clear alldata
+
+data_trial_cropped.trialinfo = data.trialinfo; % include MS counts
 
 disp(outfile)
 save(outfile, 'data', 'data_trial_cropped')
