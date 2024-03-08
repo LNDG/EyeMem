@@ -91,7 +91,7 @@ switch gazespecificHMAX
     end
     
     load(eyefile)
-    data = data_trial_cropped;
+%     data = data_trial_cropped;
     disp 'selecting only 0-5 s viewing time'
     cfg=[];
     cfg.latency = [0 5];
@@ -117,8 +117,8 @@ switch gazespecificHMAX
       %     figure; imagesc(curhmax);
       
       % get fixation on and offsets: do based on non saccade episodes
-%       fixations = data.trial{itrial}(6,:)<0.1; % makes it 1 during fixation
-      fixations = logical(data.trial{itrial}(7,:)); % makes it 1 during fixation
+      fixations = data.trial{itrial}(6,:)<0.1; % makes it 1 during fixation
+%       fixations = logical(data.trial{itrial}(7,:)); % makes it 1 during fixation
       fixations(data.trial{itrial}(5,:) == 1) = 0; % blinks
       fixations(1) = 0; % so we get a fixation start at begin
       fixations(end) = 0; % so we get a fixation end at end
