@@ -22,28 +22,27 @@ datainfo.sampgaps = []; % 6 runs
 
 alldata = {}; data_trial_cropped = {};
 for irun = 1:length(edflist)
-  [~, name] = fileparts(filename_eye);
-  matname = [name '.mat'];
-  if exist(matname)
-    disp 'Loading mat file'; disp(matname)    
-    load(matname)
+  [~,eyename] = fileparts( edflist(irun).name );
+  filename_asc = [eyename '.asc'];
+  disp(filename_asc)
+  filename_mat = [eyename '.mat'];
+  if exist(filename_mat)
+    disp 'Loading mat file'; disp(filename_mat)    
+    load(filename_mat)
   else
     disp 'convert edf to asc'
-    [~,eyename] = fileparts( edflist(irun).name );
-    filename_eye = sprintf('%s.asc', eyename);
-    disp(filename_eye)
-    if ~exist(filename_eye)
+    if ~exist(filename_asc)
       system(sprintf('%s -y %s', edf2asc, edflist(irun).name )); %% convert edf to asc, overwrite
     end
     disp('preprocess eye data')
     cfg = [];
-    cfg.dataset          = filename_eye;
+    cfg.dataset          = filename_asc;
     cfg.montage.tra      = eye(4);
     cfg.montage.labelorg = {'1', '2', '3', '4'};
     cfg.montage.labelnew = {'EYE_TIMESTAMP', 'EYE_HORIZONTAL', 'EYE_VERTICAL', 'EYE_DIAMETER'};
     data = ft_preprocessing(cfg);
-    disp(matname)
-    save(matname, 'data')
+    disp(filename_mat)
+    save(filename_mat, 'data')
   end
   return
   
@@ -53,7 +52,7 @@ for irun = 1:length(edflist)
   end
     
   disp('interpolate blinks, add blinks, saccades and fixations as chans')
-  hdr = ft_read_header(filename_eye); %, 'headerformat', 'eyelink_asc');
+  hdr = ft_read_header(filename_asc); %, 'headerformat', 'eyelink_asc');
   data = interpolate_blinks(hdr, data); % TODO add microsaccades? getting channel 5 and 6
   
   if ismac && plotit
@@ -85,7 +84,7 @@ for irun = 1:length(edflist)
   
   disp('define trials')
   cfg=[];
-  cfg.headerfile = filename_eye;
+  cfg.headerfile = filename_asc;
   cfg.runinfo = runinfo;
   cfg.trialdef.trg = 'stim';
   cfg.trialdef.begtim = -3;
