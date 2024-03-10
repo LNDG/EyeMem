@@ -22,41 +22,36 @@ datainfo.sampgaps = []; % 6 runs
 
 alldata = {}; data_trial_cropped = {};
 for irun = 1:length(edflist)
-  disp 'convert edf to asc'
-  [~,eyename] = fileparts( edflist(irun).name );
-  filename_eye = sprintf('%s.asc', eyename);
-  disp(filename_eye)
-  if ~exist(filename_eye)
-    system(sprintf('%s -y %s', edf2asc, edflist(irun).name )); %% convert edf to asc, overwrite
+  [~, name] = fileparts(filename_eye);
+  matname = [name '.mat'];
+  if exist(matname)
+    disp 'Loading mat file'; disp(matname)    
+    load(matname)
+  else
+    disp 'convert edf to asc'
+    [~,eyename] = fileparts( edflist(irun).name );
+    filename_eye = sprintf('%s.asc', eyename);
+    disp(filename_eye)
+    if ~exist(filename_eye)
+      system(sprintf('%s -y %s', edf2asc, edflist(irun).name )); %% convert edf to asc, overwrite
+    end
+    disp('preprocess eye data')
+    cfg = [];
+    cfg.dataset          = filename_eye;
+    cfg.montage.tra      = eye(4);
+    cfg.montage.labelorg = {'1', '2', '3', '4'};
+    cfg.montage.labelnew = {'EYE_TIMESTAMP', 'EYE_HORIZONTAL', 'EYE_VERTICAL', 'EYE_DIAMETER'};
+    data = ft_preprocessing(cfg);
+    disp(matname)
+    save(matname, 'data')
   end
-  disp('preprocess eye data')
-  cfg = [];
-  cfg.dataset          = filename_eye;
-  cfg.montage.tra      = eye(4);
-  cfg.montage.labelorg = {'1', '2', '3', '4'};
-  cfg.montage.labelnew = {'EYE_TIMESTAMP', 'EYE_HORIZONTAL', 'EYE_VERTICAL', 'EYE_DIAMETER'};
-  data = ft_preprocessing(cfg); 
+  return
   
   if ismac && plotit
     cfg=[];    cfg.channel =[2 3]; ft_databrowser(cfg, data)
     figure; plot(data.trial{1}(2,:), data.trial{1}(3,:))
   end
-  
-  datainfo.sampgaps = [datainfo.sampgaps unique(diff(data.trial{1}(1,:)))];
-  if data.fsample ~= 1000
-    disp(datainfo.sampgaps)
-    error('data is missing from recording! gaps are (in samples):')
-% %     continue % TODO fix this
-%     % put nans were missing data is    
-%     nandata = nan(4, datainfo.sampgaps(2));
-%     hiccupstart = find(diff(data.trial{1}(1,:)) > 1);
-%     newdata = [data.trial{1}(:,1:hiccupstart-1) nandata data.trial{1}(:,hiccupstart:end)];
-%     newdata(1,:) = (1:size(newdata,2)) + data.trial{1}(1,1); % new sample channel
-%     data.time{1} = 0:1/data.fsample:((size(newdata,2)-1)/data.fsample);
-%     data.trial{1} = newdata;
-%     data.fsample = 1000; % 3 runs affected
-  end
-  
+    
   disp('interpolate blinks, add blinks, saccades and fixations as chans')
   hdr = ft_read_header(filename_eye); %, 'headerformat', 'eyelink_asc');
   data = interpolate_blinks(hdr, data); % TODO add microsaccades? getting channel 5 and 6
@@ -170,6 +165,19 @@ for irun = 1:length(edflist)
     cfg.trl = trl;
     data_fix = ft_redefinetrial(cfg, data_trial);
     
+    disp 'reject fixations with blinks'
+    cfg=[];
+    cfg.trials = cellfun(@(x) not(any(x(5,:))), data_fix.trial); % not any blinks
+    data_fix = ft_selectdata(cfg, data_fix);
+
+    disp 'shift gaze to remove gray boundary and reject fixations outside picture'
+    xshift = (1024-640)/2;    yshift = (768-480)/2;
+    data_fix.trial = cellfun(@(x) x(2:3,:) - [xshift; yshift], data_fix.trial) ; % Xgaze and Ygaze in chan2 and 3
+    
+    
+    fixloc = cellfun(@(x) round(mean(x(2:3,:),2))-[xshift; yshift], data_fix.trial, 'Uni',0) ; % Xgaze and Ygaze in chan2 and 3
+    fixloc = [fixloc{:}]';
+
     disp 'Detect microsaccades within fixations'
     cfg=[];
     cfg.method = 'velocity2D';
@@ -230,17 +238,23 @@ for irun = 1:length(edflist)
     %     figure; imagesc(curhmax);
     
     disp 'resample gaze to curhmax resolution'
-    xshift = (1024-640)/2;    yshift = (768-480)/2;
-    nfix = length(data_fix.trial);
-    fixloc = NaN(nfix,2);    fixdur = NaN(nfix,1);
-    cur_res = size(picdat); % resolution of the pics
-    desiredres = size(curhmax);
-    fixloc_newres = NaN(nfix,2);
-    for ifix = 1:nfix
-      fixdur(ifix,1) = size(data_fix.trial{ifix},2);
-      fixloc(ifix,:) = round(mean(data_fix.trial{ifix}(2:3,:),2)) - [xshift; yshift]; % Xgaze and Ygaze in chan2 and 3
-      fixloc_newres(ifix,:) = round(fixloc(ifix,:) ./ cur_res .* desiredres);       % convert XY coords to resolution of HMAX
-    end
+%     xshift = (1024-640)/2;    yshift = (768-480)/2;
+%     nfix = length(data_fix.trial);
+%     fixloc = NaN(nfix,2);    fixdur = NaN(nfix,1);
+%     cur_res = size(picdat); % resolution of the pics
+%     desiredres = size(curhmax);
+%     fixloc_newres = NaN(nfix,2);
+%     for ifix = 1:nfix
+%       fixdur(ifix,1) = size(data_fix.trial{ifix},2);
+%       fixloc(ifix,:) = round(mean(data_fix.trial{ifix}(2:3,:),2)) - [xshift; yshift]; % Xgaze and Ygaze in chan2 and 3
+%       fixloc_newres(ifix,:) = round(fixloc(ifix,:) ./ cur_res .* desiredres);       % convert XY coords to resolution of HMAX
+%     end
+    fixdur = cellfun(@(x) size(x,2), data_fix.trial);
+%     xshift = (1024-640)/2;    yshift = (768-480)/2;
+%     fixloc = cellfun(@(x) round(mean(x(2:3,:),2))-[xshift; yshift], data_fix.trial, 'Uni',0) ; % Xgaze and Ygaze in chan2 and 3
+%     fixloc = [fixloc{:}]';
+    cur_res = size(picdat);     desiredres = size(curhmax); %resolutions of pic and hmax
+    fixloc_newres(ifix,:) = round(fixloc(ifix,:) ./ cur_res .* desiredres);       % convert XY coords to resolution of HMAX
 
     disp 'Drop fixations outside picture'
     validfix = NaN(size(fixloc_newres,1),2);
