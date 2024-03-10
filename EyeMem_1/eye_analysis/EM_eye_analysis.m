@@ -44,7 +44,7 @@ for irun = 1:length(edflist)
     disp(filename_mat)
     save(filename_mat, 'data')
   end
-  return
+  continue
   
   if ismac && plotit
     cfg=[];    cfg.channel =[2 3]; ft_databrowser(cfg, data)
@@ -440,6 +440,7 @@ for irun = 1:length(edflist)
   alldata{end+1} = data;
   
 end
+return
 
 cfg=[];
 cfg.keepsampleinfo = 'no';
