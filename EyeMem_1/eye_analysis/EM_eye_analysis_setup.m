@@ -86,19 +86,7 @@ else
 end
 
 if strcmp(backend, 'local')
-  [data, datainfo] = cellfun(fun2run, cfglist);
-  
-  if ismac
-    timelock = cellfun(@(x) ft_timelockanalysis([], x),  num2cell(data));
-    timelock = num2cell(timelock);
-    timelockavg = ft_timelockgrandaverage([],  timelock{:});
-    
-    cfg=[];
-    cfg.channel = 'EYE_SACCADES'; %{'EYE_TIMESTAMP'  'EYE_HORIZONTAL'  'EYE_VERTICAL'  'EYE_DIAMETER'  'EYE_BLINKS'  'EYE_SACCADES'}
-    cfg.preproc.demean = 'yes';
-    ft_databrowser(cfg, timelockavg)
-  end
-% if it's running on slurm
+  cellfun(fun2run, cfglist);
 else
   qsubcellfun(fun2run, cfglist, 'memreq', memreq*1e6, 'timreq', timreq*60, 'stack', 1, ...
     'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options);
