@@ -97,13 +97,20 @@ for irun = 1:length(edflist)
   cfg.event = event;
   cfg.fsample = data.fsample;
   cfg.trialfun = 'EM_sortTrials_Marija';
-  cfg = ft_definetrial(cfg); % make trl matrix
+  cfg = ft_definetrial(cfg); % make trl matrix  
+  if all(cfg.trl(1:3) == [0 0 0]); disp 'TODO sort out resting state'; continue; end    
+  data = ft_redefinetrial(cfg, data); %make trials
   
-  if all(cfg.trl(1:3) == [0 0 0]); disp 'TODO sort out resting state'; continue; end
+  data.trialinfo = array2table(data.trialinfo, ...
+    'VariableNames',{'exp_phase','pic_category', 'picno_study', 'picno_quiz', 'pic_quiz_oldnew', ...
+    'response', 'resp_button', 'RT_quizpic', 'fMRI_trigger', 'HMAX_C1', 'HMAX_C2', 'runno', ...
+    'mem_at_test', 'RT_at_test' });
   
-  %make trials
-  data = ft_redefinetrial(cfg, data);
-  data.trialinfo(:,15:25) = NaN; % for various eye dynamics
+  varTypes = ["double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
+  varNames = ["fixdur_mean", "fixdur_std", "fix_drift", "sacc_dur_mean", "sacc_dur_std", 'sacc_distance', ...
+    "HMAX_fix", "HMAX_fix_weighted", "Microsacc_count", "Microsacc_velocity"];
+  sz = [30 length(varNames)];
+  eyeinfo = table('Size',sz,'VariableTypes',varTypes,'VariableNames',varNames);
   
   if ismac && plotit
     cfg2=[];
@@ -167,6 +174,7 @@ for irun = 1:length(edflist)
     cfg=[];
     cfg.trials = cellfun(@(x) not(any(x(5,:))), data_fix.trial); % not any blinks
     data_fix = ft_selectdata(cfg, data_fix);
+    if isempty(data_fix.trial);  disp('No fixations without blinks found');    continue;       end
         
     disp 'reject fixations outside picture'
     fixloc = cellfun(@(x) round(mean(x(2:3,:),2)), data_fix.trial, 'Uni',0) ; % Xgaze and Ygaze in chan2 and 3
@@ -174,38 +182,39 @@ for irun = 1:length(edflist)
     cfg=[];
     cfg.trials = fixloc(:,1) > 0 & fixloc(:,1) < 640 & fixloc(:,2) > 0 & fixloc(:,2) < 480;
     data_fix = ft_selectdata(cfg, data_fix);
+    if isempty(data_fix.trial);  disp('No fixations within picture without blinks found');    continue;       end
     
-    fixdur = cellfun(@(x) size(x,2), data_fix.trial);
-    data.trialinfo(itrial,15) = mean(fixdur); % fixation duration average
-    data.trialinfo(itrial,16) = std(fixdur); % fixation duration SD
+    fixdur = cellfun(@(x) size(x,2), data_fix.trial)';
+    eyeinfo.fixdur_mean(itrial,1) = mean(fixdur); % fixation duration average
+    eyeinfo.fixdur_std(itrial,1) = std(fixdur); % fixation duration SD
     % Fixation drift, see Clark et al. PNAS 2022 TODO diffusion constant
-    data.trialinfo(itrial,17) = mean(cellfun(@(x) std(x(2,:),0,2), data_fix.trial)); % x 
-    data.trialinfo(itrial,18) = mean(cellfun(@(x) std(x(3,:),0,2), data_fix.trial)); % x 
+    eyeinfo.fix_drift(itrial,1) = mean(cellfun(@(x) std(x(2,:),0,2), data_fix.trial)); % x y 
+    eyeinfo.fix_drift(itrial,2) = mean(cellfun(@(x) std(x(3,:),0,2), data_fix.trial)); % y
     
     disp 'Make "trials" from saccades'
     cfg=[];
     cfg.trl = [fixoffsets(1:end-1)' fixonsets(2:end)' zeros(length(fixoffsets(1:end-1)),1)]; % note the flip
-    data_sacc = ft_redefinetrial(cfg, data_trial);
-    
+    data_sacc = ft_redefinetrial(cfg, data_trial);    
     if isempty(data_sacc.trial);  disp('No saccades found');    continue;       end
 
     disp 'reject saccades with blinks'
     cfg=[];
     cfg.trials = cellfun(@(x) not(any(x(5,:))), data_sacc.trial); % not any blinks
     data_sacc = ft_selectdata(cfg, data_sacc);
+    if isempty(data_sacc.trial);  disp('No saccades without blinks found');    continue;       end
 
     saccdur = cellfun(@(x) size(x,2), data_sacc.trial);
-    data.trialinfo(itrial,19) = mean(saccdur); % saccade duration average in ms
-    data.trialinfo(itrial,20) = std(saccdur); % saccade duration SD
+    eyeinfo.sacc_dur_mean(itrial,1) = mean(saccdur); % saccade duration average in ms
+    eyeinfo.sacc_dur_std(itrial,1) = std(saccdur); % saccade duration SD
     % get Eucledian distance travelled: x1 to x2, y1 to y2: 
     euclides = @(coords) sqrt( (max(coords(2,:)) - min(coords(2,:)))^2 + ...
-      (max(coords(3,:)) - min(coords(3,:)))^2 ) ;
-    data.trialinfo(itrial,21) = mean(cellfun(euclides, data_sacc.trial)); % mean saccade distance per trial
-
+      (max(coords(3,:)) - min(coords(3,:)))^2 ); % TODO check with pdist2
+    eyeinfo.sacc_distance(itrial,1) = mean(cellfun(euclides, data_sacc.trial)); % mean saccade distance per trial
+    
     %% Fixation HMAX analysis
     disp 'get HMAX data of pic shown'
-    catind = data.trialinfo(itrial, 2); %
-    picno = data.trialinfo(itrial, 3); %
+    catind = data.trialinfo.pic_category(itrial, 1); %
+    picno = data.trialinfo.picno_study(itrial, 1); %
     picind = hmaxdat{catind}.picno == picno;
     curhmax = hmaxdat{catind}.c1(:,:,picind);
     picdat = hmaxdat{catind}.picdat(:,:,picind);
@@ -240,14 +249,9 @@ for irun = 1:length(edflist)
       figure; imagesc(curhmax2); hold on
     end
     
-    disp 'average over HMAX vals to get 1 val per trial'
-    weightedmean = 0;
-    if weightedmean == 1
-      fixdur = fixdur / sum(fixdur);
-      data.trialinfo(itrial,22) = sum((hmax_at_fix .* fixdur)) ;
-    else
-      data.trialinfo(itrial,23) = mean(hmax_at_fix); % HMAX value at fixation in 16
-    end
+    disp 'average over HMAX vals to get 1 val per trial'    
+    eyeinfo.HMAX_fix(itrial,1) = mean(hmax_at_fix); 
+    eyeinfo.HMAX_fix_weighted(itrial,1) = sum((hmax_at_fix .*  (fixdur / sum(fixdur)))) ;
     
     %% Detect microsaccades within fixations
     % TODO plot MS in fixations, also velocity?
@@ -264,8 +268,8 @@ for irun = 1:length(edflist)
     if isempty(movement)
       movement = [0 0 0];
     end
-    data.trialinfo(itrial,24) = size(movement,1); % Microsaccade count in 17
-    data.trialinfo(itrial,25) = mean(movement(:,3)); % Microsaccade peak velocity average in 18: % NK edit ft_detect_movement to get peak velocity
+    eyeinfo.Microsacc_count(itrial,1) = size(movement,1); % Microsaccade count in 17
+    eyeinfo.Microsacc_velocity(itrial,1) = mean(movement(:,3)); % Microsaccade peak velocity average in 18: % NK edit ft_detect_movement to get peak velocity     
     
     if plotit
       subplot(5,6,itrial);
@@ -298,12 +302,16 @@ for irun = 1:length(edflist)
     saveas(f, fullfile(PREOUT, 'MSplots', sprintf('%s', eyename)), 'png')
   end
   
-  disp 'down sample eye data'
-  cfg=[];
-  cfg.resample = 'yes';
-  cfg.resamplefs = 100;
-  cfg.detrend = 'no';
-  alldata{end+1} = ft_resampledata(cfg, data);
+  data.trialinfo = [data.trialinfo eyeinfo]; % combine trialinfos
+  
+  %   disp 'down sample eye data'
+  %   cfg=[];
+  %   cfg.resample = 'yes';
+  %   cfg.resamplefs = 100;
+  %   cfg.detrend = 'no';
+  %   alldata{end+1} = ft_resampledata(cfg, data);
+  
+  alldata{end+1} = data;
   
 end % irun
 
@@ -313,7 +321,7 @@ data = ft_appenddata(cfg, alldata{:});
 clear alldata
 
 disp(outfile)
-save(outfile, 'data', 'data_trial_cropped')
+save(outfile, '-struct', 'data')
 
 if ismac && plotit
   cfg2=[];
