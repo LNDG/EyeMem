@@ -89,6 +89,6 @@ if strcmp(backend, 'local')
   cellfun(fun2run, cfglist);
 else
   qsubcellfun(fun2run, cfglist, 'memreq', memreq*1e6, 'timreq', timreq*60, 'stack', 1, ...
-    'StopOnError', true, 'UniformOutput', true, 'backend', backend, 'options', options);
+    'StopOnError', false, 'UniformOutput', true, 'backend', backend, 'options', options);
 end
 
