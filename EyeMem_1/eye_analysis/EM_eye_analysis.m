@@ -25,7 +25,7 @@ for ih = 1:length(hmaxlist)
   hmaxdat{ih} = hmaxout;
 end
 
-alldata = {}; data_trial_cropped = {};
+alldata = {};
 for irun = 1:length(edflist)
   [~,eyename] = fileparts( edflist(irun).name );
   filename_asc = [eyename '.asc'];
@@ -160,15 +160,14 @@ for irun = 1:length(edflist)
         end
     end
     fix_bool([1 end]) = false; % to have start and end fixation
-    fixonsets = find(diff(fix_bool) == 1);
+    fixonsets  = find(diff(fix_bool) == 1);
     fixoffsets = find(diff(fix_bool) == -1);
-                
+    if isempty(fixonsets);    disp('No fixations found');    continue;       end
+    
     disp 'Make "trials" from fixations'
     cfg=[];
     cfg.trl = [fixonsets(:) fixoffsets(:) zeros(length(fixoffsets(:)),1)];
-    data_fix = ft_redefinetrial(cfg, data_trial);
-    
-    if isempty(data_fix.trial);  disp('No fixations found');    continue;       end
+    data_fix = ft_redefinetrial(cfg, data_trial);    
 
     disp 'reject fixations with blinks'
     cfg=[];
@@ -265,10 +264,7 @@ for irun = 1:length(edflist)
     cfg.velocity2D.velthres = 6; % SDs from median velocity? 6 default
     cfg.velocity2D.kernel = [ones(1,8) zeros(1,4) -ones(1,8)].*(data_trial.fsample/6);% vector 1 x nsamples, kernel to compute velocity (default = [1 1 0 -1 -1].*(data.fsample/6);
     [~, movement] = ft_detect_movement(cfg, data_fix);
-    
-    if isempty(movement)
-      movement = [0 0 0];
-    end
+    if isempty(movement);      movement = [0 0 0];    end
     eyeinfo.Microsacc_count(itrial,1) = size(movement,1); % Microsaccade count in 17
     eyeinfo.Microsacc_velocity(itrial,1) = mean(movement(:,3)); % Microsaccade peak velocity average in 18: % NK edit ft_detect_movement to get peak velocity     
     

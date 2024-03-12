@@ -12,7 +12,10 @@ end
 
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
+global ft_default
+ft_default.track_usage = 'no';
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
+ft_defaults
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
 addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
@@ -30,7 +33,6 @@ addpath(genpath(fullfile('/Users/kloosterman/Documents/GitHub/plotting-tools')))
 
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'custom_tools')) % interpolateblinks
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'NIFTI_toolbox'))
-ft_defaults
 % addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis')) % qsub_tardis_slurmpreview
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub_tardis_slurmpreview
 % addpath(genpath('/Volumes/LNDG/Programs_Tools_Scripts/data_processing_repo/PLS_repo/PLS_toolbox_modifications/LNDG2018_OnlyTXT/Pls'))
