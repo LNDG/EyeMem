@@ -225,6 +225,7 @@ for irun = 1:length(edflist)
     fixloc = [fixloc{:}]';
     cur_res = size(picdat);     desiredres = size(curhmax); %resolutions of pic and hmax
     fixloc_newres = round(fixloc ./ cur_res .* desiredres);       % convert XY coords to resolution of HMAX,
+    fixloc_newres(fixloc_newres==0) = 1; % if rounding makes location 0
     disp 'get c1 HMAX vals at fixation locations' % TODO get several pixels, loop?
     hmax_at_fix = diag(curhmax(fixloc_newres(:,2), fixloc_newres(:,1))); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around. diag bc all combinations of indices are returned
     
