@@ -62,13 +62,13 @@ switch inducedortotalSD
 end
 
 % validtrials = find(source.trialinfo(:,end));
-validtrials = 1:ntrials;
+% validtrials = 1:ntrials;
 
 %%
 switch gazespecificHMAX
   case 'non-gazespecific' % bin based on overall HMAX, take SD over 5 trials    
     % sort onsets based on hmax TODO run for HMAX C2    
-    [sortHMAX, sortinds] = sort(source.trialinfo(validtrials,10));  %hmax in 10, ascending, trial inds - 10 is c1median
+    [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  %hmax in 10, ascending, trial inds - 10 is c1median
   case 'gaze-specific'
     %     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
     %     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
