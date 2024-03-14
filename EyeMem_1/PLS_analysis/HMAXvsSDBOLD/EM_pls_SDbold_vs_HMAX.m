@@ -16,14 +16,10 @@ PLSbehav = cfg.PLSbehav;
 subj = cfg.subj;
 BOLDvar_measure = cfg.BOLDvar_measure;
 binsubtract = cfg.binsubtract;
-HMAXfolder = cfg.HMAXfolder;
 eyefile = cfg.eyefile;
 PREIN = cfg.PREIN;
-PREOUT = cfg.PREOUT;
 gazespecificHMAX= cfg.gazespecificHMAX;
 fitcoeff = cfg.fitcoeff;
-bintype = cfg.bintype;
-nTRpertrial = cfg.nTRpertrial;
 inducedortotalSD = cfg.inducedortotalSD;
 
 disp(sourcefile)
@@ -75,7 +71,8 @@ switch gazespecificHMAX
   case 'gaze-specific'
     %     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
     %     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
-    bin_variable = source.trialinfo.HMAX_fix_lookregion_mean;
+%     bin_variable = source.trialinfo.HMAX_fix_lookregion_mean;
+    bin_variable = source.trialinfo.HMAX_fix_lookregion_max;
 end
 cfg=[];
 cfg.trials = bin_variable > 0;     % only take trials with valid HMAX_fix_lookregion
