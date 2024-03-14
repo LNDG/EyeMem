@@ -39,7 +39,10 @@ source.cfg = [];
 % source.trialinfo(:,end+1) = 1:150; % number trials to keep track
 
 load(eyefile, 'trialinfo')
-source.trialinfo = trialinfo;
+if size(trialinfo,1) ~= size(source.trialinfo,1)
+  error('brain and behavior trials do not match')
+end
+source.trialinfo = trialinfo; % TODO check if ntrials match
 
 disp 'Remove last trial since it is only zeros FIXME for non-gazespecific'
 cfg = [];
