@@ -42,7 +42,8 @@ source.trialinfo = trialinfo; % TODO check if ntrials match
 
 disp 'Remove last trial since it is only zeros FIXME for non-gazespecific'
 cfg = [];
-cfg.trials = 1:149;
+cfg.trials = not(mean(source.pow(:,:,1)) == 0);
+warning(string(length(find(cfg.trials))))
 source = ft_selectdata(cfg, source); % TODO are trial eye and source still matched??
 
 % Between or within-trial variability: subtract within trial mean beta weight per trial
