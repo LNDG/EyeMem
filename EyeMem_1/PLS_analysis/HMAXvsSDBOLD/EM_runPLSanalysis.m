@@ -68,8 +68,8 @@ switch analysisname
 
   case 'corrSDbold'
     %%
-%     corrtype = 'Pearson'; %Spearman Pearson
-    corrtype = 'Spearman'; %Spearman Pearson
+    corrtype = 'Pearson'; %Spearman Pearson
+%     corrtype = 'Spearman'; %Spearman Pearson
     
     if strcmp(corrtype, 'Spearman')
       addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))

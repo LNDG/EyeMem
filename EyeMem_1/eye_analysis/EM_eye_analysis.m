@@ -242,7 +242,7 @@ for irun = 1:length(edflist)
       M = zeros(size(curhmax));
       M(fixloc_newres(ifix,2), fixloc_newres(ifix,1)) = 1; % location
       tmp = curhmax(conv2(M,lookregion,'same') > 0);
-      hmax_at_fix_lookregion(ifix,1) = max(tmp); % take max within lookregion
+      hmax_at_fix_lookregion(ifix,1) = mean(tmp); % take max within lookregion
     end
     %     disp 'average over HMAX vals to get 1 val per trial'
     eyeinfo.HMAX_fix(itrial,1) = mean(hmax_at_fix);
