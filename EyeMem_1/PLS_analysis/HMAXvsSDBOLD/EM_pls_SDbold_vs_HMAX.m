@@ -62,7 +62,8 @@ switch inducedortotalSD
 end
 
 ntrials = size(source.trialinfo,1);
-validtrials = find(source.trialinfo(:,end));
+% validtrials = find(source.trialinfo(:,end));
+validtrials = 1:ntrials;
 
 %%
 switch gazespecificHMAX
