@@ -29,7 +29,6 @@ overwrite = 1;
 
 SUBJ= [9:101]; % TODO specify further?
 SUBJ= [10 53 71 77]; % TODO specify further?
-SUBJ= [ 53 ]; % TODO specify further?
 
 %make cells for each subject, to analyze in parallel
 cfg = [];
