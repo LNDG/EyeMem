@@ -107,9 +107,9 @@ for irun = 1:length(edflist)
     'mem_at_test', 'RT_at_test', 'trial_counter' });
   
   ntrials = size(data.trialinfo,1);
-  varTypes = ["double", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
+  varTypes = ["double", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
   varNames = ["fixdur_mean", "fixdur_std", "fix_drift", "sacc_dur_mean", "sacc_dur_std", 'sacc_distance', ...
-    "HMAX_fix", "HMAX_fix_weighted", "HMAX_fix_lookregion", "Microsacc_count", "Microsacc_velocity"];
+    "HMAX_fix", "HMAX_fix_weighted", "HMAX_fix_lookregion_mean", "HMAX_fix_lookregion_max", "HMAX_fix_lookregion_std", "Microsacc_count", "Microsacc_velocity"];
   sz = [ntrials length(varNames)];
   eyeinfo = table('Size',sz,'VariableTypes',varTypes,'VariableNames',varNames);
   
@@ -238,16 +238,21 @@ for irun = 1:length(edflist)
       1,1,1,1,1;
       1,1,1,1,1;
       0,1,1,1,0;]; % 3 pix around fixloc
+    hmax_at_fix_lookregion = [];
     for ifix = 1:size(fixloc_newres,1)
       M = zeros(size(curhmax));
       M(fixloc_newres(ifix,2), fixloc_newres(ifix,1)) = 1; % location
       tmp = curhmax(conv2(M,lookregion,'same') > 0);
-      hmax_at_fix_lookregion(ifix,1) = mean(tmp); % take mean within lookregion
+      hmax_at_fix_lookregion.mean(ifix,1) = mean(tmp); % take mean within lookregion
+      hmax_at_fix_lookregion.max(ifix,1) = max(tmp); % take max within lookregion
+      hmax_at_fix_lookregion.std(ifix,1) = std(tmp); % take std within lookregion
     end
     %     disp 'average over HMAX vals to get 1 val per trial'
     eyeinfo.HMAX_fix(itrial,1) = mean(hmax_at_fix);
     eyeinfo.HMAX_fix_weighted(itrial,1) = sum((hmax_at_fix .*  (fixdur / sum(fixdur)))) ;
-    eyeinfo.HMAX_fix_lookregion(itrial,1) = mean(hmax_at_fix_lookregion);
+    eyeinfo.HMAX_fix_lookregion_mean(itrial,1) = mean(hmax_at_fix_lookregion.mean);
+    eyeinfo.HMAX_fix_lookregion_max(itrial,1) = mean(hmax_at_fix_lookregion.max);
+    eyeinfo.HMAX_fix_lookregion_std(itrial,1) = mean(hmax_at_fix_lookregion.std);
 
     plotit=0;
     if ismac && plotit

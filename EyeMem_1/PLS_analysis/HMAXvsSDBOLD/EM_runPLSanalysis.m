@@ -25,10 +25,10 @@ switch analysisname
 %     % look at induced power, by subtracting mean per 5TR trial
 %     PREIN = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/taskPLS/gaze-specific'
     cd(PREIN)
-    agegroups = {'young' 'old'};
+%     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
 %     agegroups = {'old'};
-%     agegroups = {''};
+    agegroups = {''};
 
     disp 'Generate model txt file'
 %     txtfilename = 'SDbold_vs_HMAX_gazespec_OAvsYA_BfMRIanalysis.txt';
@@ -115,7 +115,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
       cormode = '8'; % Spearman
     end
     
-    num_perm = '100';
+    num_perm = '1000';
     num_split = '0';
     num_boot = '100';
     boot_type = 'strat';
