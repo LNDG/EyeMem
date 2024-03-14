@@ -77,7 +77,7 @@ switch gazespecificHMAX
     %     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
     % only take trials with valid HMAX_fix_lookregion
     cfg=[];
-    cfg.trials = source.trialinfo.HMAX_fix_lookregion>0;
+    cfg.trials = source.trialinfo.HMAX_fix_lookregion_mean>0;
     source = ft_selectdata(cfg, source); 
     
     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix_lookregion);
