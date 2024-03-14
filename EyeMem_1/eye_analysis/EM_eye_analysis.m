@@ -163,7 +163,7 @@ for irun = 1:length(edflist)
     fix_bool([1 end]) = false; % to have start and end fixation
     fixonsets  = find(diff(fix_bool) == 1);
     fixoffsets = find(diff(fix_bool) == -1);
-    if isempty(fixonsets);    disp('No fixations found');    continue;       end
+    if numel(fixonsets)==1;    disp('No fixations found');    continue;       end
     
     disp 'Make "trials" from fixations'
     cfg=[];
