@@ -81,7 +81,7 @@ cfg=[];
 cfg.trials = bin_variable > 0;     % only take trials with valid HMAX_fix_lookregion
 source = ft_selectdata(cfg, source);
 
-[sortHMAX, sortinds] = sort(bin_variable);
+[sortHMAX, sortinds] = sort(bin_variable(bin_variable > 0));
 
 ntrials = size(source.trialinfo,1);
 ntrlperbin = ntrials / nbins; % each subject has max 149 trials
