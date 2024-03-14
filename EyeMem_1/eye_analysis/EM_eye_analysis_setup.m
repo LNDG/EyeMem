@@ -18,7 +18,7 @@ else
 end
 
 timreq = 180; %in minutes per run
-memreq = 5000; % in MB
+memreq = 3000; % in MB
 
 PREIN = fullfile(basepath, 'data'); 
 PREOUT = fullfile(basepath, 'preproc', 'eye');

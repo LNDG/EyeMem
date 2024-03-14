@@ -13,7 +13,9 @@ end
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
 global ft_default
-ft_default.track_usage = 'no';
+ft_default.track_usage = false;
+% ft_default.trackconfig  = 'no';
+% ft_default.trackcallinfo     = string, can be 'yes' or 'no' (default = 'yes')
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
 ft_defaults
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
