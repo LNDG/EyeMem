@@ -142,10 +142,12 @@ for irun = 1:length(edflist)
     data_trial.sampleinfo = [1 length(data_trial.trial{1})];
     
     disp 'Detect fixations'
-    fixation_detection = 'EL'; % EyeLink triggers or ft_detect_movement DM
+    fixation_detection = 'EL_sacc'; % EyeLink triggers or ft_detect_movement DM
     switch fixation_detection % make trl matrix for fixations as trials
-      case 'EL'
-        fix_bool = logical(data_trial.trial{1}(7,:));
+      case 'EL_fix'
+        fix_bool2 = logical(data_trial.trial{1}(7,:));
+      case 'EL_sacc'
+        fix_bool = not(logical(data_trial.trial{1}(6,:)));
       case 'DM' % detect fixations using Engbert and Kliegl method
         cfg=[];
         cfg.method = 'velocity2D';
