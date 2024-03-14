@@ -107,9 +107,9 @@ for irun = 1:length(edflist)
     'mem_at_test', 'RT_at_test', 'trial_counter' });
   
   ntrials = size(data.trialinfo,1);
-  varTypes = ["double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
+  varTypes = ["double", "double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
   varNames = ["fixdur_mean", "fixdur_std", "fix_drift", "sacc_dur_mean", "sacc_dur_std", 'sacc_distance', ...
-    "HMAX_fix", "HMAX_fix_weighted", "Microsacc_count", "Microsacc_velocity"];
+    "HMAX_fix", "HMAX_fix_weighted", "HMAX_fix_lookregion", "Microsacc_count", "Microsacc_velocity"];
   sz = [ntrials length(varNames)];
   eyeinfo = table('Size',sz,'VariableTypes',varTypes,'VariableNames',varNames);
   
@@ -142,10 +142,10 @@ for irun = 1:length(edflist)
     data_trial.sampleinfo = [1 length(data_trial.trial{1})];
     
     disp 'Detect fixations'
-    fixation_detection = 'EL_sacc'; % EyeLink triggers or ft_detect_movement DM
+    fixation_detection = 'EL_fix'; % EyeLink triggers or ft_detect_movement DM
     switch fixation_detection % make trl matrix for fixations as trials
       case 'EL_fix'
-        fix_bool2 = logical(data_trial.trial{1}(7,:));
+        fix_bool = logical(data_trial.trial{1}(7,:));
       case 'EL_sacc'
         fix_bool = not(logical(data_trial.trial{1}(6,:)));
       case 'DM' % detect fixations using Engbert and Kliegl method
@@ -231,6 +231,24 @@ for irun = 1:length(edflist)
     disp 'get c1 HMAX vals at fixation locations' % TODO get several pixels, loop?
     hmax_at_fix = diag(curhmax(fixloc_newres(:,2), fixloc_newres(:,1))); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around. diag bc all combinations of indices are returned
     
+    %     lookregion = [1,1,1;1,1,1;1,1,1]; % 1 pix around fixloc
+    lookregion = [...
+      0,1,1,1,0;
+      1,1,1,1,1;
+      1,1,1,1,1;
+      1,1,1,1,1;
+      0,1,1,1,0;]; % 3 pix around fixloc
+    for ifix = 1:size(fixloc_newres,1)
+      M = zeros(size(curhmax));
+      M(fixloc_newres(ifix,2), fixloc_newres(ifix,1)) = 1; % location
+      tmp = curhmax(conv2(M,lookregion,'same') > 0);
+      hmax_at_fix_lookregion(ifix,1) = max(tmp); % take max within lookregion
+    end
+    %     disp 'average over HMAX vals to get 1 val per trial'
+    eyeinfo.HMAX_fix(itrial,1) = mean(hmax_at_fix);
+    eyeinfo.HMAX_fix_weighted(itrial,1) = sum((hmax_at_fix .*  (fixdur / sum(fixdur)))) ;
+    eyeinfo.HMAX_fix_lookregion(itrial,1) = mean(hmax_at_fix_lookregion);
+
     plotit=0;
     if ismac && plotit
       %%
@@ -251,11 +269,7 @@ for irun = 1:length(edflist)
       end
       figure; imagesc(curhmax2); hold on
     end
-    
-    disp 'average over HMAX vals to get 1 val per trial'    
-    eyeinfo.HMAX_fix(itrial,1) = mean(hmax_at_fix); 
-    eyeinfo.HMAX_fix_weighted(itrial,1) = sum((hmax_at_fix .*  (fixdur / sum(fixdur)))) ;
-    
+        
     %% Detect microsaccades within fixations
     % TODO plot MS in fixations, also velocity?
     disp 'Detect microsaccades within fixations'
