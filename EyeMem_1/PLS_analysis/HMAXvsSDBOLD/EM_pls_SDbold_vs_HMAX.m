@@ -75,13 +75,14 @@ switch gazespecificHMAX
   case 'gaze-specific'
     %     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
     %     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
-    % only take trials with valid HMAX_fix_lookregion
-    cfg=[];
-    cfg.trials = source.trialinfo.HMAX_fix_lookregion_mean>0;
-    source = ft_selectdata(cfg, source); 
-    
-    [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix_lookregion);
+    bin_variable = source.trialinfo.HMAX_fix_lookregion_mean;
 end
+cfg=[];
+cfg.trials = bin_variable > 0;     % only take trials with valid HMAX_fix_lookregion
+source = ft_selectdata(cfg, source);
+
+[sortHMAX, sortinds] = sort(bin_variable);
+
 ntrials = size(source.trialinfo,1);
 ntrlperbin = ntrials / nbins; % each subject has max 149 trials
 [bininds, binedges] = discretize(1:ntrials, nbins);
