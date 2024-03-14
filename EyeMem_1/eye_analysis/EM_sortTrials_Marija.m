@@ -17,6 +17,7 @@ function [trl, event] = EM_sortTrials_Marija(cfg)
 % 15) runno in chronological order
 % 16) remembered at test yes (1, Hit) or no (0, Miss)
 % 17) RT at test
+% 18) trial counter per run (1:30) 
 
 % hdr    = cfg.headerfile;
 fsr    = cfg.fsample;         % in Hz
@@ -309,4 +310,5 @@ for itrial = 1:size(trl,1)
 %   trl(itrial,18) = find(behav_test(:,6) == trl(itrial,6));
 end
 
+trl(:,18) = 1:size(trl,1); % to check matching eye and fMRI
 

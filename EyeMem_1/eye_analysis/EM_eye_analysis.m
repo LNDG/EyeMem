@@ -104,7 +104,7 @@ for irun = 1:length(edflist)
   data.trialinfo = array2table(data.trialinfo, 'VariableNames', ...
     {'exp_phase','pic_category', 'picno_study', 'picno_quiz', 'pic_quiz_oldnew', ...
     'response', 'resp_button', 'RT_quizpic', 'fMRI_trigger', 'HMAX_C1', 'HMAX_C2', 'runno', ...
-    'mem_at_test', 'RT_at_test' });
+    'mem_at_test', 'RT_at_test', 'trial_counter' });
   
   ntrials = size(data.trialinfo,1);
   varTypes = ["double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
@@ -163,7 +163,7 @@ for irun = 1:length(edflist)
     fix_bool([1 end]) = false; % to have start and end fixation
     fixonsets  = find(diff(fix_bool) == 1);
     fixoffsets = find(diff(fix_bool) == -1);
-    if numel(fixonsets)==1;    disp('No fixations found');    continue;       end
+    if numel(fixonsets) < 2;    disp('No fixations found');    continue;       end
     
     disp 'Make "trials" from fixations'
     cfg=[];
