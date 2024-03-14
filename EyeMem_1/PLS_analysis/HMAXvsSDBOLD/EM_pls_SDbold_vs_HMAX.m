@@ -61,7 +61,6 @@ switch inducedortotalSD
     disp 'All power considered'
 end
 
-ntrials = size(source.trialinfo,1);
 % validtrials = find(source.trialinfo(:,end));
 validtrials = 1:ntrials;
 
@@ -71,11 +70,17 @@ switch gazespecificHMAX
     % sort onsets based on hmax TODO run for HMAX C2    
     [sortHMAX, sortinds] = sort(source.trialinfo(validtrials,10));  %hmax in 10, ascending, trial inds - 10 is c1median
   case 'gaze-specific'
-%     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
-%     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
+    %     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
+    %     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
+    % only take trials with valid HMAX_fix_lookregion
+    cfg=[];
+    cfg.trials = source.trialinfo.HMAX_fix_lookregion>0;
+    source = ft_selectdata(cfg, source); 
+    
     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix_lookregion);
 end
-ntrlperbin = ntrials / nbins; % each subject has 150 trials
+ntrials = size(source.trialinfo,1);
+ntrlperbin = ntrials / nbins; % each subject has max 149 trials
 [bininds, binedges] = discretize(1:ntrials, nbins);
 bininds = sortrows([sortinds, bininds']);
 bininds = bininds(:,2);
