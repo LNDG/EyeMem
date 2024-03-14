@@ -33,22 +33,22 @@ nTRpertrial = cfg.nTRpertrial;
 
 disp 'read mri from file'
 mri = ft_read_mri(mrifile);
+mri.time = 1:745;
 
 % 1st the data. TR's of the last trial might be missing: add nan trial up to 150
-disp 'Fill up last trial with nans'
-nTRreq = nTRpertrial*150;
-nTR = mri.dim(4);
-if nTR ~= nTRreq % TR's missing
-  nTRmissing = nTRreq - nTR;
-  nanTR = nan( [ mri.dim(1:3) nTRmissing] );
-  mri.anatomy = cat(4, mri.anatomy, nanTR);
-  mri.dim = [mri.dim(1:3) nTRreq];
-end
+% disp 'Fill up last trial with nans'
+% nTRreq = nTRpertrial*150;
+% nTR = size(mri.anatomy,4);
+% if nTR ~= nTRreq % TR's missing
+%   nTRmissing = nTRreq - nTR;
+%   nanTR = nan( [ mri.dim(1:3) nTRmissing] );
+%   mri.anatomy = cat(4, mri.anatomy, nanTR);
+%   mri.dim = [mri.dim(1:3) nTRreq];
+% end
 
 if ismac
   vol=300;
   tmp = mri;
-  tmp.dim = tmp.dim(1:3);
 %   tmp.anatomy = tmp.anatomy(:,:,:,vol); 
   tmp.anatomy = nanmean(tmp.anatomy,4); 
   cfg=[];

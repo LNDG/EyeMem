@@ -66,8 +66,8 @@ for isub = 1:length(SUBJ)
   end
 end
 
-% cfglist = cfglist(2)
-cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
+cfglist = cfglist(2)
+% cfglist = cfglist(randsample(length(cfglist),length(cfglist)));
 
 fprintf('Running %s for %d cfgs\n', mfilename, length(cfglist))
 

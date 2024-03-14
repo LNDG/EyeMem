@@ -12,15 +12,10 @@ else
   addpath(genpath('/mnt/beegfs/home/kloosterman/GitHub/EyeMem/EyeMem_1'));  
   addpath('/mnt/beegfs/home/kloosterman/GitHub/fieldtrip');    
 end
+ft_defaults
 
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
-% global ft_default
-% ft_default.trackusage = false %'no';
-% ft_default.trackconfig  = 'no';
-% ft_default.trackcallinfo     = string, can be 'yes' or 'no' (default = 'yes')
-% addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
-ft_defaults
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
 addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %

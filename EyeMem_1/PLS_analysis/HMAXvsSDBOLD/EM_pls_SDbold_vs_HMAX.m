@@ -36,7 +36,10 @@ source.pow(~source.inside,:,:) = 0;
 % source.pow = source.pow(source.inside,:,:);
 source.time = [0 1 2 3 4]; % Breaks for classic LSS 1 beta per trial
 source.cfg = [];
-source.trialinfo(:,end+1) = 1:150; % number trials to keep track
+% source.trialinfo(:,end+1) = 1:150; % number trials to keep track
+
+load(eyefile, 'trialinfo')
+source.trialinfo = trialinfo;
 
 disp 'Remove last trial since it is only zeros FIXME for non-gazespecific'
 cfg = [];
@@ -67,8 +70,9 @@ switch gazespecificHMAX
     % sort onsets based on hmax TODO run for HMAX C2    
     [sortHMAX, sortinds] = sort(source.trialinfo(validtrials,10));  %hmax in 10, ascending, trial inds - 10 is c1median
   case 'gaze-specific'
-    load(eyefile)
-    [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
+%     load(eyefile, 'trialinfo')
+%     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
+    [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
 end
 ntrlperbin = ntrials / nbins; % each subject has 150 trials
 [bininds, binedges] = discretize(1:ntrials, nbins);
@@ -244,9 +248,13 @@ tmp.create_datamat_info.merge_across_runs = 0;%says to merge across %runs, but w
 tmp.create_datamat_info.single_subject_analysis = 0;%not single subj
 
 if strcmp(gazespecificHMAX, 'gaze-specific')
-  tmp.fixdur_keep = fixdur_keep;
-  tmp.hmax_at_fix_keep = hmax_at_fix_keep;
-  tmp.hmax_at_fix_trl = hmax_at_fix_trl; % to plot extracted saliency per trial
+%   tmp.fixdur_keep = fixdur_keep;
+%   tmp.hmax_at_fix_keep = hmax_at_fix_keep;
+%   tmp.hmax_at_fix_trl = hmax_at_fix_trl; % to plot extracted saliency per trial
+%   tmp.hmax_meanperbin = source_bin.freq;
+  tmp.fixdur_keep = source.trialinfo.fixdur_mean;
+  tmp.hmax_at_fix_keep = source.trialinfo.HMAX_fix;
+%   tmp.hmax_at_fix_trl = hmax_at_fix_trl; % to plot extracted saliency per trial
   tmp.hmax_meanperbin = source_bin.freq;
 end
 
