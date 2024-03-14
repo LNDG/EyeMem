@@ -68,8 +68,8 @@ switch analysisname
 
   case 'corrSDbold'
     %%
-    corrtype = 'Pearson'; %Spearman Pearson
-%     corrtype = 'Spearman'; %Spearman Pearson
+%     corrtype = 'Pearson'; %Spearman Pearson
+    corrtype = 'Spearman'; %Spearman Pearson
     
     if strcmp(corrtype, 'Spearman')
       addpath(genpath('/Users/kloosterman/Dropbox/tardis_code/MATLAB/tools/PLS_rank'))
@@ -115,7 +115,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
       cormode = '8'; % Spearman
     end
     
-    num_perm = '1000';
+    num_perm = '100';
     num_split = '0';
     num_boot = '100';
     boot_type = 'strat';
