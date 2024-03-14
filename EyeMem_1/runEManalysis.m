@@ -4,19 +4,22 @@ if ismac
   basepath = '/Users/kloosterman/Dropbox/tardis_code/';
   addpath(genpath('/Users/kloosterman/Documents/GitHub/EyeMem/EyeMem_1'));
   addpath(genpath('/Users/kloosterman/Documents/GitHub/BrainSlicer'))
+  addpath(fullfile('/Users/kloosterman/Documents', 'GitHub', 'fieldtrip')) % cloned on 13 09 19
+
 else
 %     basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
   basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
   addpath(genpath('/mnt/beegfs/home/kloosterman/GitHub/EyeMem/EyeMem_1'));  
+  addpath('/mnt/beegfs/home/kloosterman/GitHub/fieldtrip');    
 end
 
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
-global ft_default
-ft_default.track_usage = false;
+% global ft_default
+% ft_default.trackusage = false %'no';
 % ft_default.trackconfig  = 'no';
 % ft_default.trackcallinfo     = string, can be 'yes' or 'no' (default = 'yes')
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
+% addpath(fullfile(basepath, 'MATLAB', 'tools', 'fieldtrip')) % cloned on 13 09 19
 ft_defaults
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
