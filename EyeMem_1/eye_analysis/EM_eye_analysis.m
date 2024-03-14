@@ -101,15 +101,16 @@ for irun = 1:length(edflist)
   if all(cfg.trl(1:3) == [0 0 0]); disp 'TODO sort out resting state'; continue; end    
   data = ft_redefinetrial(cfg, data); %make trials
   
-  data.trialinfo = array2table(data.trialinfo, ...
-    'VariableNames',{'exp_phase','pic_category', 'picno_study', 'picno_quiz', 'pic_quiz_oldnew', ...
+  data.trialinfo = array2table(data.trialinfo, 'VariableNames', ...
+    {'exp_phase','pic_category', 'picno_study', 'picno_quiz', 'pic_quiz_oldnew', ...
     'response', 'resp_button', 'RT_quizpic', 'fMRI_trigger', 'HMAX_C1', 'HMAX_C2', 'runno', ...
     'mem_at_test', 'RT_at_test' });
   
+  ntrials = size(data.trialinfo,1);
   varTypes = ["double", "double", "double", "double", "double", "double", "double", "double", "double", "double"];
   varNames = ["fixdur_mean", "fixdur_std", "fix_drift", "sacc_dur_mean", "sacc_dur_std", 'sacc_distance', ...
     "HMAX_fix", "HMAX_fix_weighted", "Microsacc_count", "Microsacc_velocity"];
-  sz = [30 length(varNames)];
+  sz = [ntrials length(varNames)];
   eyeinfo = table('Size',sz,'VariableTypes',varTypes,'VariableNames',varNames);
   
   if ismac && plotit
@@ -133,7 +134,7 @@ for irun = 1:length(edflist)
     f = figure; f.Position =[  1          58        1920         919 ];
   end
   
-  for itrial = 1:length(data.trial)
+  for itrial = 1:ntrials
     cfg=[];
     cfg.trials = itrial; % select current trial
     cfg.latency = [0 5]; % select only viewing period
