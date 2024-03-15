@@ -131,7 +131,7 @@ for irun = 1:length(edflist)
   plotit = 1;
   if plotit
     close all
-    f = figure; f.Position =[  1          58        1920         919 ];
+    f = figure; f.Position =[  1          58        1920         919 ]; hold on
   end
   
   for itrial = 1:ntrials
@@ -293,13 +293,16 @@ for irun = 1:length(edflist)
     plotit=1;
     if plotit
       disp('TODO plot actual fixations! after rejection weird ones')
-%       subplot(5,6,itrial);
-      xdat = data_trial.trial{1}(2,:); xdat(~fix_bool) = NaN;
-      ydat = data_trial.trial{1}(3,:); ydat(~fix_bool) = NaN;
-      plot(xdat, ydat); hold on
-      xdat = data_trial.trial{1}(2,:); xdat(fix_bool) = NaN;
-      ydat = data_trial.trial{1}(3,:); ydat(fix_bool) = NaN;
-      plot(xdat, ydat); hold on
+      subplot(5,6,itrial); hold on
+%       xdat = data_trial.trial{1}(2,:); xdat(~fix_bool) = NaN;
+%       ydat = data_trial.trial{1}(3,:); ydat(~fix_bool) = NaN;
+%       plot(xdat, ydat); hold on
+%       xdat = data_trial.trial{1}(2,:); xdat(fix_bool) = NaN;
+%       ydat = data_trial.trial{1}(3,:); ydat(fix_bool) = NaN;
+%       plot(xdat, ydat); hold on
+      
+      cellfun(@(x) plot(x(2,:),x(3,:), 'r'), data_fix.trial)
+      cellfun(@(x) plot(x(2,:),x(3,:), 'b'), data_sacc.trial)
       set(gca,'Ydir','reverse'); title(itrial)
       % plot microsaccades
       if all(movement>0)
