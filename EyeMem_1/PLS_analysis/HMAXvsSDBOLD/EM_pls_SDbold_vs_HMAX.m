@@ -78,8 +78,8 @@ switch gazespecificHMAX
 end
 [~,outlier] = rmoutliers(bin_variable, 'mean'); % Remove if > 3SD's from mean
 cfg=[];
-cfg.trials = bin_variable > 0 & not(outlier);     % only take trials with valid HMAX_fix_lookregion
-% cfg.trials = bin_variable > 0;     % only take trials with valid HMAX_fix_lookregion
+% cfg.trials = bin_variable > 0 & not(outlier);     % only take trials with valid HMAX_fix_lookregion
+cfg.trials = bin_variable > 0;     % only reject trials with no fixations
 if sum(cfg.trials)<100
   error('>100 trials lost')
 end
