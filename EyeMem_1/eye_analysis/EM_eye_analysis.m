@@ -142,19 +142,19 @@ for irun = 1:length(edflist)
     data_trial.sampleinfo = [1 length(data_trial.trial{1})];
     
     disp 'Detect fixations'
-    fixation_detection = 'EL_fix'; % EyeLink triggers or ft_detect_movement DM
+    fixation_detection = 'DM'; % EyeLink triggers or ft_detect_movement DM
     switch fixation_detection % make trl matrix for fixations as trials
       case 'EL_fix'
-        fix_bool = logical(data_trial.trial{1}(7,:));
+        fix_bool = logical(data_trial.trial{1}(7,:))';
       case 'EL_sacc'
-        fix_bool = not(logical(data_trial.trial{1}(6,:)));
+        fix_bool = not(logical(data_trial.trial{1}(6,:)))';
       case 'DM' % detect fixations using Engbert and Kliegl method
         cfg=[];
         cfg.method = 'velocity2D';
         cfg.channel = { 'EYE_HORIZONTAL'  'EYE_VERTICAL' };
         cfg.velocity2D = [];
         cfg.velocity2D.mindur = 10; % minimum *saccade* duration, can be short
-        cfg.velocity2D.velthres = 30; % lower = lower fixation time
+        cfg.velocity2D.velthres = 4; % lower = lower fixation time
         cfg.velocity2D.kernel   = [ones(1,16) zeros(1,8) -ones(1,16)].*(data_trial.fsample/6);% vector 1 x nsamples, kernel to compute velocity (default = [1 1 0 -1 -1].*(data.fsample/6);
         [~, movement] = ft_detect_movement(cfg, data_trial);
         fix_bool = true(5001,1);
@@ -195,7 +195,7 @@ for irun = 1:length(edflist)
     
     disp 'Make "trials" from saccades'
     cfg=[];
-    cfg.trl = [fixoffsets(1:end-1)' fixonsets(2:end)' zeros(length(fixoffsets(1:end-1)),1)]; % note the flip
+    cfg.trl = [fixoffsets(1:end-1,1) fixonsets(2:end,1) zeros(length(fixoffsets(1:end-1)),1)]; % note the flip
     data_sacc = ft_redefinetrial(cfg, data_trial);    
     if isempty(data_sacc.trial);  disp('No saccades found');    continue;       end
 
@@ -290,8 +290,9 @@ for irun = 1:length(edflist)
     eyeinfo.Microsacc_count(itrial,1) = size(movement,1); % Microsaccade count in 17
     eyeinfo.Microsacc_velocity(itrial,1) = mean(movement(:,3)); % Microsaccade peak velocity average in 18: % NK edit ft_detect_movement to get peak velocity     
     
+    plotit=1;
     if plotit
-      subplot(5,6,itrial);
+%       subplot(5,6,itrial);
       xdat = data_trial.trial{1}(2,:); xdat(~fix_bool) = NaN;
       ydat = data_trial.trial{1}(3,:); ydat(~fix_bool) = NaN;
       plot(xdat, ydat); hold on
@@ -314,7 +315,7 @@ for irun = 1:length(edflist)
       %       end
       
     end
-    
+    disp('plot it?')
   end % itrial
   if  plotit
     mkdir(fullfile(PREOUT, 'MSplots'))

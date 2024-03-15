@@ -36,8 +36,9 @@ for iev = 1:length(eye_events)
   evtimes = evtimes(all(ismember(evtimes, timestamps),2),:); % check if all evtimes there
   evsmp = arrayfun(@(x) find(timestamps == x, 1,'first'), evtimes, 'uni', true ); %find sample indices of evtimes in timestamps
   if iev == 1 % some extra padding for blinks
-    evsmp(:,1) = evsmp(:,1) - round(0.15*hdr.Fs); 
+    evsmp(:,1) = evsmp(:,1) - round(0.15*hdr.Fs);
     evsmp(:,2) = evsmp(:,2) + round(0.15*hdr.Fs);
+%     disp('No extra blink padding!')
   end
   evsmp = evsmp(find(evsmp(:,1) > 0),:);
   for iblink=1:size(evsmp,1) % blinks but also sacc and fix
