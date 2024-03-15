@@ -34,9 +34,9 @@ memreq = 2000; % in MB
 
 % PLStype = 'taskPLS'; 
 PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
-nbins = 3; % no of bins used for Hmax binning, 750 samples
+nbins = 5; % no of bins used for Hmax binning, 750 samples
 gazespecificHMAX = 'gaze-specific'; % gaze-specific   non-gazespecific
-BOLDvar_measure = 'std'; % mean, iqr, std mse
+BOLDvar_measure = 'iqr'; % mean, iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 inducedortotalSD = 'total_pow'; % within_trial   evoked   induced   total_pow
 
