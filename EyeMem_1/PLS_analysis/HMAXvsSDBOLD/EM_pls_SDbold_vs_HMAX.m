@@ -72,9 +72,9 @@ switch gazespecificHMAX
   case 'gaze-specific'
     %     [sortHMAX, sortinds] = sort(data.trialinfo(validtrials,17));  % gazelocked hmax in 17
     %     [sortHMAX, sortinds] = sort(source.trialinfo.HMAX_fix);  % gazelocked hmax in 17
-    bin_variable = source.trialinfo.HMAX_fix_lookregion_mean;
+%     bin_variable = source.trialinfo.HMAX_fix_lookregion_mean;
 %     bin_variable = source.trialinfo.HMAX_fix_lookregion_max;
-%     bin_variable = source.trialinfo.HMAX_fix;
+    bin_variable = source.trialinfo.HMAX_fix;
 end
 % [~,outlier] = rmoutliers(bin_variable, 'mean'); % Remove if > 3SD's from mean
 cfg=[];
