@@ -186,6 +186,12 @@ for irun = 1:length(edflist)
     data_fix = ft_selectdata(cfg, data_fix);
     if isempty(data_fix.trial);  disp('No fixations within picture without blinks found');    continue;       end
     
+    disp 'TODO reject non-fixations/bad quality based on SD'
+    cfg=[];
+    cfg.trials = (cellfun(@(x) std(x(2,:)), data_fix.trial) < 15 & cellfun(@(x) std(x(3,:)), data_fix.trial) < 15)'; 
+    data_fix = ft_selectdata(cfg, data_fix);
+    if isempty(data_fix.trial);  disp('Noisy fixations, none remain');    continue;       end
+
     fixdur = cellfun(@(x) size(x,2), data_fix.trial)';
     eyeinfo.fixdur_mean(itrial,1) = mean(fixdur); % fixation duration average
     eyeinfo.fixdur_std(itrial,1) = std(fixdur); % fixation duration SD
@@ -232,20 +238,20 @@ for irun = 1:length(edflist)
     hmax_at_fix = diag(curhmax(fixloc_newres(:,2), fixloc_newres(:,1))); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around. diag bc all combinations of indices are returned
     
     %     lookregion = [1,1,1;1,1,1;1,1,1]; % 1 pix around fixloc
-%     lookregion = [...
-%       0,1,1,1,0;
-%       1,1,1,1,1;
-%       1,1,1,1,1;
-%       1,1,1,1,1;
-%       0,1,1,1,0;]; % 3 pix around fixloc
     lookregion = [...
-      0,0,1,1,1,0,0;
-      0,1,1,1,1,1,0;
-      1,1,1,1,1,1,1;
-      1,1,1,1,1,1,1;
-      1,1,1,1,1,1,1;
-      0,1,1,1,1,1,0;
-      0,0,1,1,1,0,0;]; % 3 pix around fixloc
+      0,1,1,1,0;
+      1,1,1,1,1;
+      1,1,1,1,1;
+      1,1,1,1,1;
+      0,1,1,1,0;]; % 3 pix around fixloc
+%     lookregion = [...
+%       0,0,1,1,1,0,0;
+%       0,1,1,1,1,1,0;
+%       1,1,1,1,1,1,1;
+%       1,1,1,1,1,1,1;
+%       1,1,1,1,1,1,1;
+%       0,1,1,1,1,1,0;
+%       0,0,1,1,1,0,0;]; % 4 pix around fixloc
     hmax_at_fix_lookregion = [];
     for ifix = 1:size(fixloc_newres,1)
       M = zeros(size(curhmax));
