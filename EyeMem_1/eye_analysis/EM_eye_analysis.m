@@ -232,12 +232,20 @@ for irun = 1:length(edflist)
     hmax_at_fix = diag(curhmax(fixloc_newres(:,2), fixloc_newres(:,1))); % Note the flip: Yaxis in dim1 (rows), Xaxis in dim2 (columns): scatter and plot need x,y, with indexing it's the other way around. diag bc all combinations of indices are returned
     
     %     lookregion = [1,1,1;1,1,1;1,1,1]; % 1 pix around fixloc
+%     lookregion = [...
+%       0,1,1,1,0;
+%       1,1,1,1,1;
+%       1,1,1,1,1;
+%       1,1,1,1,1;
+%       0,1,1,1,0;]; % 3 pix around fixloc
     lookregion = [...
-      0,1,1,1,0;
-      1,1,1,1,1;
-      1,1,1,1,1;
-      1,1,1,1,1;
-      0,1,1,1,0;]; % 3 pix around fixloc
+      0,0,1,1,1,0,0;
+      0,1,1,1,1,1,0;
+      1,1,1,1,1,1,1;
+      1,1,1,1,1,1,1;
+      1,1,1,1,1,1,1;
+      0,1,1,1,1,1,0;
+      0,0,1,1,1,0,0;]; % 3 pix around fixloc
     hmax_at_fix_lookregion = [];
     for ifix = 1:size(fixloc_newres,1)
       M = zeros(size(curhmax));
