@@ -84,7 +84,7 @@ if sum(cfg.trials)<75
   error('>100 trials lost')
 end
 source = ft_selectdata(cfg, source);
-bin_variable = source.trialinfo.HMAX_fix; % go with trials that remain
+% bin_variable = source.trialinfo.HMAX_fix; % go with trials that remain
 
 [sortHMAX, sortinds] = sort(bin_variable(bin_variable > 0));
 
