@@ -43,7 +43,7 @@ source.trialinfo = trialinfo; % TODO check if ntrials match
 disp 'Remove last trial since it is only zeros FIXME for non-gazespecific'
 cfg = [];
 cfg.trials = not(mean(source.pow(:,:,1)) == 0);
-warning(string(length(find(cfg.trials))))
+ft_warning(string(length(find(cfg.trials))))
 source = ft_selectdata(cfg, source); % TODO are trial eye and source still matched??
 
 % Between or within-trial variability: subtract within trial mean beta weight per trial
@@ -80,7 +80,7 @@ end
 cfg=[];
 % cfg.trials = bin_variable > 0 & not(outlier);     % only take trials with valid HMAX_fix_lookregion
 cfg.trials = bin_variable > 0;     % only take trials with valid HMAX_fix_lookregion
-if sum(cfg.trials)<75
+if sum(cfg.trials)<100
   error('>100 trials lost')
 end
 source = ft_selectdata(cfg, source);
