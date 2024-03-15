@@ -76,10 +76,11 @@ switch gazespecificHMAX
 %     bin_variable = source.trialinfo.HMAX_fix_lookregion_max;
     bin_variable = source.trialinfo.HMAX_fix;
 end
-[~,outlier] = rmoutliers(bin_variable, 'mean'); % Remove if > 3SD's from mean
+% [~,outlier] = rmoutliers(bin_variable, 'mean'); % Remove if > 3SD's from mean
 cfg=[];
-cfg.trials = bin_variable > 0 & not(outlier);     % only take trials with valid HMAX_fix_lookregion
-if sum(cfg.trials)<100
+% cfg.trials = bin_variable > 0 & not(outlier);     % only take trials with valid HMAX_fix_lookregion
+cfg.trials = bin_variable > 0;     % only take trials with valid HMAX_fix_lookregion
+if sum(cfg.trials)<75
   error('>100 trials lost')
 end
 source = ft_selectdata(cfg, source);

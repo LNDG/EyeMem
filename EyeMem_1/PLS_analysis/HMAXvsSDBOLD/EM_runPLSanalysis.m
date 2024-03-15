@@ -86,7 +86,7 @@ switch analysisname
 %     % induced power: correlation gone
 %     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/behavPLSvsDDM'
 
-PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/iqr_5bins/fixednbins/behavPLSvsDDM/'
+PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/'
 
     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
