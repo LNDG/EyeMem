@@ -76,12 +76,14 @@ switch gazespecificHMAX
 %     bin_variable = source.trialinfo.HMAX_fix_lookregion_max;
     bin_variable = source.trialinfo.HMAX_fix;
 end
+[~,outlier] = rmoutliers(bin_variable, 'mean'); % Remove if > 3SD's from mean
 cfg=[];
-cfg.trials = bin_variable > 0;     % only take trials with valid HMAX_fix_lookregion
+cfg.trials = bin_variable > 0 & not(outlier);     % only take trials with valid HMAX_fix_lookregion
 if sum(cfg.trials)<100
   error('>100 trials lost')
 end
 source = ft_selectdata(cfg, source);
+bin_variable = source.trialinfo.HMAX_fix; % go with trials that remain
 
 [sortHMAX, sortinds] = sort(bin_variable(bin_variable > 0));
 
@@ -281,13 +283,15 @@ out = fullfile(fileparts(fileparts(outfile_sesdat)), [subj '_BfMRIsessiondata.ma
 save(out , '-struct','tmp')
 % % save([subj '_' pattern '_BfMRIdatamat.mat'], '-struct','tmp'); %,'-mat'
 
+%%
+close all
 if ismac
   tmp = source_bin;
   tmp.powdimord = 'pos';
   %       vol=300;
   %   tmp.anatomy = tmp.anatomy(:,:,:,vol);
-  %     tmp.pow = mean(tmp.pow(:,:),2);
-  tmp.pow = tmp.pow(:,3);
+      tmp.pow = mean(tmp.pow(:,:),2);
+%   tmp.pow = tmp.pow(:,3);
   cfg=[];
   cfg.method = 'ortho'; % slice ortho glassbrain vertex
   cfg.funparameter = 'pow';

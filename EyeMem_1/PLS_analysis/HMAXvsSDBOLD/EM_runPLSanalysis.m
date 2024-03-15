@@ -86,7 +86,7 @@ switch analysisname
 %     % induced power: correlation gone
 %     PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/induced/std_3bins/fixednbins/behavPLSvsDDM'
 
-PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/std_5bins/fixednbins/behavPLSvsDDM/'
+PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRspertrial/ftsource/total_pow/iqr_5bins/fixednbins/behavPLSvsDDM/'
 
     agegroups = {'young' 'old'};
 %     agegroups = {'young'};
@@ -105,7 +105,7 @@ PRE = '/Users/kloosterman/gridmaster2012/projectdata/eyemem/variability2/5TRsper
       cormode = '8'; % Spearman
     end
     
-    num_perm = '1000';
+    num_perm = '100';
     num_split = '0';
     num_boot = '100';
     boot_type = 'strat';

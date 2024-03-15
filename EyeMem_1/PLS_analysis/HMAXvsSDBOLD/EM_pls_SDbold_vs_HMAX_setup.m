@@ -36,7 +36,7 @@ memreq = 2000; % in MB
 PLStype = 'behavPLSvsDDM'; % behavPLS_sdboldvsHmaxbins
 nbins = 5; % no of bins used for Hmax binning, 750 samples
 gazespecificHMAX = 'gaze-specific'; % gaze-specific   non-gazespecific
-BOLDvar_measure = 'iqr'; % mean, iqr, std mse
+BOLDvar_measure = 'std'; % mean, iqr, std mse
 bintype = 'fixednbins';   %fixednbins   uniformbinwidth
 inducedortotalSD = 'total_pow'; % within_trial   evoked   induced   total_pow
 
@@ -56,7 +56,7 @@ overwrite = 1;
     
 cd(PREIN);
 subjlist = dir('source_sub*.mat');
-% subjlist = dir('source_sub-96.mat');
+% subjlist = dir('source_sub-68.mat');
 
 % SUBJ= [9, 11:59, 61:69, 71,72, 74:101]; % TODO specify further?
 
