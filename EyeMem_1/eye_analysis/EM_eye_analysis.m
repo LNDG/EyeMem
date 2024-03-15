@@ -142,7 +142,7 @@ for irun = 1:length(edflist)
     data_trial.sampleinfo = [1 length(data_trial.trial{1})];
     
     disp 'Detect fixations'
-    fixation_detection = 'DM'; % EyeLink triggers or ft_detect_movement DM
+    fixation_detection = 'EL_fix'; % EyeLink triggers or ft_detect_movement DM
     switch fixation_detection % make trl matrix for fixations as trials
       case 'EL_fix'
         fix_bool = logical(data_trial.trial{1}(7,:))';
@@ -292,6 +292,7 @@ for irun = 1:length(edflist)
     
     plotit=1;
     if plotit
+      disp('TODO plot actual fixations! after rejection weird ones')
 %       subplot(5,6,itrial);
       xdat = data_trial.trial{1}(2,:); xdat(~fix_bool) = NaN;
       ydat = data_trial.trial{1}(3,:); ydat(~fix_bool) = NaN;
