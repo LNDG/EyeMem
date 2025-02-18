@@ -18,6 +18,7 @@ mri_mask = ft_read_mri('/Users/kloosterman/projectdata/eyemem/Standards/old_mask
 mri_mask.anatomy = round(mri_mask.anatomy); 
 % ft_sourceplot([], mri, mri_mask); ft_sourceplot([],  mri_mask, mri)
 
+region_of_interest = 'Hippocampus' % 'Hippocampus' 'Visual cortex'
 % read Juelich atlas, select ROIs
 atlas = ft_read_atlas('/Users/kloosterman/fsl/data/atlases/Juelich.xml');
 cfg=[];
@@ -25,7 +26,7 @@ cfg.funparameter = 'tissue';
 cfg.anaparameter = 'anatomy';
 ft_sourceplot(cfg, atlas, mri);
 % roiInds = find(contains(atlas.tissuelabel, 'Visual cortex')); % get roi Indices
-roiInds = find(contains(atlas.tissuelabel, 'Hippocampus'));
+roiInds = find(contains(atlas.tissuelabel, region_of_interest));
 atlas.tissuelabel(roiInds)
 mri_mask = atlas;
 mri_mask.tissue = ismember( mri_mask.tissue, roiInds);
@@ -74,7 +75,7 @@ if ismac
   end
 end
 
-%% load all subjects except current subject, compute SD over time, append
+%% load all subjects, compute SD over time, append
 
 sources = {};
 cd(fullfile(fileparts(infile)))
@@ -94,7 +95,7 @@ for isub = 1:length(subjects) % TODO leave out subject under investigation
   labels = [labels label_subj];
 
   tmp = load(subjects(isub).name);
-  tmp.pow = squeeze(std(source.pow, 0, 3));% compute SD over time
+  tmp.pow = squeeze(std(tmp.pow, 0, 3));% compute SD over time
 
   tmp.pow = zscore(tmp.pow,0,2); % normalize each feaure separately across subject's trials
   
@@ -116,7 +117,7 @@ for isub = 1:length(subjects) % TODO leave out subject under investigation
       cfg.funcolorlim = 'maxabs';
       cfg.location = [25 11 30];
       cfg.locationcoordinates = 'voxel';
-      ft_sourceplot(cfg, tmp2); %, mri_mask
+      ft_sourceplot(cfg, tmp2, mri); %, mri_mask
     end
   end
   sources{end+1} = tmp;
@@ -151,20 +152,62 @@ end
 
 %% predict saliency of the presented image from trialwise SDbold maps
 % does SDbold represent image saliency?
-% pow = allsource.pow(:,:);
 % need for training format: Ntrials x Nmaps, ca: 78*150 = 11700 trials (exemplars), 259200 voxels (features) 
-X = permute(allsource.pow(:,allsource.inside,:), [1 3 2]);
-Xdat = reshape(X, [], size(X,3)); % samples X features
-labeldat =  labels(:);
-% for testing: 150 exemplars * 259200 features
-isub = 3;
-testdat = squeeze(X(isub,:,:));
-testdatlabels = labels(:, isub);
 
+param=[];
+param.svm_type= 3;
+param.kernel= 'linear'; % linear rbf
+param.degree= 3;
+param.gamma= []; % 
+% param.gamma= 1/size(Xdat,1); % 1/nfeatures, only for rbf kernel
+param.coef0= 0;
+param.cost= 0.1; % 1
+param.nu= 0.5000;
+param.epsilon= 1;  % 0.1
+param.cachesize= 4000; % 100
+param.eps= 1e-03; % 1e-03
+param.shrinking= 0;
+param.probability_estimates= 0;
+param.weight= 1;
+param.cv= [];
+param.quiet= 0;
+param.kernel_type= 0;
+
+X = permute(allsource.pow(:,allsource.inside,:), [1 3 2]);
+ypred_subj = []; corr_predvsactual = [];
+nsub = size(X,1);
+for isub = 1:3 %nsub
+  subjbool = true([nsub 1]);
+  subjbool(isub) = false; % remove isub from training set
+  Xdat = reshape(X(subjbool,:,:), [], size(X,3)); % samples X features
+  labeldat =  labels(:,subjbool);
+  
+  tic
+  cf = train_libsvm(param, Xdat, labeldat); % call train_libsvm and test_libsvm directly
+  toc
+  % for testing: 150 exemplars * N features
+  testdat = double(squeeze(X(isub,:,:)));
+  [ypred, dval] = test_libsvm(cf, testdat);
+
+  testdatlabels = labels(:, isub);
+  corr1 = corr(ypred, testdatlabels, 'Type','Spearman');
+  figure; scatter(ypred, testdatlabels); lsline; title(corr1)
+  figure; histogram(ypred); hold on;  histogram(testdatlabels)
+
+  ypred_subj(isub,:) = ypred;
+  yactual_subj(isub,:) = testdatlabels;
+  corr_predvsactual(isub,:) = corr1;
+end
+figure; histogram(corr_predvsactual,10);
+mean(corr_predvsactual)
+[h,p] = ttest(corr_predvsactual)
+
+
+
+%% OLD
 % nvoxels = 3000;
 % Xdat = Xdat(:,1:nvoxels);
 % testdat = testdat(:,1:nvoxels);
-addpath('/Users/kloosterman/Documents/MATLAB/libsvm-3.35/matlab')
 % cfg = [];
 % % cfg.classifier = 'multiclass_lda';
 % cfg.classifier = 'libsvm';
@@ -185,36 +228,7 @@ addpath('/Users/kloosterman/Documents/MATLAB/libsvm-3.35/matlab')
 % acc = mean(accuracy{1} == testdatlabels)*100
 % chance = 1/150*100
 
-% call train_libsvm and test_libsvm directly
-param=[];
-param.svm_type= 3;
-param.kernel= 'linear'; % linear rbf
-param.degree= 3;
-param.gamma= []; 
-% param.gamma= 1/size(Xdat,1)*100; % 1/nfeatures, only for rbf kernel
-param.coef0= 0;
-param.cost= 1;
-param.nu= 0.5000;
-param.epsilon= 0.1;
-param.cachesize= 100;
-param.eps= 1.0000e-03;
-param.shrinking= 1;
-param.probability_estimates= 0;
-param.weight= 1;
-param.cv= [];
-param.quiet= 0;
-param.kernel_type= 0;
-tic
-cf = train_libsvm(param, Xdat, labeldat);
-toc
-
-[ypred,dval] = test_libsvm(cf, double(testdat));
-figure; scatter(ypred, testdatlabels); lsline; title(corr(ypred, testdatlabels, 'Type','Spearman'))
-figure; histogram(ypred)
-
-
-
-%% OLD
+%% OLDER
 % %% decode image complexity from fMRI entropy
 % % To give a concrete code example, consider the ?faces vs. houses? experiment.
 % % For each trial, the BOLD response has been recorded for all voxels. This yields a

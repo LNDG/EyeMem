@@ -6,6 +6,7 @@ if ismac
   addpath(genpath('/Users/kloosterman/Documents/GitHub/BrainSlicer'))
   % addpath(fullfile('/Users/kloosterman/Documents', 'GitHub', 'fieldtrip')) % cloned on 13 09 19
   addpath('/Users/kloosterman/Documents/MATLAB/fieldtrip-20250114')
+  addpath('/Users/kloosterman/Documents/MATLAB/libsvm-3.35/matlab')
 else
 %     basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
   basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
