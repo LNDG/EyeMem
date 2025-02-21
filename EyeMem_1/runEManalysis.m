@@ -7,6 +7,7 @@ if ismac
   % addpath(fullfile('/Users/kloosterman/Documents', 'GitHub', 'fieldtrip')) % cloned on 13 09 19
   addpath('/Users/kloosterman/Documents/MATLAB/fieldtrip-20250114')
   addpath('/Users/kloosterman/Documents/MATLAB/libsvm-3.35/matlab')
+  addpath('/Users/kloosterman/Documents/GitHub/fieldtrip_dev')
 else
 %     basepath = '/home/mpib/kloosterman/'; %/mnt/beegfs/home/
   basepath = '/mnt/beegfs/home/kloosterman/'; % to avoid ft path problems
@@ -17,9 +18,9 @@ ft_defaults
 
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
-addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
-% addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
-addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
+% addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
+addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
+% addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
 % only when running Spearman corr behavior PLS
 
 addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'mmse'))) %
@@ -111,6 +112,10 @@ EM_pls_SDbold_vs_HMAX_setup('v')
 
 %% decode image saliency from single trial BSV
 EM_decodeSaliency_setup()
+
+%% single subject behav PLS linking saliency with SDbold
+
+EM_PLSsingleSubj([])
 
 %% merge all subject voxel time courses in a struct array
 % source = EM_merge_source();
