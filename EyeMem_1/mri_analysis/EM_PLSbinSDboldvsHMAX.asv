@@ -1,15 +1,48 @@
-function accuracy = EM_PLSwithinSubjCorrvsHMAX(cfg)
+% function accuracy = EM_PLSbinSDboldvsHMAX(cfg)
 % Corr SDBOLD and HMAX across trials for each subject, then
 % 1) Adaptation to feature richness: task PLS OA vs YA: positive link YA, weaker OA?
 % 2) FR adaptation vs memory: behav PLS: positive link YA, weaker OA? 
 
 mri = ft_read_mri('/Users/kloosterman/projectdata/eyemem/Standards/MNI152_T1_3mm_brain.nii.gz');
+cfg=[];
+ft_sourceplot(cfg, mri); %, mri_mask
 
 mri_mask = ft_read_mri('/Users/kloosterman/projectdata/eyemem/Standards/MNI152_T1_3mm_brain_mask.nii.gz');
 % mri_mask.anatomy = round(mri_mask.anatomy); 
 mri_mask.anatomy(mri_mask.anatomy < 1) = 0; % binarize
+% cfg=[];
+% ft_sourceplot(cfg, mri_mask); %, mri_mask
+
+%% get ROIs
+region_of_interest = 'Hippocampus' % 'Hippocampus' 'Visual cortex'
+region_of_interest = 'Visual cortex' % 'Hippocampus' 'Visual cortex'
+region_of_interest = 'V1' % 'Hippocampus' 'Visual cortex'
+% read Juelich atlas, select ROIs
+atlas = ft_read_atlas('/Users/kloosterman/fsl/data/atlases/Juelich.xml');
 cfg=[];
-ft_sourceplot(cfg, mri_mask); %, mri_mask
+cfg.funparameter = 'tissue';
+cfg.anaparameter = 'anatomy';
+ft_sourceplot(cfg, atlas, mri);
+% roiInds = find(contains(atlas.tissuelabel, 'Visual cortex')); % get roi Indices
+roiInds = find(contains(atlas.tissuelabel, region_of_interest));
+atlas.tissuelabel(roiInds)
+mri_mask = atlas;
+mri_mask.tissue = ismember( mri_mask.tissue, roiInds);
+% cfg=[];
+% cfg.funparameter = 'tissue';
+% cfg.anaparameter = 'anatomy';
+% ft_sourceplot(cfg, mri_mask, mri);
+% resample mask to 3 mm
+cfg=[];
+cfg.parameter = 'tissue';
+mri_mask3mm = ft_sourceinterpolate(cfg, mri_mask, mri);
+
+cfg=[];
+cfg.funparameter = 'tissue';
+cfg.anaparameter = 'anatomy';
+ft_sourceplot(cfg, mri_mask3mm, mri);
+
+
 %% format PLS toolbox multiple conds:
 % Condition	Subject	Feature 1	Feature 2	...	Feature N
 % C1	S1	X_11	X_12	...	X_1N
@@ -24,13 +57,16 @@ datapath = '/Users/kloosterman/projectdata/eyemem/variability2/5TRspertrial/ftso
 
 bintype = 'bintrials';
 
-sources = cell(2,1);
+% sources = cell(2,1);
+sources = [];
+sources.young = cell(1,3); % nbins
+sources.old = cell(1,3); % nbins
 cd(datapath)
 subjects = dir(fullfile(datapath, 'source_sub*'));
 labels = [];
 load participantinfo.mat % TODO make this reliable
 
-stat_mse = {}; corrlist = [];
+stat_mse = {}; corrlist = []; inside = []; hmax_dat;
 for isub = 1:length(subjects) % TODO leave out subject under investigation
   subj = subjects(isub).name(8:end-4);
   subjinfo = Participants(Participants.participant_id == subj, :);     % give different outfolder for OA and YA
@@ -44,11 +80,15 @@ for isub = 1:length(subjects) % TODO leave out subject under investigation
   disp(isub)
   % get eye data for labels
   eyedat = load(['eye' subjects(isub).name(7:end)]);
-  % look_region_dat = eyedat.trialinfo.HMAX_fix_lookregion_mean; % _lookregion_std
-  look_region_dat = eyedat.trialinfo.HMAX_fix; % _lookregion_std
+  look_region_dat = eyedat.trialinfo.HMAX_fix_lookregion_mean; % _lookregion_std
+  % look_region_dat = eyedat.trialinfo.HMAX_fix; % _lookregion_std
 
   source = load(subjects(isub).name);
-  source.inside = logical(mri_mask.anatomy(:)); 
+
+  source.pow = zscore(source.pow,0,2); %normalize within subject!
+  
+  % source.inside = logical(mri_mask.anatomy(:)); 
+  inside(:,end+1) = source.inside;
   source.freq = 1;
 
   switch bintype
@@ -59,10 +99,21 @@ for isub = 1:length(subjects) % TODO leave out subject under investigation
       source.pow = corrdat;
       source.powdimord = 'pos';
     case 'bintrials'
-
+      % Define bin edges using quantiles (equal-sized bins)
+      edges = quantile(look_region_dat, [1/3, 2/3]);
+      edges = [-Inf, edges, Inf]; % Extend edges to cover all values
+      % Assign bin indices based on edges
+      bin_idx = discretize(look_region_dat, edges);
+      SDbold = [];
+      for ibin=1:3
+        trialdat = source.pow(:,bin_idx == ibin,:);
+        source_bin = source;
+        source_bin.pow = squeeze(std(trialdat(:,:), 0, 2));% compute SD over time;
+        source_bin.powdimord = 'pos';
+        sources.(string(subjinfo.group)){ibin}{end+1} = source_bin; %TODO change order of dims
+        hmax_dat(isub,ibin) = mean(look_region_dat(bin_idx == ibin,1));
+      end
   end
-
-  sources{iage}{end+1} = source;
 
   plotit=0;
   if plotit
@@ -80,21 +131,25 @@ for isub = 1:length(subjects) % TODO leave out subject under investigation
   end
 end
 % figure; histogram(corrlist,10)
+figure; boxplot(hmax_dat); ylabel('Saliency')
 
 cfg=[];
 cfg.keepindividual = 'yes';
-allsource_YA = ft_sourcegrandaverage(cfg, sources{1}{:});
-allsource_OA = ft_sourcegrandaverage(cfg, sources{2}{:});
-allsource_all = [sources{:}];
-allsource_all = ft_sourcegrandaverage(cfg, allsource_all{:});
-% remove Nan voxels where correlation went wrong
-allsource_all.inside = all(not(isnan(allsource_all.pow)))';
-allsource_YA.inside = all(not(isnan(allsource_all.pow)))';
-allsource_OA.inside = all(not(isnan(allsource_all.pow)))';
+nbins = 3;
+agegroups = fieldnames(sources);
+for iage = 1:length(agegroups)
+  for ibin = 1:nbins
+    C = sources.(agegroups{iage}){ibin};
+    C = cellfun(@(s) setfield(s, 'inside', all(inside,2)), C, 'UniformOutput', false);
+    sources.(agegroups{iage}){ibin} = ft_sourcegrandaverage(cfg, C{:});
+  end
+end
+% remove standard brain parts not measured
+mri.anatomy(not(all(inside,2))) = 0;
 
 plotit=0;
 if plotit
-  allsourceplot = allsource;
+  allsourceplot = sources.(agegroups{iage}){ibin};
   allsourceplot.pow = mean(allsourceplot.pow)';
   allsourceplot.dimord = 'pos';
   cfg=[];
@@ -110,7 +165,7 @@ if plotit
 end
 
 
-%% Task PLS 2 group, 
+%% Task PLS 2 group, 3 cond (nbins)
 cfg = [];
 cfg.parameter = 'pow';
 cfg.statistic = 'ft_statfun_pls';           % PLS statistics
@@ -118,31 +173,99 @@ cfg.num_perm = 100;                         % Number of permutation
 cfg.num_boot = 100;
 cfg.method = 'analytic';                    % analytic method for statistics
 cfg.pls_method = 1;                         % 1 is taskPLS; 3 is behavPLS
-cfg.num_cond = 1;                           % Number of conditions
-% cfg.num_subj_lst = size(allsource.pow,1);   % Number of subjects per condition
-cfg.num_subj_lst = [39 39];   % Number of subjects per condition
-cfg.design = zeros(size(allsource_all.pow,1),1); % Placeholder TODO omit design for Task PLS
-stat_taskPLS = ft_sourcestatistics(cfg, allsource_OA, allsource_YA);
+cfg.num_cond = nbins;                       % Number of conditions
+cfg.num_subj_lst = [39 39];                 % Number of subjects per condition
+cfg.design = zeros(sum(cfg.num_subj_lst)*nbins,1); % Placeholder TODO omit design for Task PLS
+stat_taskPLS = ft_sourcestatistics(cfg, sources.young{:}, sources.old{:});
 
 stat_taskPLS.results.perm_result.sprob
-bardat = [stat_taskPLS.brainscores(1:39,1) stat_taskPLS.brainscores(40:end,1)];
-figure; bar(mean(bardat));
+bardat = -reshape(stat_taskPLS.brainscores, [], 6);
+% bardat = [stat_taskPLS.brainscores(1:39,1) stat_taskPLS.brainscores(40:end,1)];
+% figure; bar(mean(bardat));
 figure; boxplot(bardat);
 
-%%
+%% plot bootstrapratios
 stat_taskPLS.bootstrapratios = zeros(size(stat_taskPLS.inside));
-stat_taskPLS.bootstrapratios(stat_taskPLS.inside,1) = stat_taskPLS.results.boot_result.compare_u(:,1);
+stat_taskPLS.bootstrapratios(stat_taskPLS.inside,1) = -stat_taskPLS.results.boot_result.compare_u(:,1);
+stat_taskPLS.mask = double(stat_taskPLS.bootstrapratios > -2 | stat_taskPLS.bootstrapratios < 2);
 
 cfg=[];
 cfg.funparameter = 'bootstrapratios';
+cfg.maskparameter = 'mask';
+cfg.anaparameter = 'anatomy';
 cfg.method = 'ortho'; % slice ortho glassbrain vertex
 load colormap_jetlightgray.mat
 cfg.funcolormap = cmap;
 cfg.funcolorlim = 'maxabs';
+cfg.funcolorlim = [-4 4];
+cfg.method = 'ortho'; % surface ortho
 % cfg.funcolorlim = 'zeromax';
 cfg.location = [25 11 30];
 cfg.locationcoordinates = 'voxel';
-ft_sourceplot(cfg, stat_taskPLS); %, mri_mask
+ft_sourceplot(cfg, stat_taskPLS, mri); %, mri_mask , mri
+
+
+%% Task PLS 1 group , 3 cond (nbins)
+cfg = [];
+cfg.parameter = 'pow';
+cfg.statistic = 'ft_statfun_pls';           % PLS statistics
+cfg.num_perm = 100;                         % Number of permutation
+cfg.num_boot = 100;
+cfg.method = 'analytic';                    % analytic method for statistics
+cfg.pls_method = 1;                         % 1 is taskPLS; 3 is behavPLS
+cfg.num_cond = nbins;                       % Number of conditions
+cfg.num_subj_lst = 39;                 % Number of subjects per condition
+cfg.design = zeros(sum(cfg.num_subj_lst)*nbins,1); % Placeholder TODO omit design for Task PLS
+stat_taskPLS_YA = ft_sourcestatistics(cfg, sources.old{:});
+
+stat_taskPLS_YA.results.perm_result.sprob
+bardat = reshape(stat_taskPLS_YA.brainscores, [], 3);  
+figure; tiledlayout(1,2); 
+nexttile; boxplot(bardat);
+title('Overall brainscore')
+
+% get ROI-specific brain scores
+stat_taskPLS_YA.brainweights = zeros(size(stat_taskPLS_YA.inside));
+stat_taskPLS_YA.brainweights(stat_taskPLS_YA.inside,1) = stat_taskPLS_YA.results.u(:,1);
+HCvoxels = logical(mri_mask3mm.tissue(:));
+stat_taskPLS_YA.brainscores_HC = [];
+stat_taskPLS_YA.brainscores_HC(:,1) = sum(stat_taskPLS_YA.brainweights(HCvoxels)' .* sources.young{1}.pow(:,HCvoxels),2);
+stat_taskPLS_YA.brainscores_HC(:,2) = sum(stat_taskPLS_YA.brainweights(HCvoxels)' .* sources.young{2}.pow(:,HCvoxels),2);
+stat_taskPLS_YA.brainscores_HC(:,3) = sum(stat_taskPLS_YA.brainweights(HCvoxels)' .* sources.young{3}.pow(:,HCvoxels),2);
+nexttile; boxplot(stat_taskPLS_YA.brainscores_HC); 
+title('Hippocampus brainscore')
+
+
+%% plot bootstrapratios
+stat_taskPLS_YA.bootstrapratios = zeros(size(stat_taskPLS_YA.inside));
+stat_taskPLS_YA.bootstrapratios(stat_taskPLS_YA.inside,1) = stat_taskPLS_YA.results.boot_result.compare_u(:,1);
+stat_taskPLS_YA.mask = double(stat_taskPLS_YA.bootstrapratios < -2 | stat_taskPLS_YA.bootstrapratios > 2);
+
+stat_taskPLS_YA.bootstrapratios_masked = stat_taskPLS_YA.bootstrapratios;
+stat_taskPLS_YA.bootstrapratios_masked(~(stat_taskPLS_YA.mask)) = NaN;
+
+% cfg=[];
+% cfg.parameter = 'bootstrapratios_masked';
+% temp = ft_sourceinterpolate(cfg, stat_taskPLS_YA, mri);
+
+cfg=[];
+cfg.funparameter = 'bootstrapratios';
+cfg.maskparameter = 'mask';
+cfg.anaparameter = 'anatomy';
+cfg.method = 'ortho'; % slice ortho glassbrain vertex
+load colormap_jetlightgray.mat
+cfg.funcolormap = cmap;
+cfg.funcolorlim = 'maxabs';
+cfg.funcolorlim = [-4 4];
+cfg.method = 'ortho'; % surface ortho
+% cfg.funcolorlim = 'zeromax';
+cfg.location = [25 11 30];
+cfg.locationcoordinates = 'voxel';
+ft_sourceplot(cfg, stat_taskPLS_YA, rm); %, mri_mask , mri
+
+
+
+
 
 %% CBPM corr vs 0
 Nsubj = size(allsource.pow,1);
