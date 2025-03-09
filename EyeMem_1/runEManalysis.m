@@ -19,7 +19,7 @@ ft_defaults
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'eyemem_analysis')));
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'hmaxMatlab'));
 % addpath(fullfile(basepath, 'MATLAB', 'tools', 'spm12'))
-addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
+% addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'pls')))
 % addpath(genpath(fullfile(basepath, 'MATLAB', 'tools', 'PLS_rank'))) %
 % only when running Spearman corr behavior PLS
 
@@ -40,6 +40,7 @@ addpath(fullfile(basepath, 'MATLAB', 'tools', 'NIFTI_toolbox'))
 addpath(fullfile(basepath, 'MATLAB', 'tools', 'qsub_tardis_slurmpreview'))% qsub_tardis_slurmpreview
 % addpath(genpath('/Volumes/LNDG/Programs_Tools_Scripts/data_processing_repo/PLS_repo/PLS_toolbox_modifications/LNDG2018_OnlyTXT/Pls'))
 
+addpath('/Users/kloosterman/Documents/GitHub/GLMsingle')
 % out folder for plots:
 global PREOUTplot
 PREOUTplot = '/Users/kloosterman/Library/CloudStorage/Dropbox/PROJECTS/EyeMem/plots';
